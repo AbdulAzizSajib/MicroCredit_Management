@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+* {
+    box-sizing: border-box;
+    // font-family: "Oxygen", sans-serif;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    overflow-x: hidden;
+}
+
+input,
+button,
+select {
+    outline: none;
+}
+
+.title {
+    @apply text-primary font-bold text-2xl capitalize;
+}
+
+.search_input {
+    @apply border border-slate-300 rounded w-full px-3 py-2;
+}
+
+.text_input {
+    @apply border rounded w-full px-3 py-1
+}
+
+.lowercase-text {
+    text-transform: lowercase;
+}
+
+.create_btn {
+    @apply font-medium border border-primary bg-primary text-white rounded text-primary bg-gray-600 text-white capitalize whitespace-nowrap py-2 px-3 mb-3
+}
+
+.edit_btn {
+    @apply border border-secondary rounded bg-secondary text-white px-3 py-2;
+}
+
+.del_btn {
+    @apply border border-danger rounded bg-danger text-white bg-transparent text-danger px-3 py-2;
+}
+
+.table_edit_btn {
+    @apply border border-secondary rounded bg-secondary text-white bg-transparent text-secondary w-8 h-8;
+}
+
+.table_del_btn {
+    @apply border border-danger rounded bg-danger text-white bg-transparent text-danger w-8 h-8;
+}
+
+.c_table {
+    @apply relative overflow-x-auto shadow rounded-lg border border-b-0;
+
+    table {
+        @apply w-full text-sm text-left;
+
+        thead {
+            @apply uppercase bg-gray-50 border-b;
+
+            th {
+                @apply px-4 py-2
+            }
+        }
+
+        tbody {
+            tr {
+                @apply bg-white bg-gray-50 border-b border-gray-200;
+
+                td {
+                    @apply px-4 py-2 whitespace-nowrap align-baseline
+                }
+            }
+        }
+    }
+}
+
+.ant-btn-primary {
+    @apply bg-primary border-0;
+}
+
+.ant-btn-primary:hover {
+    background-color: theme("colors.secondary") !important;
+}
+
+
+.ant-btn-default {
+    @apply bg-danger text-white border-0;
+}
+
+.ant-btn-default:hover {
+    background-color: theme("colors.dangerDark") !important;
+    color: #fff !important;
+}
+
+.ant-popconfirm .anticon {
+    padding-top: 0 !important;
+    vertical-align: baseline !important;
+}
+
+.ant-popconfirm .anticon {
+    svg {
+        fill: theme("colors.info") !important;
+        opacity: 1 !important;
+    }
+
+}
+
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-pagination .ant-pagination-prev,
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-pagination .ant-pagination-next,
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-pagination .ant-pagination-jump-prev,
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-pagination .ant-pagination-jump-next{
+    height: auto !important;
+}
+
+
+
+
+
+
+
+
+
+// table customisation
+

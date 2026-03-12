@@ -1,0 +1,265 @@
+<template>
+  <a-layout has-sider>
+    <!-- Sidebar -->
+    <a-layout-sider ref="siderRef" :collapsed="collapsed" :width="sidebarWidth" collapsed-width="70" breakpoint="lg"
+      :trigger="null" collapsible :style="{
+        overflowY: 'auto',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        zIndex: 999,
+      }">
+      <div class="logo px-5 pt-1 pb-0 my-4 flex justify-center items-center">
+        <router-link :to="{ name: 'overview' }" class="!text-white">
+          <img class="w-20" src="@/assets/images/freelancer.png" alt="">
+        </router-link>
+      </div>
+      <a-menu :items="items" :openKeys="state.openKeys" :selectedKeys="state.selectedKeys"
+        @openChange="(keys) => (state.openKeys = keys)" theme="dark" mode="inline" class="capitalize" />
+    </a-layout-sider>
+
+    <a-layout :style="{ marginLeft: collapsed ? '80px' : `${sidebarWidth}px` }">
+      <!-- Header -->
+      <Header :collapsed="collapsed" @update:collapsed="collapsed = $event" />
+      <!-- Content -->
+      <a-layout-content>
+        <div :style="{
+          margin: '0 16px',
+          padding: $route?.name === 'home' ? '16px 0' : '16px 32px',
+          background: $route?.name === 'home' ? 'transparent' : '#fff',
+          borderRadius: $route?.name === 'home' ? '0' : '30px',
+          boxShadow: $route?.name === 'home' ? 'none' : '2px 2px 2px #d5d5d5',
+          height: 'calc(100vh - 156px)',
+          overflowY: 'auto',
+        }">
+          <slot></slot>
+        </div>
+      </a-layout-content>
+      <!-- Footer -->
+      <a-layout-footer :style="{
+        background: '#fff',
+        padding: '16px 32px',
+        margin: '16px 16px 8px',
+        height: 'fit-content',
+        lineHeight: 'normal',
+        borderRadius: '30px',
+        boxShadow: '1px 1px 1px #d5d5d5',
+        textAlign: 'center',
+      }">
+        All Reserved &copy; {{ new Date().getFullYear() }}
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
+</template>
+
+<script setup>
+import { ref, h, onMounted, watch, reactive, computed, nextTick } from "vue";
+import {
+  UserOutlined,
+  FileTextOutlined,
+  ContainerOutlined,
+  InboxOutlined,
+} from "@ant-design/icons-vue";
+import { useRoute, useRouter } from "vue-router";
+import Header from "./header.vue";
+
+const collapsed = ref(false);
+const siderRef = ref(null);
+const route = useRoute();
+const router = useRouter();
+
+const sidebarWidth = 250;
+let time = ref();
+let date = ref();
+
+let timeOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+};
+
+let dateOptions = {
+  month: "2-digit",
+  day: "2-digit",
+  year: "numeric",
+};
+
+function updateDateTime() {
+  let now = new Date();
+  time.value = now.toLocaleString("en-US", timeOptions);
+  date.value = now.toLocaleString("en-US", dateOptions);
+}
+
+onMounted(() => {
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event?.key === "F3") {
+    event.preventDefault();
+    router.push({ name: "sales" });
+  }
+});
+
+const state = reactive({
+  openKeys: [],
+  selectedKeys: [route.path],
+});
+
+const items = reactive([
+  {
+    key: "/employee-management",
+    label: "Employee Management",
+    icon: () => h(FileTextOutlined),
+    // onClick: () => router.push("/employee-management"),
+    children: [
+      {
+        key: "/employee-management/personal-info",
+        label: "Personal Information",
+        onClick: () => router.push("/employee-management/personal-info"),
+      },
+      {
+        key: "/employee-management/employee-info",
+        label: "Employee Information",
+        onClick: () => router.push("/employee-management/employee-info"),
+      },
+    ]
+  },
+
+  {
+    key: "/settings",
+    label: "Settings",
+    icon: () => h(FileTextOutlined),
+    children: [
+      {
+        key: "/settings/business-payroll",
+        label: "Business",
+        onClick: () => router.push("/settings/business-payroll"),
+      },
+      {
+        key: "/settings/department-payroll",
+        label: "Department",
+        onClick: () => router.push("/settings/department-payroll"),
+      },
+      {
+        key: "/settings/designation-payroll",
+        label: "Designation",
+        onClick: () => router.push("/settings/designation-payroll"),
+      },
+
+    ],
+  },
+
+  {
+    key: "/payroll-settings",
+    label: "Payroll",
+    icon: () => h(FileTextOutlined),
+    children: [
+      {
+        key: "/payroll-settings/salary-sheet",
+        label: "Salary Sheet & Report",
+        onClick: () => router.push("/payroll-settings/salary-sheet"),
+      },
+      {
+        key: "/payroll-settings/salary-certificate",
+        label: "Salary Certificate",
+        onClick: () => router.push("/payroll-settings/salary-certificate"),
+      },
+      {
+        key: "/payroll-settings/payslip",
+        label: "Pay Slip",
+        onClick: () => router.push("/payroll-settings/payslip"),
+      },
+      {
+        key: "/payroll-settings/tax-certificate",
+        label: "Tax Certificate",
+        onClick: () => router.push("/payroll-settings/tax-certificate"),
+      },
+      {
+        key: "/payroll-settings/my-payslip",
+        label: "My Payslip",
+        onClick: () => router.push("/payroll-settings/my-payslip"),
+      },
+
+    ],
+  },
+
+]);
+
+const normalizeKey = (key) => {
+  return key.replace(/^\/+/, "");
+};
+function flattenItems(list, out = []) {
+  list.forEach((it) => {
+    out.push(it);
+    if (it.children?.length) flattenItems(it.children, out);
+  });
+  return out;
+}
+
+const parentOf = new Map();
+function indexItems(list, parentKey = null) {
+  list.forEach((it) => {
+    if (parentKey) parentOf.set(it.key, parentKey);
+    if (it.children?.length) indexItems(it.children, it.key);
+  });
+}
+
+// build the parent map once
+indexItems(items);
+
+// watch the route and update menu state
+watch(
+  () => route.path,
+  async (newPath) => {
+    const flat = flattenItems(items);
+
+    // find exact match or fallback to prefix
+    const exact = flat.find((i) => i.key === newPath);
+    const prefix = flat.find(
+      (i) => typeof i.key === "string" && newPath.startsWith(i.key)
+    );
+    const matchedKey = (exact || prefix)?.key || newPath;
+
+    // parent key lookup
+    const parentKey = parentOf.get(matchedKey) || null;
+
+    // update menu state
+    state.selectedKeys = [matchedKey];
+    state.openKeys = parentKey ? [parentKey] : [];
+
+    // scroll into view
+    await nextTick();
+    const siderEl = siderRef.value?.$el;
+    const selected = siderEl?.querySelector(".ant-menu-item-selected");
+    if (selected && siderEl) {
+      selected.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  },
+  { immediate: true }
+);
+</script>
+
+<style scoped>
+.ant-menu-item {
+  @apply !h-fit !px-5 !rounded-full;
+}
+
+.ant-menu-title-content svg {
+  @apply !align-baseline;
+}
+
+.ant-menu-item-selected {
+  @apply !bg-primary !text-white;
+}
+
+.ant-menu-submenu-selected .ant-menu-submenu-title {
+  @apply !bg-primary font-semibold;
+}
+
+.ant-menu .ant-menu-submenu .ant-menu-item {
+  @apply !pl-10;
+}
+</style>
