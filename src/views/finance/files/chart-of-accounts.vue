@@ -2,42 +2,21 @@
   <MainLayout>
     <div class="bg-white rounded-xl py-6 space-y-8 max-w-6xl mx-auto">
       <div class="bg-gray-50 rounded-lg shadow p-4 my-4">
-        <!-- <div class="flex items-center mb-2">
-          <label for="" class="w-32 font-semibold"
-            ><span class="text-red-500">* </span>Type :</label
-          >
-          <a-select
-            v-model:value="type"
-            class="w-60"
-            placeholder="Select Type"
-            default="others"
-            @change="typeValuehandler"
-          >
-            <a-select-option value="others">Others</a-select-option>
-            <a-select-option value="customer">Customer</a-select-option>
-            <a-select-option value="supplier">Supplier</a-select-option>
-          </a-select>
-        </div> -->
         <div class="flex items-center gap-4 relative">
           <div class="flex items-center mb-2">
             <label for="" class="w-32 font-semibold"
               ><span class="text-red-500">* </span>Type :</label
             >
+            <!-- @change="typeValuehandler" -->
             <a-select
               v-model:value="type"
               class="w-60"
               placeholder="Select Type"
-              @change="typeValuehandler"
             >
-              <a-select-option value="others">Others</a-select-option>
-              <a-select-option value="customer">Customer</a-select-option>
-              <a-select-option value="supplier">Supplier</a-select-option>
+              <a-select-option value="customer">customer</a-select-option>
             </a-select>
           </div>
           <div class="flex items-center gap-2 w-11/12 relative">
-            <!-- <h2 class="absolute -top-10 left-[30%] text-white bg-indigo-500 border px-16">
-              Type
-            </h2> -->
             <label class="font-semibold block w-48"
               ><span class="text-red-500">* </span>Account Head :
             </label>
@@ -64,9 +43,6 @@
               </a-select-option>
             </a-select>
           </div>
-          <!-- <h2 class="absolute -top-10 left-[44%] text-white bg-indigo-500 border px-16">
-            Item
-          </h2> -->
           <a-input
             v-show="false"
             @input="handle_fixed_five_digit(AMCodeOther_Digit)"
@@ -88,57 +64,16 @@
           <label class="block font-bold w-36"
             ><span class="text-red-500">* </span>Account Details</label
           >
-          <div class="w-full" v-if="type === 'others'">
+          <div class="w-full">
             <a-input
               class="w-full"
               v-model:value="AMDetails"
               placeholder="Account Details"
             />
           </div>
-          <div class="w-full" v-else-if="type === 'customer'">
-            <a-select
-              v-model:value="AMDetails"
-              class="w-full"
-              placeholder="Select Customer"
-              show-search
-              allowClear
-              :filter-option="false"
-              @search="fetchTypeCustomer"
-            >
-              <a-select-option
-                v-for="customer in customertypeData"
-                :key="customer.CustomerCode"
-                :value="customer.CustomerCode"
-              >
-                {{ customer.CustomerName }} - {{ customer.CustomerCode }}
-              </a-select-option>
-            </a-select>
-          </div>
-
-          <div class="w-full" v-else="type === 'supplier'">
-            <a-select
-              v-model:value="AMDetails"
-              class="w-full"
-              placeholder="Select Supplier"
-              show-search
-              allowClear
-              :filter-option="false"
-              @search="fetchSupplier"
-            >
-              <a-select-option
-                v-for="supplier in suppliertypeData"
-                :key="supplier.SupplierCode"
-                :value="supplier.SupplierCode"
-              >
-                {{ supplier.SupplierName }} - {{ supplier.SupplierCode }}
-              </a-select-option>
-            </a-select>
-          </div>
         </div>
       </div>
-      <div
-        class="grid grid-cols-2 gap-8 p-3 bg-gray-50 rounded-lg shadow-sm hidden"
-      >
+      <div class="grid grid-cols-2 gap-8 p-3 bg-gray-50 rounded-lg shadow-sm">
         <div class="flex items-center">
           <label for="" class="w-36">Account Type : </label>
 
@@ -504,7 +439,7 @@ watch(
       fetchSearchResults(true);
     }, 300);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(filterTextCode, () => {
@@ -548,7 +483,7 @@ const get_ACType = async (search = "") => {
   try {
     const res = await axios.get(
       `${apiBase}/settings/ac-types?search=${search}`,
-      getToken()
+      getToken(),
     );
     glAcType.value = res?.data?.data?.data;
     console.log(res.data?.data?.data);
@@ -583,7 +518,7 @@ const get_AM_Code = async () => {
   try {
     const res = await axios.get(
       `${apiBase}/actype?ACType1=${AMCode.value}`,
-      getToken()
+      getToken(),
     );
     if (res.data) {
       AM_code_info.value = res?.data;
@@ -604,19 +539,19 @@ const handleSubLedgerEnter = () => {
   }
   if (selectedCategory.value && startId.value !== " " && endId.value !== " ") {
     const categoryExists = subLedgerRanges.value.some(
-      (item) => item.category === selectedCategory.value
+      (item) => item.category === selectedCategory.value,
     );
     if (categoryExists) {
       showNotification(
         "warning",
-        `Category "${selectedCategory.value}" already exists. Please select a different category.`
+        `Category "${selectedCategory.value}" already exists. Please select a different category.`,
       );
       return;
     }
 
     // Find the full category object to get ASDetails
     const selectedCategoryObj = categories.value.find(
-      (cat) => cat.ASType === selectedCategory.value
+      (cat) => cat.ASType === selectedCategory.value,
     );
 
     subLedgerRanges.value.push({
@@ -640,7 +575,7 @@ const fetchTypeCustomer = async (search = "") => {
   try {
     const res = await axios.get(
       `${apiBase}/get_customer_all?q=${search}`,
-      getToken()
+      getToken(),
     );
     customertypeData.value = res?.data;
     console.log(customertypeData.value);
@@ -652,21 +587,21 @@ const fetchSupplier = async (search = "") => {
   try {
     const res = await axios.get(
       `${apiBase}/get_customer_all_purchase?q=${search}`,
-      getToken()
+      getToken(),
     );
     suppliertypeData.value = res?.data;
     // console.log(customertypeData.value);
   } catch (error) {}
 };
 
-const typeValuehandler = async (value) => {
-  AMDetails.value = "";
-  if (value === "customer") {
-    await fetchTypeCustomer();
-  } else if (value === "supplier") {
-    await fetchSupplier();
-  }
-};
+// const typeValuehandler = async (value) => {
+//   AMDetails.value = "";
+//   if (value === "customer") {
+//     await fetchTypeCustomer();
+//   } else if (value === "supplier") {
+//     await fetchSupplier();
+//   }
+// };
 
 const type = ref("others");
 const isSaveAccount = ref(false);
@@ -696,7 +631,7 @@ const saveAccount = async () => {
           EndID: item?.endId,
         })),
       },
-      getToken()
+      getToken(),
     );
 
     isSaveAccount.value = false;
@@ -755,7 +690,7 @@ const validateIdRange = () => {
     if (endId.value <= startId.value) {
       showNotification(
         "error",
-        `End ID must be greater than Start ID. Please enter a value greater than ${startId.value}`
+        `End ID must be greater than Start ID. Please enter a value greater than ${startId.value}`,
       );
       endId.value = null;
       return false;
@@ -774,7 +709,7 @@ const getCashFlow = debounce(async (event) => {
   try {
     const res = await axios.get(
       `${apiBase}/settings/cashflow/all?search=${event || " "}`,
-      getToken()
+      getToken(),
     );
     searchLoading.value = false;
     if (res?.data?.success === true) {
@@ -794,7 +729,7 @@ const getGroupCode = debounce(async (event) => {
   try {
     const res = await axios.get(
       `${apiBase}/settings/ac-groups/all?search=${event || " "}`,
-      getToken()
+      getToken(),
     );
     searchLoading.value = false;
     if (res?.data) {

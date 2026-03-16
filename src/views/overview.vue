@@ -50,7 +50,7 @@
             <h2
               class="text-4xl font-bold tracking-wider uppercase bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent"
             >
-              ERPSA
+              Micro Credit Management
             </h2>
           </div>
 
@@ -80,7 +80,9 @@
         </h3> -->
         <p class="text-lg lg:text-xl text-gray-600 mt-2">
           Welcome to your
-          <span class="font-bold uppercase text-indigo-600">ERPSA</span>
+          <span class="font-bold uppercase text-indigo-600"
+            >Micro Credit Management</span
+          >
           Dashboard
         </p>
         <div
@@ -196,23 +198,23 @@ const card = [
     iconBg: "#fa5a7d",
     disabled: false,
   },
-  {
-    title: "PAYROLL",
-    icon: performanceIcon,
-    route: "personal-info",
-    bg: "#fff4de",
-    iconBg: "#ff947a",
-    disabled: false,
-  },
+  // {
+  //   title: "PAYROLL",
+  //   icon: performanceIcon,
+  //   route: "personal-info",
+  //   bg: "#fff4de",
+  //   iconBg: "#ff947a",
+  //   disabled: true,
+  // },
 
-  {
-    title: "REPORT",
-    icon: reportIcon,
-    // route: "reports",
-    bg: "#cbd7ff",
-    iconBg: "#3c60d8",
-    disabled: true,
-  },
+  // {
+  //   title: "REPORT",
+  //   icon: reportIcon,
+  //   // route: "reports",
+  //   bg: "#cbd7ff",
+  //   iconBg: "#3c60d8",
+  //   disabled: true,
+  // },
 ];
 
 const filteredCard = computed(() =>

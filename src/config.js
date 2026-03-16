@@ -1,6 +1,6 @@
 /* STAGGING */
 export const imgBase = "https://wa.acibd.com/api/mcm/storage";
-// export const apiBase = "https://wa.acibd.com/api/erpsa/api";
+// export const apiBase = "https://wa.acibd.com/api/petra/api";
 export const apiBase = "https://wa.acibd.com/api/mcm/api";
 
 export function formatNumber(number) {

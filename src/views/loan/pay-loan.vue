@@ -56,19 +56,21 @@
             :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
             class="border-b border-gray-200 hover:bg-blue-50 transition-colors"
           >
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan.id }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan.loanType }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan.employee }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.LoanId }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">
+              {{ loan?.type?.LoanTypeDetails }}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.EmpCode }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 text-right">
-              {{ formatAmount(loan.loanAmount) }}
+              {{ loan?.LoanAmount }}
             </td>
             <td class="px-6 py-4 text-sm text-gray-900 text-right">
-              {{ formatAmount(loan.installment) }}
+              {{ loan?.NofInstallment }}
             </td>
             <td class="px-6 py-4 text-center">
               <div class="flex justify-center gap-2">
                 <button
-                  @click="viewLoan(loan)"
+                  @click="viewLoan(loan?.LoanId)"
                   class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
                 >
                   VIEW
@@ -86,7 +88,7 @@
       </table>
     </div>
 
-    <!-- Create Modal -->
+    <!-- Create Loan Modal -->
     <a-modal
       v-model:open="isCreateModalVisible"
       title=""
@@ -106,15 +108,15 @@
               <a-select
                 class="w-full"
                 placeholder="Select Loan Type"
-                v-model:value="formData.loanType"
+                v-model:value="formData.LoanType"
               >
-                <a-select-option value="Provident Fund"
-                  >Provident Fund</a-select-option
+                <a-select-option
+                  v-for="type in loanTypeData"
+                  :key="type.LoanType"
+                  :value="type.LoanType"
                 >
-                <a-select-option value="Personal Loan"
-                  >Personal Loan</a-select-option
-                >
-                <a-select-option value="Home Loan">Home Loan</a-select-option>
+                  {{ type.LoanTypeDetails }}
+                </a-select-option>
               </a-select>
             </div>
           </div>
@@ -125,11 +127,22 @@
               >Employee Code</label
             >
             <div class="col-span-3">
-              <a-input
+              <a-select
+                show-search
                 class="w-full"
-                placeholder="Employee Code"
-                v-model:value="formData.employeeCode"
-              />
+                placeholder="Select Employee"
+                v-model:value="formData.EmpCode"
+                :filter-option="false"
+                @input="getCustomerData($event.target.value)"
+              >
+                <a-select-option
+                  v-for="customer in customerData"
+                  :key="customer.AMCode"
+                  :value="customer.AMCode"
+                >
+                  {{ customer.AMCode }} - {{ customer.AMDetails }}
+                </a-select-option>
+              </a-select>
             </div>
           </div>
 
@@ -140,7 +153,7 @@
               <a-date-picker
                 class="w-full"
                 placeholder="Date"
-                v-model:value="formData.date"
+                v-model:value="formData.LoanDate"
               />
             </div>
           </div>
@@ -151,10 +164,13 @@
               >Effective Period</label
             >
             <div class="col-span-3">
-              <a-input
+              <a-date-picker
                 class="w-full"
                 placeholder="Effective Period"
-                v-model:value="formData.effectivePeriod"
+                picker="month"
+                format="YYYYMM"
+                value-format="YYYYMM"
+                v-model:value="formData.EffectivePeriod"
               />
             </div>
           </div>
@@ -166,7 +182,21 @@
               <a-input
                 class="w-full"
                 placeholder="Loan Amount"
-                v-model:value="formData.loanAmount"
+                v-model:value="formData.LoanAmount"
+                type="number"
+              />
+            </div>
+          </div>
+          <!-- Loan Amount -->
+          <div class="grid grid-cols-4 gap-4 items-center">
+            <label class="text-sm font-medium text-gray-700"
+              >Last Pay Day</label
+            >
+            <div class="col-span-3">
+              <a-input
+                class="w-full"
+                placeholder="Last Pay Day"
+                v-model:value="formData.LastPayDay"
                 type="number"
               />
             </div>
@@ -180,8 +210,8 @@
             <div class="col-span-3">
               <a-input
                 class="w-full"
-                placeholder="Installment"
-                v-model:value="formData.noOfInstallment"
+                placeholder="No of Installment"
+                v-model:value="formData.NofInstallment"
                 type="number"
               />
             </div>
@@ -196,7 +226,7 @@
               <a-input
                 class="w-full"
                 placeholder="Installment Amount"
-                v-model:value="formData.installmentAmount"
+                v-model:value="formData.Installment"
                 type="number"
               />
             </div>
@@ -211,7 +241,7 @@
               <a-input
                 class="w-full"
                 placeholder="Reference No"
-                v-model:value="formData.referenceNo"
+                v-model:value="formData.Reference"
               />
             </div>
           </div>
@@ -225,7 +255,7 @@
               <a-textarea
                 class="w-full"
                 placeholder="Remarks"
-                v-model:value="formData.remarks"
+                v-model:value="formData.Remarks"
                 :rows="4"
               />
             </div>
@@ -250,27 +280,54 @@
       @cancel="isViewModalVisible = false"
       :footer="null"
     >
-      <div class="space-y-3" v-if="selectedLoan">
+      <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">
+        Loading details...
+      </div>
+
+      <div class="space-y-4" v-else-if="viewLoadDetails.length">
         <div class="flex justify-between border-b pb-2">
           <span class="font-semibold">Loan ID:</span>
-          <span>{{ selectedLoan.id }}</span>
+          <span>{{ viewLoadDetails[0]?.LoanID }}</span>
         </div>
         <div class="flex justify-between border-b pb-2">
           <span class="font-semibold">Employee:</span>
-          <span>{{ selectedLoan.employee }}</span>
+          <span>{{ viewLoadDetails[0]?.EmpCode }}</span>
         </div>
-        <div class="flex justify-between border-b pb-2">
-          <span class="font-semibold">Loan Type:</span>
-          <span>{{ selectedLoan.loanType }}</span>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr class="bg-gray-100 border-b border-gray-300">
+                <th class="px-3 py-2 text-left font-semibold text-gray-700">
+                  Payment Date
+                </th>
+                <th class="px-3 py-2 text-right font-semibold text-gray-700">
+                  Payment
+                </th>
+                <th class="px-3 py-2 text-left font-semibold text-gray-700">
+                  Entry By
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in viewLoadDetails"
+                :key="`${item.LoanID}-${item.PaymentDate}-${index}`"
+                class="border-b border-gray-200"
+              >
+                <td class="px-3 py-2">{{ formatDate(item.PaymentDate) }}</td>
+                <td class="px-3 py-2 text-right">
+                  {{ formatAmount(Number(item.Payment || 0)) }}
+                </td>
+                <td class="px-3 py-2">{{ item.EntryBy }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="flex justify-between border-b pb-2">
-          <span class="font-semibold">Loan Amount:</span>
-          <span>{{ formatAmount(selectedLoan.loanAmount) }}</span>
-        </div>
-        <div class="flex justify-between border-b pb-2">
-          <span class="font-semibold">Installment:</span>
-          <span>{{ formatAmount(selectedLoan.installment) }}</span>
-        </div>
+      </div>
+
+      <div v-else class="py-8 text-center text-gray-500">
+        No payment details found.
       </div>
     </a-modal>
 
@@ -284,39 +341,6 @@
     >
       <form @submit.prevent="submitPayment" v-if="selectedLoan">
         <div class="space-y-5 mb-6">
-          <!-- EmpCode -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >EmpCode</label
-            >
-            <a-input
-              class="w-full bg-gray-100"
-              :value="getEmployeeCode(selectedLoan.employee)"
-              disabled
-            />
-          </div>
-
-          <!-- Loan Amount -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Loan Amount</label
-            >
-            <a-input
-              class="w-full bg-gray-100"
-              :value="selectedLoan.loanAmount"
-              disabled
-            />
-          </div>
-
-          <!-- Balance -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Balance</label
-            >
-            <a-input class="w-full bg-gray-100" value="0" disabled />
-          </div>
-
-          <!-- Payment -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Payment</label
@@ -324,8 +348,43 @@
             <a-input
               class="w-full"
               placeholder="Enter Payment Amount"
-              v-model:value="paymentAmount"
+              v-model:value="paymentFormData.Payment"
               type="number"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Payment Date</label
+            >
+            <a-date-picker
+              class="w-full"
+              placeholder="Payment Date"
+              value-format="YYYY-MM-DD"
+              v-model:value="paymentFormData.PaymentDate"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Entry By</label
+            >
+            <a-input
+              class="w-full"
+              placeholder="Entry By"
+              v-model:value="paymentFormData.EntryBy"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Entry Date</label
+            >
+            <a-date-picker
+              class="w-full"
+              placeholder="Entry Date"
+              value-format="YYYY-MM-DD"
+              v-model:value="paymentFormData.EntryDate"
             />
           </div>
         </div>
@@ -368,103 +427,99 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
-import { showNotification } from "@/utilities/common";
+import { getToken, showNotification } from "@/utilities/common";
+import axios from "axios";
+import { apiBase } from "@/config";
+import dayjs from "dayjs";
 
 const isCreateModalVisible = ref(false);
 const isViewModalVisible = ref(false);
 const isPaymentModalVisible = ref(false);
 const selectedLoan = ref(null);
-const paymentAmount = ref("");
+const paymentFormData = ref({
+  Payment: "",
+  PaymentDate: dayjs().format("YYYY-MM-DD"),
+  EntryBy: "admin",
+  EntryDate: dayjs().format("YYYY-MM-DD"),
+});
 
 const page = ref(1);
 const per_page = ref(10);
 const total = ref(10);
 
 const formData = ref({
-  loanType: "",
-  employeeCode: "",
-  date: null,
-  effectivePeriod: "",
-  loanAmount: "",
-  noOfInstallment: "",
-  installmentAmount: "",
-  referenceNo: "",
-  remarks: "",
+  LoanType: "",
+  EmpCode: "",
+  LoanDate: null,
+  EffectivePeriod: "",
+  LoanAmount: null,
+  LastPayDay: "",
+  NofInstallment: "",
+  Installment: "",
+  Reference: "",
+  AMCode: "",
+  Status: "A",
+  Remarks: "",
+  GlCompany: "01",
+  Active: "Y",
+  PrepareBy: "admin",
+  PrepareDate: "",
+  EditBy: null,
+  EditDate: null,
 });
 
 // Demo loan data
-const loanData = ref([
-  {
-    id: 744,
-    loanType: "Provident Fund",
-    employee: "24922 - Md. Rayhan",
-    loanAmount: 9000.0,
-    installment: 9000.0,
-  },
-  {
-    id: 743,
-    loanType: "Provident Fund",
-    employee: "16562 - Rashida Yasmin",
-    loanAmount: 147000.0,
-    installment: 4000.0,
-  },
-  {
-    id: 742,
-    loanType: "Provident Fund",
-    employee: "10690 - Md. Abdul Motaleb",
-    loanAmount: 131000.0,
-    installment: 8000.0,
-  },
-  {
-    id: 741,
-    loanType: "Provident Fund",
-    employee: "13775 - Md. Tazul Islam",
-    loanAmount: 134500.0,
-    installment: 11200.0,
-  },
-  {
-    id: 740,
-    loanType: "Provident Fund",
-    employee: "22516 - Jewel Rana",
-    loanAmount: 76000.0,
-    installment: 5000.0,
-  },
-  {
-    id: 739,
-    loanType: "Provident Fund",
-    employee: "03185 - Md. Jakir Hossain Howlader",
-    loanAmount: 281000.0,
-    installment: 23000.0,
-  },
-  {
-    id: 738,
-    loanType: "Provident Fund",
-    employee: "06597 - Md. Al-Amin",
-    loanAmount: 229000.0,
-    installment: 1000.0,
-  },
-  {
-    id: 737,
-    loanType: "Provident Fund",
-    employee: "04049 - Md. Saiful Islam",
-    loanAmount: 321500.0,
-    installment: 2000.0,
-  },
-  {
-    id: 736,
-    loanType: "Provident Fund",
-    employee: "01826 - Md. Asaduzzaman",
-    loanAmount: 426000.0,
-    installment: 6000.0,
-  },
-  {
-    id: 735,
-    loanType: "Provident Fund",
-    employee: "04050 - Md. Jamal Uddin Prodhan",
-    loanAmount: 293600.0,
-    installment: 2000.0,
-  },
-]);
+const loadDataloading = ref(false);
+const loanData = ref([]);
+const getLoadData = async () => {
+  try {
+    loadDataloading.value = true;
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan?search=&per_page=10`,
+      getToken(),
+    );
+    loadDataloading.value = false;
+    if (res.data) {
+      loanData.value = res.data.data;
+    }
+  } catch (error) {
+    loadDataloading.value = false;
+    console.log(error);
+  }
+};
+const loadTypeloading = ref(false);
+const loanTypeData = ref([]);
+const getLoadTypeData = async () => {
+  try {
+    loadTypeloading.value = true;
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan-type/all`,
+      getToken(),
+    );
+    loadTypeloading.value = false;
+    if (res.data) {
+      loanTypeData.value = res.data.data;
+    }
+  } catch (error) {
+    loadTypeloading.value = false;
+    console.log(error);
+  }
+};
+const getCustomerloading = ref(false);
+const customerData = ref([]);
+const getCustomerData = async (q) => {
+  try {
+    getCustomerloading.value = true;
+    const res = await axios.get(`${apiBase}/get_customer?q=${q}`, getToken());
+    getCustomerloading.value = false;
+    if (res.data) {
+      customerData.value = res.data;
+    }
+  } catch (error) {
+    getCustomerloading.value = false;
+    console.log(error);
+  }
+};
 
 // Format amount with comma separators
 const formatAmount = (amount) => {
@@ -474,64 +529,122 @@ const formatAmount = (amount) => {
   }).format(amount);
 };
 
-// Extract employee code from employee string
-const getEmployeeCode = (employeeString) => {
-  if (!employeeString) return "";
-  // Extract the code before the dash (e.g., "24922 - Md. Rayhan" -> "24922")
-  return employeeString.split(" - ")[0].trim();
+// View loan details
+const viewLoadDetails = ref([]);
+const isLoadingDetails = ref(false);
+const viewLoan = async (id) => {
+  try {
+    isLoadingDetails.value = true;
+    viewLoadDetails.value = [];
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan-payment?loanId=${id}`,
+      getToken(),
+    );
+    isLoadingDetails.value = false;
+    if (res.data) {
+      viewLoadDetails.value = Array.isArray(res.data.data) ? res.data.data : [];
+      isViewModalVisible.value = true;
+    }
+  } catch (error) {
+    isLoadingDetails.value = false;
+    viewLoadDetails.value = [];
+    console.log(error);
+    showNotification("error", "Failed to fetch loan details.");
+  }
 };
 
-// View loan details
-const viewLoan = (loan) => {
-  selectedLoan.value = loan;
-  isViewModalVisible.value = true;
+const formatDate = (date) => {
+  if (!date) return "";
+  const parsed = dayjs(date);
+  return parsed.isValid() ? parsed.format("YYYY-MM-DD") : date;
 };
 
 // Make payment
 const makePayment = (loan) => {
   selectedLoan.value = loan;
-  paymentAmount.value = loan.installment;
+  paymentFormData.value = {
+    Payment: "",
+    PaymentDate: dayjs().format("YYYY-MM-DD"),
+    EntryBy: "admin",
+    EntryDate: dayjs().format("YYYY-MM-DD"),
+  };
   isPaymentModalVisible.value = true;
 };
 
 // Submit payment
-const submitPayment = () => {
-  showNotification("success", "Payment submitted successfully!");
-  isPaymentModalVisible.value = false;
-  paymentAmount.value = 0;
+const submitPayment = async () => {
+  try {
+    if (!selectedLoan.value?.LoanId) {
+      showNotification("error", "Loan ID not found.");
+      return;
+    }
+
+    const payload = {
+      Payment: Number(paymentFormData.value.Payment || 0),
+      PaymentDate: paymentFormData.value.PaymentDate,
+      EntryBy: paymentFormData.value.EntryBy || "admin",
+      EntryDate:
+        paymentFormData.value.EntryDate ||
+        paymentFormData.value.PaymentDate ||
+        dayjs().format("YYYY-MM-DD"),
+    };
+
+    const res = await axios.post(
+      `${apiBase}/settings/pay-loan-payment?loanId=${selectedLoan.value.LoanId}`,
+      payload,
+      getToken(),
+    );
+
+    if (res.data?.success) {
+      showNotification("success", "Payment submitted successfully!");
+      isPaymentModalVisible.value = false;
+      paymentFormData.value = {
+        Payment: "",
+        PaymentDate: dayjs().format("YYYY-MM-DD"),
+        EntryBy: "admin",
+        EntryDate: dayjs().format("YYYY-MM-DD"),
+      };
+      getLoadData();
+      await viewLoan(selectedLoan.value.LoanId);
+    }
+  } catch (error) {
+    console.log(error);
+    showNotification("error", "Failed to submit payment.");
+  }
 };
 
 // Create loan
-const createLoan = () => {
-  const newLoan = {
-    id: loanData.value.length + 1,
-    loanType: formData.value.loanType,
-    employee: formData.value.employeeCode,
-    loanAmount: parseFloat(formData.value.loanAmount) || 0,
-    installment: parseFloat(formData.value.installmentAmount) || 0,
-  };
+const createLoan = async () => {
+  try {
+    const payload = {
+      ...formData.value,
+      PrepareDate: dayjs().format("YYYY-MM-DD"),
+      AMCode: formData.value.EmpCode,
+      EffectivePeriod: formData.value.EffectivePeriod
+        ? dayjs(formData.value.EffectivePeriod).format("YYYYMM")
+        : "",
+    };
 
-  loanData.value.unshift(newLoan);
-  total.value = loanData.value.length;
-
-  showNotification("success", "Loan added successfully!");
-  isCreateModalVisible.value = false;
-
-  formData.value = {
-    loanType: "",
-    employeeCode: "",
-    date: null,
-    effectivePeriod: "",
-    loanAmount: "",
-    noOfInstallment: "",
-    installmentAmount: "",
-    referenceNo: "",
-    remarks: "",
-  };
+    const res = await axios.post(
+      `${apiBase}/settings/pay-loan`,
+      payload,
+      getToken(),
+    );
+    if (res.data) {
+      showNotification("success", "Loan created successfully!");
+      isCreateModalVisible.value = false;
+      getLoadData();
+    }
+  } catch (error) {
+    console.log(error);
+    showNotification("error", "Failed to create loan.");
+  }
 };
 
 onMounted(() => {
   total.value = loanData.value.length;
+  getLoadData();
+  getLoadTypeData();
 });
 </script>
 
