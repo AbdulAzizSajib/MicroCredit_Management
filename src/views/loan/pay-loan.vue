@@ -12,61 +12,30 @@
       </div>
     </div>
 
-    <!-- Table -->
     <div class="overflow-x-auto bg-white rounded-lg shadow">
       <table class="w-full border-collapse">
         <thead>
           <tr class="bg-gray-100 border-b-2 border-gray-300">
-            <th
-              class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              LOAN ID
-            </th>
-            <th
-              class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              LOAN TYPE
-            </th>
-            <th
-              class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              EMPLOYEE
-            </th>
-            <th
-              class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              LOAN AMOUNT
-            </th>
-            <th
-              class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              INSTALLMENT
-            </th>
-            <th
-              class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider"
-            >
-              ACTION
-            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN ID</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN TYPE</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">EMPLOYEE</th>
+            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN AMOUNT</th>
+            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">INSTALLMENT</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">ACTION</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(loan, index) in loanData"
-            :key="loan.id"
+            :key="loan.id || loan.LoanId"
             :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
             class="border-b border-gray-200 hover:bg-blue-50 transition-colors"
           >
             <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.LoanId }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">
-              {{ loan?.type?.LoanTypeDetails }}
-            </td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.type?.LoanTypeDetails }}</td>
             <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.EmpCode }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900 text-right">
-              {{ loan?.LoanAmount }}
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-900 text-right">
-              {{ loan?.NofInstallment }}
-            </td>
+            <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.LoanAmount }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.NofInstallment }}</td>
             <td class="px-6 py-4 text-center">
               <div class="flex justify-center gap-2">
                 <button
@@ -88,7 +57,6 @@
       </table>
     </div>
 
-    <!-- Create Loan Modal -->
     <a-modal
       v-model:open="isCreateModalVisible"
       title=""
@@ -99,33 +67,22 @@
       <div class="mb-6">
         <h2 class="text-lg font-bold text-gray-800">PAYLOAN FORM</h2>
       </div>
+
       <form @submit.prevent="createLoan">
         <div class="space-y-4">
-          <!-- Loan Type -->
           <div class="grid grid-cols-4 gap-4 items-center">
             <label class="text-sm font-medium text-gray-700">Loan Type</label>
             <div class="col-span-3">
-              <a-select
-                class="w-full"
-                placeholder="Select Loan Type"
-                v-model:value="formData.LoanType"
-              >
-                <a-select-option
-                  v-for="type in loanTypeData"
-                  :key="type.LoanType"
-                  :value="type.LoanType"
-                >
+              <a-select class="w-full" placeholder="Select Loan Type" v-model:value="formData.LoanType">
+                <a-select-option v-for="type in loanTypeData" :key="type.LoanType" :value="type.LoanType">
                   {{ type.LoanTypeDetails }}
                 </a-select-option>
               </a-select>
             </div>
           </div>
 
-          <!-- Employee Code -->
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >Employee Code</label
-            >
+            <label class="text-sm font-medium text-gray-700">Employee Code</label>
             <div class="col-span-3">
               <a-select
                 show-search
@@ -146,23 +103,15 @@
             </div>
           </div>
 
-          <!-- Date -->
           <div class="grid grid-cols-4 gap-4 items-center">
             <label class="text-sm font-medium text-gray-700">Date</label>
             <div class="col-span-3">
-              <a-date-picker
-                class="w-full"
-                placeholder="Date"
-                v-model:value="formData.LoanDate"
-              />
+              <a-date-picker class="w-full" placeholder="Date" v-model:value="formData.LoanDate" />
             </div>
           </div>
 
-          <!-- Effective Period -->
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >Effective Period</label
-            >
+            <label class="text-sm font-medium text-gray-700">Effective Period</label>
             <div class="col-span-3">
               <a-date-picker
                 class="w-full"
@@ -175,89 +124,58 @@
             </div>
           </div>
 
-          <!-- Loan Amount -->
           <div class="grid grid-cols-4 gap-4 items-center">
             <label class="text-sm font-medium text-gray-700">Loan Amount</label>
             <div class="col-span-3">
-              <a-input
+              <a-input-number
                 class="w-full"
                 placeholder="Loan Amount"
                 v-model:value="formData.LoanAmount"
-                type="number"
-              />
-            </div>
-          </div>
-          <!-- Loan Amount -->
-          <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >Last Pay Day</label
-            >
-            <div class="col-span-3">
-              <a-input
-                class="w-full"
-                placeholder="Last Pay Day"
-                v-model:value="formData.LastPayDay"
-                type="number"
+                :min="100000"
+                :max="9900000"
+                :precision="2"
               />
             </div>
           </div>
 
-          <!-- No of Installment -->
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >No of Installment</label
-            >
+            <label class="text-sm font-medium text-gray-700">No of Installment</label>
             <div class="col-span-3">
-              <a-input
+              <a-input-number
                 class="w-full"
                 placeholder="No of Installment"
                 v-model:value="formData.NofInstallment"
-                type="number"
+                :min="1"
+                :precision="0"
               />
             </div>
           </div>
 
-          <!-- Installment Amount -->
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >Installment Amount</label
-            >
+            <label class="text-sm font-medium text-gray-700">Installment Amount</label>
             <div class="col-span-3">
-              <a-input
+              <a-input-number
                 class="w-full"
                 placeholder="Installment Amount"
                 v-model:value="formData.Installment"
-                type="number"
+                :precision="2"
+                :controls="false"
+                :disabled="true"
               />
             </div>
           </div>
 
-          <!-- Reference No -->
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700"
-              >Reference No</label
-            >
+            <label class="text-sm font-medium text-gray-700">Reference No</label>
             <div class="col-span-3">
-              <a-input
-                class="w-full"
-                placeholder="Reference No"
-                v-model:value="formData.Reference"
-              />
+              <a-input class="w-full" placeholder="Reference No" v-model:value="formData.Reference" />
             </div>
           </div>
 
-          <!-- Remarks -->
           <div class="grid grid-cols-4 gap-4 items-start">
-            <label class="text-sm font-medium text-gray-700 mt-2"
-              >Remarks</label
-            >
+            <label class="text-sm font-medium text-gray-700 mt-2">Remarks</label>
             <div class="col-span-3">
-              <a-textarea
-                class="w-full"
-                placeholder="Remarks"
-                v-model:value="formData.Remarks"
-                :rows="4"
-              />
+              <a-textarea class="w-full" placeholder="Remarks" v-model:value="formData.Remarks" :rows="4" />
             </div>
           </div>
         </div>
@@ -273,16 +191,13 @@
       </form>
     </a-modal>
 
-    <!-- View Modal -->
     <a-modal
       v-model:open="isViewModalVisible"
       title="Loan Details"
       @cancel="isViewModalVisible = false"
       :footer="null"
     >
-      <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">
-        Loading details...
-      </div>
+      <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">Loading details...</div>
 
       <div class="space-y-4" v-else-if="viewLoadDetails.length">
         <div class="flex justify-between border-b pb-2">
@@ -298,15 +213,9 @@
           <table class="w-full border-collapse text-sm">
             <thead>
               <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="px-3 py-2 text-left font-semibold text-gray-700">
-                  Payment Date
-                </th>
-                <th class="px-3 py-2 text-right font-semibold text-gray-700">
-                  Payment
-                </th>
-                <th class="px-3 py-2 text-left font-semibold text-gray-700">
-                  Entry By
-                </th>
+                <th class="px-3 py-2 text-left font-semibold text-gray-700">Payment Date</th>
+                <th class="px-3 py-2 text-right font-semibold text-gray-700">Payment</th>
+                <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry By</th>
               </tr>
             </thead>
             <tbody>
@@ -316,9 +225,7 @@
                 class="border-b border-gray-200"
               >
                 <td class="px-3 py-2">{{ formatDate(item.PaymentDate) }}</td>
-                <td class="px-3 py-2 text-right">
-                  {{ formatAmount(Number(item.Payment || 0)) }}
-                </td>
+                <td class="px-3 py-2 text-right">{{ formatAmount(Number(item.Payment || 0)) }}</td>
                 <td class="px-3 py-2">{{ item.EntryBy }}</td>
               </tr>
             </tbody>
@@ -326,12 +233,9 @@
         </div>
       </div>
 
-      <div v-else class="py-8 text-center text-gray-500">
-        No payment details found.
-      </div>
+      <div v-else class="py-8 text-center text-gray-500">No payment details found.</div>
     </a-modal>
 
-    <!-- Payment Modal -->
     <a-modal
       v-model:open="isPaymentModalVisible"
       title="Payment"
@@ -342,9 +246,7 @@
       <form @submit.prevent="submitPayment" v-if="selectedLoan">
         <div class="space-y-5 mb-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Payment</label
-            >
+            <label class="block text-sm font-medium text-gray-700 mb-2">Payment</label>
             <a-input
               class="w-full"
               placeholder="Enter Payment Amount"
@@ -354,9 +256,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Payment Date</label
-            >
+            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date</label>
             <a-date-picker
               class="w-full"
               placeholder="Payment Date"
@@ -366,20 +266,12 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Entry By</label
-            >
-            <a-input
-              class="w-full"
-              placeholder="Entry By"
-              v-model:value="paymentFormData.EntryBy"
-            />
+            <label class="block text-sm font-medium text-gray-700 mb-2">Entry By</label>
+            <a-input class="w-full" placeholder="Entry By" v-model:value="paymentFormData.EntryBy" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Entry Date</label
-            >
+            <label class="block text-sm font-medium text-gray-700 mb-2">Entry Date</label>
             <a-date-picker
               class="w-full"
               placeholder="Entry Date"
@@ -413,7 +305,7 @@
       :page-size="per_page"
       :total="total"
       :show-size-changer="false"
-      :show-total="(total) => `Total ${total} items`"
+      :show-total="(t) => `Total ${t} items`"
       @change="
         (pageNo) => {
           page = pageNo;
@@ -425,7 +317,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { getToken, showNotification } from "@/utilities/common";
 import axios from "axios";
@@ -436,6 +328,7 @@ const isCreateModalVisible = ref(false);
 const isViewModalVisible = ref(false);
 const isPaymentModalVisible = ref(false);
 const selectedLoan = ref(null);
+
 const paymentFormData = ref({
   Payment: "",
   PaymentDate: dayjs().format("YYYY-MM-DD"),
@@ -468,9 +361,24 @@ const formData = ref({
   EditDate: null,
 });
 
-// Demo loan data
+watch(
+  () => [formData.value.LoanAmount, formData.value.NofInstallment],
+  ([loanAmount, nofInstallment]) => {
+    const amount = Number(loanAmount);
+    const count = Number(nofInstallment);
+
+    if (amount > 0 && count > 0) {
+      formData.value.Installment = Number((amount / count).toFixed(2));
+      return;
+    }
+
+    formData.value.Installment = null;
+  },
+);
+
 const loadDataloading = ref(false);
 const loanData = ref([]);
+
 const getLoadData = async () => {
   try {
     loadDataloading.value = true;
@@ -478,17 +386,19 @@ const getLoadData = async () => {
       `${apiBase}/settings/pay-loan?search=&per_page=10`,
       getToken(),
     );
-    loadDataloading.value = false;
     if (res.data) {
       loanData.value = res.data.data;
     }
   } catch (error) {
-    loadDataloading.value = false;
     console.log(error);
+  } finally {
+    loadDataloading.value = false;
   }
 };
+
 const loadTypeloading = ref(false);
 const loanTypeData = ref([]);
+
 const getLoadTypeData = async () => {
   try {
     loadTypeloading.value = true;
@@ -496,32 +406,33 @@ const getLoadTypeData = async () => {
       `${apiBase}/settings/pay-loan-type/all`,
       getToken(),
     );
-    loadTypeloading.value = false;
     if (res.data) {
       loanTypeData.value = res.data.data;
     }
   } catch (error) {
-    loadTypeloading.value = false;
     console.log(error);
+  } finally {
+    loadTypeloading.value = false;
   }
 };
+
 const getCustomerloading = ref(false);
 const customerData = ref([]);
+
 const getCustomerData = async (q) => {
   try {
     getCustomerloading.value = true;
     const res = await axios.get(`${apiBase}/get_customer?q=${q}`, getToken());
-    getCustomerloading.value = false;
     if (res.data) {
-      customerData.value = res.data;
+      customerData.value = Array.isArray(res.data?.data) ? res.data.data : res.data;
     }
   } catch (error) {
-    getCustomerloading.value = false;
     console.log(error);
+  } finally {
+    getCustomerloading.value = false;
   }
 };
 
-// Format amount with comma separators
 const formatAmount = (amount) => {
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
@@ -529,9 +440,9 @@ const formatAmount = (amount) => {
   }).format(amount);
 };
 
-// View loan details
 const viewLoadDetails = ref([]);
 const isLoadingDetails = ref(false);
+
 const viewLoan = async (id) => {
   try {
     isLoadingDetails.value = true;
@@ -540,16 +451,16 @@ const viewLoan = async (id) => {
       `${apiBase}/settings/pay-loan-payment?loanId=${id}`,
       getToken(),
     );
-    isLoadingDetails.value = false;
     if (res.data) {
       viewLoadDetails.value = Array.isArray(res.data.data) ? res.data.data : [];
       isViewModalVisible.value = true;
     }
   } catch (error) {
-    isLoadingDetails.value = false;
     viewLoadDetails.value = [];
     console.log(error);
     showNotification("error", "Failed to fetch loan details.");
+  } finally {
+    isLoadingDetails.value = false;
   }
 };
 
@@ -559,7 +470,6 @@ const formatDate = (date) => {
   return parsed.isValid() ? parsed.format("YYYY-MM-DD") : date;
 };
 
-// Make payment
 const makePayment = (loan) => {
   selectedLoan.value = loan;
   paymentFormData.value = {
@@ -571,7 +481,6 @@ const makePayment = (loan) => {
   isPaymentModalVisible.value = true;
 };
 
-// Submit payment
 const submitPayment = async () => {
   try {
     if (!selectedLoan.value?.LoanId) {
@@ -613,11 +522,17 @@ const submitPayment = async () => {
   }
 };
 
-// Create loan
 const createLoan = async () => {
   try {
+    const loanAmount = Number(formData.value.LoanAmount);
+    if (!Number.isFinite(loanAmount) || loanAmount < 100000 || loanAmount > 9900000) {
+      showNotification("error", "Loan Amount must be between 100000 and 9900000.");
+      return;
+    }
+
     const payload = {
       ...formData.value,
+      LoanAmount: loanAmount,
       PrepareDate: dayjs().format("YYYY-MM-DD"),
       AMCode: formData.value.EmpCode,
       EffectivePeriod: formData.value.EffectivePeriod
@@ -630,6 +545,7 @@ const createLoan = async () => {
       payload,
       getToken(),
     );
+
     if (res.data) {
       showNotification("success", "Loan created successfully!");
       isCreateModalVisible.value = false;
