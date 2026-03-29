@@ -196,44 +196,105 @@
       title="Loan Details"
       @cancel="isViewModalVisible = false"
       :footer="null"
+      width="650px"
     >
       <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">Loading details...</div>
 
-      <div class="space-y-4" v-else-if="viewLoadDetails.length">
-        <div class="flex justify-between border-b pb-2">
-          <span class="font-semibold">Loan ID:</span>
-          <span>{{ viewLoadDetails[0]?.LoanID }}</span>
-        </div>
-        <div class="flex justify-between border-b pb-2">
-          <span class="font-semibold">Employee:</span>
-          <span>{{ viewLoadDetails[0]?.EmpCode }}</span>
+      <div v-else-if="viewLoanData">
+        <!-- Loan Info -->
+        <div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-5">
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Loan ID:</span>
+            <span class="text-sm">{{ viewLoanData.LoanId }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Status:</span>
+            <span class="text-sm">{{ viewLoanData.Status === 'A' ? 'Active' : viewLoanData.Status }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Loan Type:</span>
+            <span class="text-sm">{{ viewLoanData.type?.LoanTypeDetails }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Employee:</span>
+            <span class="text-sm">{{ viewLoanData.EmpCode }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Account:</span>
+            <span class="text-sm">{{ viewLoanData.account?.AMDetails }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Loan Date:</span>
+            <span class="text-sm">{{ formatDate(viewLoanData.LoanDate) }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Loan Amount:</span>
+            <span class="text-sm font-medium">{{ formatAmount(Number(viewLoanData.LoanAmount || 0)) }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Installment:</span>
+            <span class="text-sm">{{ formatAmount(Number(viewLoanData.Installment || 0)) }} x {{ viewLoanData.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Effective Period:</span>
+            <span class="text-sm">{{ viewLoanData.EffectivePeriod }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Reference:</span>
+            <span class="text-sm">{{ viewLoanData.Reference }}</span>
+          </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full border-collapse text-sm">
-            <thead>
-              <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="px-3 py-2 text-left font-semibold text-gray-700">Payment Date</th>
-                <th class="px-3 py-2 text-right font-semibold text-gray-700">Payment</th>
-                <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry By</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in viewLoadDetails"
-                :key="`${item.LoanID}-${item.PaymentDate}-${index}`"
-                class="border-b border-gray-200"
-              >
-                <td class="px-3 py-2">{{ formatDate(item.PaymentDate) }}</td>
-                <td class="px-3 py-2 text-right">{{ formatAmount(Number(item.Payment || 0)) }}</td>
-                <td class="px-3 py-2">{{ item.EntryBy }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Remarks -->
+        <div v-if="viewLoanData.Remarks" class="mb-5">
+          <span class="font-semibold text-sm text-gray-600">Remarks:</span>
+          <span class="text-sm ml-2">{{ viewLoanData.Remarks }}</span>
+        </div>
+
+        <!-- Payment History -->
+        <div class="mb-2">
+          <h3 class="text-sm font-bold text-gray-700 mb-2">Payment History</h3>
+          <div class="overflow-x-auto" v-if="viewPayments.length">
+            <table class="w-full border-collapse text-sm">
+              <thead>
+                <tr class="bg-gray-100 border-b border-gray-300">
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Payment Date</th>
+                  <th class="px-3 py-2 text-right font-semibold text-gray-700">Amount</th>
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry By</th>
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in viewPayments"
+                  :key="`${item.LoanID}-${item.PaymentDate}-${index}`"
+                  class="border-b border-gray-200"
+                >
+                  <td class="px-3 py-2">{{ formatDate(item.PaymentDate) }}</td>
+                  <td class="px-3 py-2 text-right">{{ formatAmount(Number(item.Payment || 0)) }}</td>
+                  <td class="px-3 py-2">{{ item.EntryBy }}</td>
+                  <td class="px-3 py-2">{{ formatDate(item.EntryDate) }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="bg-gray-50 border-t-2 border-gray-300">
+                  <td class="px-3 py-2 font-bold text-gray-700">Total Paid</td>
+                  <td class="px-3 py-2 text-right font-bold text-green-600">{{ formatAmount(viewTotalPayment) }}</td>
+                  <td colspan="2" class="px-3 py-2"></td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="px-3 py-2 font-bold text-gray-700">Remaining</td>
+                  <td class="px-3 py-2 text-right font-bold text-red-500">{{ formatAmount(Number(viewLoanData.LoanAmount || 0) - viewTotalPayment) }}</td>
+                  <td colspan="2" class="px-3 py-2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div v-else class="text-sm text-gray-500">No payments yet.</div>
         </div>
       </div>
 
-      <div v-else class="py-8 text-center text-gray-500">No payment details found.</div>
+      <div v-else class="py-8 text-center text-gray-500">No loan details found.</div>
     </a-modal>
 
     <a-modal
@@ -440,23 +501,31 @@ const formatAmount = (amount) => {
   }).format(amount);
 };
 
-const viewLoadDetails = ref([]);
+const viewLoanData = ref(null);
+const viewPayments = ref([]);
+const viewTotalPayment = ref(0);
 const isLoadingDetails = ref(false);
 
 const viewLoan = async (id) => {
   try {
     isLoadingDetails.value = true;
-    viewLoadDetails.value = [];
+    viewLoanData.value = null;
+    viewPayments.value = [];
+    viewTotalPayment.value = 0;
     const res = await axios.get(
       `${apiBase}/settings/pay-loan-payment?loanId=${id}`,
       getToken(),
     );
-    if (res.data) {
-      viewLoadDetails.value = Array.isArray(res.data.data) ? res.data.data : [];
+    if (res.data?.success) {
+      viewLoanData.value = res.data.data.loan || null;
+      viewPayments.value = Array.isArray(res.data.data.payments) ? res.data.data.payments : [];
+      viewTotalPayment.value = Number(res.data.data.total_payment || 0);
       isViewModalVisible.value = true;
     }
   } catch (error) {
-    viewLoadDetails.value = [];
+    viewLoanData.value = null;
+    viewPayments.value = [];
+    viewTotalPayment.value = 0;
     console.log(error);
     showNotification("error", "Failed to fetch loan details.");
   } finally {
@@ -472,8 +541,11 @@ const formatDate = (date) => {
 
 const makePayment = (loan) => {
   selectedLoan.value = loan;
+  const loanAmount = Number(loan.LoanAmount || 0);
+  const installments = Number(loan.NofInstallment || 1);
+  const installmentAmount = Number((loanAmount / installments).toFixed(2));
   paymentFormData.value = {
-    Payment: "",
+    Payment: installmentAmount,
     PaymentDate: dayjs().format("YYYY-MM-DD"),
     EntryBy: "admin",
     EntryDate: dayjs().format("YYYY-MM-DD"),

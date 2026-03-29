@@ -237,34 +237,34 @@ const items = reactive([
         label: "Voucher Entry",
         onClick: () => router.push("/transaction/voucher-list"),
       },
-      {
-        key: "/transaction/voucher-date-change",
-        label: "Voucher Data Change",
-        onClick: () => router.push("/transaction/voucher-date-change"),
-      },
-      {
-        key: "/transaction/delete-voucher",
-        label: "Delete Voucher",
-        onClick: () => router.push("/transaction/delete-voucher"),
-      },
+      // {
+      //   key: "/transaction/voucher-date-change",
+      //   label: "Voucher Data Change",
+      //   onClick: () => router.push("/transaction/voucher-date-change"),
+      // },
+      // {
+      //   key: "/transaction/delete-voucher",
+      //   label: "Delete Voucher",
+      //   onClick: () => router.push("/transaction/delete-voucher"),
+      // },
 
-      {
-        key: "/transaction/voucher-search-chart-of-accounts",
-        label: "Search Chart of Accounts",
-        onClick: () =>
-          router.push("/transaction/voucher-search-chart-of-accounts"),
-      },
+      // {
+      //   key: "/transaction/voucher-search-chart-of-accounts",
+      //   label: "Search Chart of Accounts",
+      //   onClick: () =>
+      //     router.push("/transaction/voucher-search-chart-of-accounts"),
+      // },
 
-      {
-        key: "/transaction/sales-voucher",
-        label: "sales voucher",
-        onClick: () => router.push("/transaction/sales-voucher"),
-      },
-      {
-        key: "/transaction/bill-receive",
-        label: "bill receive",
-        onClick: () => router.push("/transaction/bill-receive"),
-      },
+      // {
+      //   key: "/transaction/sales-voucher",
+      //   label: "sales voucher",
+      //   onClick: () => router.push("/transaction/sales-voucher"),
+      // },
+      // {
+      //   key: "/transaction/bill-receive",
+      //   label: "bill receive",
+      //   onClick: () => router.push("/transaction/bill-receive"),
+      // },
     ],
   },
   {

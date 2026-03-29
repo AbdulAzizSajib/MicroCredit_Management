@@ -262,41 +262,41 @@ const items = reactive([
         label: "Voucher Entry",
         onClick: navigateTo("/transaction/voucher-list"),
       },
-      {
-        key: "/transaction/voucher-date-change",
-        label: "Voucher Data Change",
-        onClick: navigateTo("/transaction/voucher-date-change"),
-      },
-      {
-        key: "/transaction/delete-voucher",
-        label: "Delete Voucher",
-        onClick: navigateTo("/transaction/delete-voucher"),
-      },
-      {
-        key: "/transaction/voucher-search-chart-of-accounts",
-        label: "Search Chart of Accounts",
-        onClick: navigateTo("/transaction/voucher-search-chart-of-accounts"),
-      },
+      // {
+      //   key: "/transaction/voucher-date-change",
+      //   label: "Voucher Data Change",
+      //   onClick: navigateTo("/transaction/voucher-date-change"),
+      // },
+      // {
+      //   key: "/transaction/delete-voucher",
+      //   label: "Delete Voucher",
+      //   onClick: navigateTo("/transaction/delete-voucher"),
+      // },
+      // {
+      //   key: "/transaction/voucher-search-chart-of-accounts",
+      //   label: "Search Chart of Accounts",
+      //   onClick: navigateTo("/transaction/voucher-search-chart-of-accounts"),
+      // },
       // {
       //   key: "/transaction/sales-voucher",
       //   label: "sales voucher",
       //   onClick: navigateTo("/transaction/sales-voucher"),
       // },
-      {
-        key: "/transaction/sale-voucher",
-        label: "sales voucher",
-        onClick: navigateTo("/transaction/sale-voucher"),
-      },
-      {
-        key: "/transaction/purchase-voucher",
-        label: "purchase voucher",
-        onClick: navigateTo("/transaction/purchase-voucher"),
-      },
-      {
-        key: "/transaction/bill-receive",
-        label: "bill receive",
-        onClick: navigateTo("/transaction/bill-receive"),
-      },
+      // {
+      //   key: "/transaction/sale-voucher",
+      //   label: "sales voucher",
+      //   onClick: navigateTo("/transaction/sale-voucher"),
+      // },
+      // {
+      //   key: "/transaction/purchase-voucher",
+      //   label: "purchase voucher",
+      //   onClick: navigateTo("/transaction/purchase-voucher"),
+      // },
+      // {
+      //   key: "/transaction/bill-receive",
+      //   label: "bill receive",
+      //   onClick: navigateTo("/transaction/bill-receive"),
+      // },
     ],
   },
   {
