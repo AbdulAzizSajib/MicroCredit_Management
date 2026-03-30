@@ -295,6 +295,19 @@
       </div>
 
       <div v-else class="py-8 text-center text-gray-500">No loan details found.</div>
+
+      <div v-if="viewLoanData" class="flex justify-end mt-4">
+        <button
+          type="button"
+          @click="downloadLoanReport"
+          class="px-4 py-2 rounded font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download Report
+        </button>
+      </div>
     </a-modal>
 
     <a-modal
@@ -499,6 +512,111 @@ const formatAmount = (amount) => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount);
+};
+
+const downloadLoanReport = () => {
+  if (!viewLoanData.value) return;
+
+  const loan = viewLoanData.value;
+  const loanAmount = Number(loan.LoanAmount || 0);
+  const remaining = loanAmount - viewTotalPayment.value;
+
+  let paymentRows = '';
+  viewPayments.value.forEach((item, i) => {
+    paymentRows += `
+      <tr>
+        <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;">${i + 1}</td>
+        <td style="padding:6px 10px;border:1px solid #ddd;">${formatDate(item.PaymentDate)}</td>
+        <td style="padding:6px 10px;border:1px solid #ddd;text-align:right;">${formatAmount(Number(item.Payment || 0))}</td>
+        <td style="padding:6px 10px;border:1px solid #ddd;">${item.EntryBy}</td>
+        <td style="padding:6px 10px;border:1px solid #ddd;">${formatDate(item.EntryDate)}</td>
+      </tr>`;
+  });
+
+  const html = `
+    <html>
+    <head>
+      <title>Loan Report - ${loan.LoanId}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 30px; color: #333; }
+        h2 { text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 25px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 30px; margin-bottom: 20px; }
+        .info-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 4px 0; font-size: 13px; }
+        .info-label { font-weight: bold; color: #555; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        th { background: #f3f4f6; padding: 8px 10px; border: 1px solid #ddd; text-align: left; font-weight: bold; }
+        .total-row td { font-weight: bold; background: #f9fafb; border-top: 2px solid #999; }
+        .remaining-row td { font-weight: bold; color: #dc2626; }
+        .paid-row td { font-weight: bold; color: #16a34a; }
+        @media print { body { padding: 10px; } }
+      </style>
+    </head>
+    <body>
+      <h2>Loan Details Report</h2>
+      <p class="subtitle">Loan ID: ${loan.LoanId} | ${loan.type?.LoanTypeDetails || ''}</p>
+
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">Employee Code:</span><span>${loan.EmpCode}</span></div>
+        <div class="info-item"><span class="info-label">Status:</span><span>${loan.Status === 'A' ? 'Active' : loan.Status}</span></div>
+        <div class="info-item"><span class="info-label">Account:</span><span>${loan.account?.AMDetails || ''}</span></div>
+        <div class="info-item"><span class="info-label">Loan Date:</span><span>${formatDate(loan.LoanDate)}</span></div>
+        <div class="info-item"><span class="info-label">Loan Amount:</span><span>${formatAmount(loanAmount)}</span></div>
+        <div class="info-item"><span class="info-label">Effective Period:</span><span>${loan.EffectivePeriod}</span></div>
+        <div class="info-item"><span class="info-label">Installment:</span><span>${formatAmount(Number(loan.Installment || 0))} x ${loan.NofInstallment}</span></div>
+        <div class="info-item"><span class="info-label">Reference:</span><span>${loan.Reference || ''}</span></div>
+      </div>
+
+      ${loan.Remarks ? `<p style="font-size:13px;"><strong>Remarks:</strong> ${loan.Remarks}</p>` : ''}
+
+      <h3 style="font-size:14px;margin-top:20px;">Payment History</h3>
+      ${viewPayments.value.length ? `
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:center;width:40px;">#</th>
+            <th>Payment Date</th>
+            <th style="text-align:right;">Amount</th>
+            <th>Entry By</th>
+            <th>Entry Date</th>
+          </tr>
+        </thead>
+        <tbody>${paymentRows}</tbody>
+        <tfoot>
+          <tr class="total-row paid-row">
+            <td colspan="2" style="padding:6px 10px;border:1px solid #ddd;">Total Paid</td>
+            <td style="padding:6px 10px;border:1px solid #ddd;text-align:right;">${formatAmount(viewTotalPayment.value)}</td>
+            <td colspan="2" style="padding:6px 10px;border:1px solid #ddd;"></td>
+          </tr>
+          <tr class="total-row remaining-row">
+            <td colspan="2" style="padding:6px 10px;border:1px solid #ddd;">Remaining</td>
+            <td style="padding:6px 10px;border:1px solid #ddd;text-align:right;">${formatAmount(remaining)}</td>
+            <td colspan="2" style="padding:6px 10px;border:1px solid #ddd;"></td>
+          </tr>
+        </tfoot>
+      </table>` : '<p style="color:#999;font-size:13px;">No payments yet.</p>'}
+
+      <p style="text-align:center;margin-top:30px;font-size:11px;color:#999;">Generated on ${dayjs().format('YYYY-MM-DD HH:mm')}</p>
+    </body>
+    </html>
+  `;
+
+  let iframe = document.getElementById('loan-print-frame');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.id = 'loan-print-frame';
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    iframe.style.left = '-9999px';
+    document.body.appendChild(iframe);
+  }
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
 };
 
 const viewLoanData = ref(null);
