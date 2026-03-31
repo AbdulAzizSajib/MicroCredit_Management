@@ -49,6 +49,11 @@
           </label>
           <a-input v-model:value="AMDetails" placeholder="Account Details" />
         </div>
+
+        <div class="flex items-center gap-4 mt-4">
+          <label class="block font-bold w-36">Member Code</label>
+          <a-input v-model:value="MemberCode" placeholder="Member Code (Optional)" />
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-8 p-3 bg-gray-50 rounded-lg shadow-sm">
         <div class="flex items-center">
@@ -370,6 +375,7 @@ const isSelecting = ref(false);
 const AMCode = ref("");
 const AMCodeOther_Digit = ref("");
 const AMDetails = ref("");
+const MemberCode = ref("");
 const Subledger = ref(0);
 const selectedCategory = ref("");
 const startId = ref(0);
@@ -521,6 +527,7 @@ const getData_idWise = async () => {
         AMCodeOther_Digit.value = codeParts[1] || "";
         AMDetailShow.value = acMaster?.AMDetails || "";
         AMDetails.value = acMaster?.AMDetails || "";
+        MemberCode.value = acMaster?.MemberCode || "";
         Subledger.value = parseInt(acMaster.Subledger) || 0;
         cashflow.value = parseInt(acMaster.CashflowID) || 0;
         // if (AMCode.value) await get_AM_Code();
@@ -566,6 +573,7 @@ const updateAccount = async () => {
       {
         AMCode: `${AMCode.value}-${AMCodeOther_Digit.value}`,
         AMDetails: AMDetails.value,
+        MemberCode: MemberCode.value || null,
         Subledger: Subledger.value,
         ACType1: AMCode.value,
         UserId: userInfo.name,

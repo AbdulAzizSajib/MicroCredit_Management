@@ -131,8 +131,6 @@
                 class="w-full"
                 placeholder="Loan Amount"
                 v-model:value="formData.LoanAmount"
-                :min="100000"
-                :max="9900000"
                 :precision="2"
               />
             </div>
@@ -161,6 +159,31 @@
                 :precision="2"
                 :controls="false"
                 :disabled="true"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-4 items-center">
+            <label class="text-sm font-medium text-gray-700">Interest Rate (%)</label>
+            <div class="col-span-3">
+              <a-input-number
+                class="w-full"
+                placeholder="Interest Rate (%)"
+                v-model:value="formData.InterestRate"
+                :min="0"
+                :precision="2"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-4 items-center">
+            <label class="text-sm font-medium text-gray-700">Interest Amount</label>
+            <div class="col-span-3">
+              <a-input-number
+                class="w-full"
+                placeholder="Interest Amount"
+                v-model:value="formData.InterestAmount"
+                :precision="2"
               />
             </div>
           </div>
@@ -242,6 +265,14 @@
           <div class="flex justify-between border-b pb-1">
             <span class="font-semibold text-sm text-gray-600">Reference:</span>
             <span class="text-sm">{{ viewLoanData.Reference }}</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Interest Rate:</span>
+            <span class="text-sm">{{ viewLoanData.InterestRate }}%</span>
+          </div>
+          <div class="flex justify-between border-b pb-1">
+            <span class="font-semibold text-sm text-gray-600">Interest Amount:</span>
+            <span class="text-sm font-medium">{{ formatAmount(Number(viewLoanData.InterestAmount || 0)) }}</span>
           </div>
         </div>
 
@@ -391,7 +422,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, nextTick } from "vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { getToken, showNotification } from "@/utilities/common";
 import axios from "axios";
@@ -433,6 +464,8 @@ const formData = ref({
   PrepareDate: "",
   EditBy: null,
   EditDate: null,
+  InterestRate: null,
+  InterestAmount: null,
 });
 
 watch(
@@ -447,6 +480,42 @@ watch(
     }
 
     formData.value.Installment = null;
+  },
+);
+
+const isInterestUpdating = ref(false);
+
+watch(
+  () => [formData.value.LoanAmount, formData.value.InterestRate],
+  ([loanAmount, interestRate]) => {
+    if (isInterestUpdating.value) return;
+    const amount = Number(loanAmount);
+    const rate = Number(interestRate);
+
+    isInterestUpdating.value = true;
+    if (amount > 0 && rate > 0) {
+      formData.value.InterestAmount = Number((amount + (amount * rate) / 100).toFixed(2));
+    } else {
+      formData.value.InterestAmount = null;
+    }
+    nextTick(() => { isInterestUpdating.value = false; });
+  },
+);
+
+watch(
+  () => formData.value.InterestAmount,
+  (interestAmount) => {
+    if (isInterestUpdating.value) return;
+    const amount = Number(formData.value.LoanAmount);
+    const interest = Number(interestAmount);
+
+    isInterestUpdating.value = true;
+    if (amount > 0 && interest > 0) {
+      formData.value.InterestRate = Number((((interest - amount) / amount) * 100).toFixed(2));
+    } else {
+      formData.value.InterestRate = null;
+    }
+    nextTick(() => { isInterestUpdating.value = false; });
   },
 );
 
@@ -565,6 +634,8 @@ const downloadLoanReport = () => {
         <div class="info-item"><span class="info-label">Effective Period:</span><span>${loan.EffectivePeriod}</span></div>
         <div class="info-item"><span class="info-label">Installment:</span><span>${formatAmount(Number(loan.Installment || 0))} x ${loan.NofInstallment}</span></div>
         <div class="info-item"><span class="info-label">Reference:</span><span>${loan.Reference || ''}</span></div>
+        <div class="info-item"><span class="info-label">Interest Rate:</span><span>${loan.InterestRate || 0}%</span></div>
+        <div class="info-item"><span class="info-label">Interest Amount:</span><span>${formatAmount(Number(loan.InterestAmount || 0))}</span></div>
       </div>
 
       ${loan.Remarks ? `<p style="font-size:13px;"><strong>Remarks:</strong> ${loan.Remarks}</p>` : ''}
@@ -715,8 +786,8 @@ const submitPayment = async () => {
 const createLoan = async () => {
   try {
     const loanAmount = Number(formData.value.LoanAmount);
-    if (!Number.isFinite(loanAmount) || loanAmount < 100000 || loanAmount > 9900000) {
-      showNotification("error", "Loan Amount must be between 100000 and 9900000.");
+    if (!Number.isFinite(loanAmount) || loanAmount <= 0) {
+      showNotification("error", "Please enter a valid Loan Amount.");
       return;
     }
 
@@ -739,6 +810,28 @@ const createLoan = async () => {
     if (res.data) {
       showNotification("success", "Loan created successfully!");
       isCreateModalVisible.value = false;
+      formData.value = {
+        LoanType: "",
+        EmpCode: "",
+        LoanDate: null,
+        EffectivePeriod: "",
+        LoanAmount: null,
+        LastPayDay: "",
+        NofInstallment: "",
+        Installment: "",
+        Reference: "",
+        AMCode: "",
+        Status: "A",
+        Remarks: "",
+        GlCompany: "01",
+        Active: "Y",
+        PrepareBy: "admin",
+        PrepareDate: "",
+        EditBy: null,
+        EditDate: null,
+        InterestRate: null,
+        InterestAmount: null,
+      };
       getLoadData();
     }
   } catch (error) {

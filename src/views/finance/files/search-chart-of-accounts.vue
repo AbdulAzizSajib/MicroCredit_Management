@@ -35,6 +35,7 @@
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2">Account Code</th>
           <th class="border border-white px-4 py-2">Account Details</th>
+          <th class="border border-white px-4 py-2">Member Code</th>
           <th class="border border-white px-4 py-2 text-center">Actions</th>
         </tr>
       </thead>
@@ -42,6 +43,7 @@
         <tr v-for="(data, index) in allData" :key="index">
           <td class="px-4 border">{{ data?.AMCode }}</td>
           <td class="px-4 border">{{ data?.AMDetails }}</td>
+          <td class="px-4 border">{{ data?.MemberCode }}</td>
           <td class="px-4 border text-center w-8">
             <div class="flex justify-center gap-x-3">
               <router-link

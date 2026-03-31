@@ -72,6 +72,17 @@
             />
           </div>
         </div>
+
+        <div class="flex items-center gap-4 mt-4">
+          <label class="block font-bold w-36">Member Code</label>
+          <div class="w-full">
+            <a-input
+              class="w-full"
+              v-model:value="MemberCode"
+              placeholder="Member Code (Optional)"
+            />
+          </div>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-8 p-3 bg-gray-50 rounded-lg shadow-sm">
         <div class="flex items-center">
@@ -472,6 +483,7 @@ const selectedCategory_ref = ref();
 const AMCode = ref("");
 const AMCodeOther_Digit = ref("");
 const AMDetails = ref("");
+const MemberCode = ref("");
 const Subledger = ref(0);
 const selectedCategory = ref("");
 const startId = ref(0);
@@ -624,6 +636,7 @@ const saveAccount = async () => {
         BalanceForward: 1,
         InExType: "31",
         CashflowID: cashflow.value,
+        MemberCode: MemberCode.value || null,
         DetailsData: subLedgerRanges.value.map((item) => ({
           AMCode: `${AMCode.value}-${AMCodeOther_Digit.value}`,
           ASType: item?.category,
