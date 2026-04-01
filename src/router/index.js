@@ -114,7 +114,6 @@ import BalanceSheetPetra from "@/views/finance/reports/Balance-sheet-petra.vue";
 import CashFlow from "@/views/finance/files/cash-flow.vue";
 import PayLoan from "@/views/loan/pay-loan.vue";
 import CustomerLedger from "@/views/loan/customer-ledger.vue";
-import LoanSummary from "@/views/loan/summary.vue";
 
 const routes = [
   {
@@ -252,11 +251,6 @@ const routes = [
     path: "/loan/customer-ledger",
     name: "customer-ledger",
     component: CustomerLedger,
-  },
-  {
-    path: "/loan/summary",
-    name: "loan-summary",
-    component: LoanSummary,
   },
   {
     path: "/files/group-code",

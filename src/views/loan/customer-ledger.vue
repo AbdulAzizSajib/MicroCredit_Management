@@ -48,35 +48,35 @@
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs font-semibold text-green-500 uppercase tracking-wide">Total Saving</div>
-                <div class="text-2xl font-bold text-green-700 mt-2">{{ formatAmount(totalSaving) }}</div>
-              </div>
+            <div class="flex items-center gap-4">
               <div class="bg-green-200/60 rounded-full p-3">
                 <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-2xl" />
+              </div>
+              <div class="flex-1 text-right">
+                <div class="text-xs font-semibold text-green-500 uppercase tracking-wide">Total Saving</div>
+                <div class="text-2xl font-bold text-green-700 mt-1">{{ formatAmount(totalSaving) }}</div>
               </div>
             </div>
           </div>
           <div class="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs font-semibold text-blue-500 uppercase tracking-wide">Total Loan</div>
-                <div class="text-2xl font-bold text-blue-700 mt-2">{{ formatAmount(totalLoan) }}</div>
-              </div>
+            <div class="flex items-center gap-4">
               <div class="bg-blue-200/60 rounded-full p-3">
                 <Icon icon="mdi:bank-outline" class="text-blue-600 text-2xl" />
+              </div>
+              <div class="flex-1 text-right">
+                <div class="text-xs font-semibold text-blue-500 uppercase tracking-wide">Total Loan</div>
+                <div class="text-2xl font-bold text-blue-700 mt-1">{{ formatAmount(totalLoan) }}</div>
               </div>
             </div>
           </div>
           <div class="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs font-semibold text-orange-500 uppercase tracking-wide">Total Installment</div>
-                <div class="text-2xl font-bold text-orange-700 mt-2">{{ formatAmount(totalInstallment) }}</div>
-              </div>
+            <div class="flex items-center gap-4">
               <div class="bg-orange-200/60 rounded-full p-3">
                 <Icon icon="mdi:calendar-clock-outline" class="text-orange-600 text-2xl" />
+              </div>
+              <div class="flex-1 text-right">
+                <div class="text-xs font-semibold text-orange-500 uppercase tracking-wide">Total Installment</div>
+                <div class="text-2xl font-bold text-orange-700 mt-1">{{ formatAmount(totalInstallment) }}</div>
               </div>
             </div>
           </div>

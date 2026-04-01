@@ -1,23 +1,154 @@
 <template>
   <MainLayout>
-    <div class="mb-4 flex justify-end">
-    
-    </div>
+    <div class="space-y-8 max-w-7xl mx-auto">
+      <h1 class="text-3xl font-bold text-primary">Dashboard</h1>
 
-    <div class="text-2xl text-primary text-center">
-      Work in progress
+      <div v-if="loading" class="text-center py-12">
+        <a-spin size="large" />
+        <div class="mt-3 text-gray-500">Loading dashboard...</div>
+      </div>
+
+      <div v-else-if="summaryData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Total Members -->
+        <div class="glass-card glass-purple">
+          <div class="flex items-center gap-5">
+            <div class="bg-purple-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">Total Members</div>
+              <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ summaryData.allMemberCount }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loan Members -->
+        <div class="glass-card glass-indigo">
+          <div class="flex items-center gap-5">
+            <div class="bg-indigo-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Loan Members</div>
+              <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ summaryData.loanMemberCount }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Saving -->
+        <div class="glass-card glass-green">
+          <div class="flex items-center gap-5">
+            <div class="bg-green-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">Total Saving</div>
+              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData.totalSaving || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Loan -->
+        <div class="glass-card glass-blue">
+          <div class="flex items-center gap-5">
+            <div class="bg-blue-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">Total Loan</div>
+              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(summaryData.totalLoan || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Earning -->
+        <div class="glass-card glass-amber">
+          <div class="flex items-center gap-5">
+            <div class="bg-amber-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">Total Earning</div>
+              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData.totalEarning || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Balance -->
+        <div class="glass-card glass-rose">
+          <div class="flex items-center gap-5">
+            <div class="bg-rose-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">Remaining Balance</div>
+              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData.remaingBalance || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="text-center py-12 text-gray-500">No data available.</div>
     </div>
   </MainLayout>
-
 </template>
 
+<style scoped>
+.glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+.glass-purple { background: linear-gradient(135deg, rgba(243, 232, 255, 0.7), rgba(233, 213, 255, 0.5)); }
+.glass-indigo { background: linear-gradient(135deg, rgba(224, 231, 255, 0.7), rgba(199, 210, 254, 0.5)); }
+.glass-green  { background: linear-gradient(135deg, rgba(220, 252, 231, 0.7), rgba(187, 247, 208, 0.5)); }
+.glass-blue   { background: linear-gradient(135deg, rgba(219, 234, 254, 0.7), rgba(191, 219, 254, 0.5)); }
+.glass-amber  { background: linear-gradient(135deg, rgba(254, 243, 199, 0.7), rgba(253, 230, 138, 0.5)); }
+.glass-rose   { background: linear-gradient(135deg, rgba(255, 228, 230, 0.7), rgba(254, 205, 211, 0.5)); }
+</style>
+
 <script setup>
-import MainLayout from "@/components/layouts/mainLayout.vue";
+import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
-import { useRouter } from "vue-router";
-const router = useRouter();
-const goBack = () => {
-  router.push({ name: 'overview' });
+import MainLayout from "@/components/layouts/mainLayout.vue";
+import { apiBase } from "@/config.js";
+import { getToken, showNotification } from "@/utilities/common.js";
+import axios from "axios";
+
+const summaryData = ref(null);
+const loading = ref(false);
+
+const fetchSummary = async () => {
+  try {
+    loading.value = true;
+    const res = await axios.get(`${apiBase}/gl-summary`, getToken());
+    if (res.data?.success && res.data.data?.length) {
+      summaryData.value = res.data.data[0];
+    }
+  } catch (error) {
+    console.log(error);
+    showNotification("error", "Failed to fetch summary.");
+  } finally {
+    loading.value = false;
+  }
 };
 
+const formatAmount = (amount) => {
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
+onMounted(() => {
+  fetchSummary();
+});
 </script>

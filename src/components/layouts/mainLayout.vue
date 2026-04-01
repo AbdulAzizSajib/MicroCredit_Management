@@ -162,11 +162,6 @@ const items = reactive([
         label: "Customer Ledger",
         onClick: navigateTo("/loan/customer-ledger"),
       },
-      {
-        key: "/loan/summary",
-        label: "Summary",
-        onClick: navigateTo("/loan/summary"),
-      },
     ],
   },
 
