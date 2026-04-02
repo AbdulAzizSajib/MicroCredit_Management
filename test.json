@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "data": {
+    "CustomerCode": "C001",
+    "CustomerName": "Rahim Uddin",
+    "Add1": "Mirpur-10, Dhaka",
+    "Mobile": "01711111111",
+    "Email": "rahim@example.com",
+    "Business": "01",
+    "CreatedBy": "admin",
+    "CreatedAt": "2026-04-02 16:32:03.537",
+    "EditBy": "admin",
+    "EditDate": "2026-04-02 16:32:03.537",
+    "Active": "Y"
+  },
+  "error": null,
+  "message": "Customer retrieved successfully"
+}

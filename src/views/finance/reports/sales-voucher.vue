@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Sales Voucher</h1>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member Savings</h1>
 
     <div class="bg-white shadow-md rounded-xl p-6">
       <!-- Grid: Left (Dates) and Right (Business + Buttons) -->

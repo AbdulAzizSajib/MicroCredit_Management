@@ -114,6 +114,8 @@ import BalanceSheetPetra from "@/views/finance/reports/Balance-sheet-petra.vue";
 import CashFlow from "@/views/finance/files/cash-flow.vue";
 import PayLoan from "@/views/loan/pay-loan.vue";
 import CustomerLedger from "@/views/loan/customer-ledger.vue";
+import MemberCollection from "@/views/savings/member-collection.vue";
+import SavingsCustomer from "@/views/savings/customer.vue";
 
 const routes = [
   {
@@ -251,6 +253,16 @@ const routes = [
     path: "/loan/customer-ledger",
     name: "customer-ledger",
     component: CustomerLedger,
+  },
+  {
+    path: "/savings/member-collection",
+    name: "member-collection",
+    component: MemberCollection,
+  },
+  {
+    path: "/savings/customer",
+    name: "savings-customer",
+    component: SavingsCustomer,
   },
   {
     path: "/files/group-code",

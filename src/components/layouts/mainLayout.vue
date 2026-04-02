@@ -148,6 +148,23 @@ const items = reactive([
     onClick: navigateTo("/finance-dashboard"),
   },
   {
+    key: "savings",
+    label: "Savings",
+    icon: () => h(UserOutlined),
+    children: [
+      {
+        key: "/savings/member-collection",
+        label: "Member Collection",
+        onClick: navigateTo("/savings/member-collection"),
+      },
+      {
+        key: "/savings/customer",
+        label: "Customer",
+        onClick: navigateTo("/savings/customer"),
+      },
+    ],
+  },
+  {
     key: "loan",
     label: "Loan",
     icon: () => h(InboxOutlined),
@@ -282,11 +299,11 @@ const items = reactive([
       //   label: "Search Chart of Accounts",
       //   onClick: navigateTo("/transaction/voucher-search-chart-of-accounts"),
       // },
-      // {
-      //   key: "/transaction/sales-voucher",
-      //   label: "sales voucher",
-      //   onClick: navigateTo("/transaction/sales-voucher"),
-      // },
+      {
+        key: "/transaction/sales-voucher",
+        label: "Member Savings",
+        onClick: navigateTo("/transaction/sales-voucher"),
+      },
       // {
       //   key: "/transaction/sale-voucher",
       //   label: "sales voucher",
