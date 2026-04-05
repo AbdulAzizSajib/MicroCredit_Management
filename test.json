@@ -1,18 +1,157 @@
 {
   "success": true,
   "data": {
-    "CustomerCode": "C001",
-    "CustomerName": "Rahim Uddin",
-    "Add1": "Mirpur-10, Dhaka",
-    "Mobile": "01711111111",
-    "Email": "rahim@example.com",
-    "Business": "01",
-    "CreatedBy": "admin",
-    "CreatedAt": "2026-04-02 16:32:03.537",
-    "EditBy": "admin",
-    "EditDate": "2026-04-02 16:32:03.537",
-    "Active": "Y"
+    "current_page": 1,
+    "data": [
+      {
+        "ID": "10",
+        "CustomerCode": "C003",
+        "Date": "2026-04-02 00:00:00.000",
+        "Amount": "3500.00",
+        "Remarks": "April collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.843",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.843",
+        "CustomerName": null
+      },
+      {
+        "ID": "9",
+        "CustomerCode": "C007",
+        "Date": "2026-03-15 00:00:00.000",
+        "Amount": "9000.00",
+        "Remarks": "March collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.843",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.843",
+        "CustomerName": null
+      },
+      {
+        "ID": "8",
+        "CustomerCode": "C006",
+        "Date": "2026-03-10 00:00:00.000",
+        "Amount": "4500.00",
+        "Remarks": "March collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.843",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.843",
+        "CustomerName": null
+      },
+      {
+        "ID": "7",
+        "CustomerCode": "C002",
+        "Date": "2026-03-05 00:00:00.000",
+        "Amount": "8000.00",
+        "Remarks": "March collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.843",
+        "CustomerName": null
+      },
+      {
+        "ID": "6",
+        "CustomerCode": "C005",
+        "Date": "2026-02-12 00:00:00.000",
+        "Amount": "6500.00",
+        "Remarks": "February collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": null
+      },
+      {
+        "ID": "5",
+        "CustomerCode": "C004",
+        "Date": "2026-02-08 00:00:00.000",
+        "Amount": "12000.00",
+        "Remarks": "February collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": null
+      },
+      {
+        "ID": "4",
+        "CustomerCode": "C001",
+        "Date": "2026-02-05 00:00:00.000",
+        "Amount": "5000.00",
+        "Remarks": "February collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": "One Stop Solution"
+      },
+      {
+        "ID": "3",
+        "CustomerCode": "C003",
+        "Date": "2026-01-15 00:00:00.000",
+        "Amount": "3500.00",
+        "Remarks": "January collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": null
+      },
+      {
+        "ID": "2",
+        "CustomerCode": "C002",
+        "Date": "2026-01-10 00:00:00.000",
+        "Amount": "8000.00",
+        "Remarks": "January collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": null
+      },
+      {
+        "ID": "1",
+        "CustomerCode": "C001",
+        "Date": "2026-01-05 00:00:00.000",
+        "Amount": "5000.00",
+        "Remarks": "January collection",
+        "CreatedBy": "admin",
+        "CreatedAt": "2026-04-02 16:31:57.840",
+        "EditBy": "admin",
+        "EditAt": "2026-04-02 16:31:57.840",
+        "CustomerName": "One Stop Solution"
+      }
+    ],
+    "first_page_url": "https://wa.acibd.com/api/mcm/api/member-collection?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "https://wa.acibd.com/api/mcm/api/member-collection?page=1",
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "active": false
+      },
+      {
+        "url": "https://wa.acibd.com/api/mcm/api/member-collection?page=1",
+        "label": "1",
+        "active": true
+      },
+      {
+        "url": null,
+        "label": "Next &raquo;",
+        "active": false
+      }
+    ],
+    "next_page_url": null,
+    "path": "https://wa.acibd.com/api/mcm/api/member-collection",
+    "per_page": 10,
+    "prev_page_url": null,
+    "to": 10,
+    "total": 10
   },
   "error": null,
-  "message": "Customer retrieved successfully"
+  "message": "Member Collections retrieved successfully"
 }
