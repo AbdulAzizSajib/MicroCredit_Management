@@ -10,7 +10,7 @@
 
       <div v-else-if="summaryData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total Members -->
-        <div class="glass-card glass-purple">
+        <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')">
           <div class="flex items-center gap-5">
             <div class="bg-purple-200/40 rounded-2xl p-4">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Loan Members -->
-        <div class="glass-card glass-indigo">
+        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/dashboard/loan-members')">
           <div class="flex items-center gap-5">
             <div class="bg-indigo-200/40 rounded-2xl p-4">
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Total Saving -->
-        <div class="glass-card glass-green">
+        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')">
           <div class="flex items-center gap-5">
             <div class="bg-green-200/40 rounded-2xl p-4">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
@@ -49,7 +49,7 @@
         </div>
 
         <!-- Total Loan -->
-        <div class="glass-card glass-blue">
+        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/total-loan')">
           <div class="flex items-center gap-5">
             <div class="bg-blue-200/40 rounded-2xl p-4">
               <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Total Earning -->
-        <div class="glass-card glass-amber">
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')">
           <div class="flex items-center gap-5">
             <div class="bg-amber-200/40 rounded-2xl p-4">
               <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />

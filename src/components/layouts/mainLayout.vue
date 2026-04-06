@@ -299,16 +299,16 @@ const items = reactive([
       //   label: "Search Chart of Accounts",
       //   onClick: navigateTo("/transaction/voucher-search-chart-of-accounts"),
       // },
-      {
-        key: "/transaction/sales-voucher",
-        label: "Member Savings",
-        onClick: navigateTo("/transaction/sales-voucher"),
-      },
       // {
-      //   key: "/transaction/sale-voucher",
-      //   label: "sales voucher",
-      //   onClick: navigateTo("/transaction/sale-voucher"),
+      //   key: "/transaction/sales-voucher",
+      //   label: "Member Savings",
+      //   onClick: navigateTo("/transaction/sales-voucher"),
       // },
+      {
+        key: "/transaction/member-savings",
+        label: "Member Savings",
+        onClick: navigateTo("/transaction/member-savings"),
+      },
       // {
       //   key: "/transaction/purchase-voucher",
       //   label: "purchase voucher",

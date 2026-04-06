@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Sales Voucher</h1>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member Savings</h1>
 
     <div class="bg-white shadow-md rounded-xl p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -90,7 +90,7 @@
           <th class="border border-white px-4 py-2">Invoice Date</th>
           <th class="border border-white px-4 py-2">Customer Code</th>
           <th class="border border-white px-4 py-2">Customer Name</th>
-          <th class="border border-white px-4 py-2">NET</th>
+          <th class="border border-white px-4 py-2">Amount</th>
         </tr>
       </thead>
       <tbody class="capitalize">
@@ -556,21 +556,26 @@ const fetchAllData = async () => {
       : "";
 
     const res = await axios.get(
-      `${apiBase}/get_sales_details?q=${formData.value.customer}&from=${fromDate}&to=${toDate}`,
+      `${apiBase}/member-collection-voucher/get-collection-details?CustomerCode=${formData.value.customer}&from=${fromDate}&to=${toDate}`,
       getToken()
     );
     if (!res?.data || res.data.length === 0) {
       showNotification(
         "info",
-        "No sales data found for the selected criteria."
+        "No collection data found for the selected criteria."
       );
     }
-    allData.value = res?.data?.map((item) => ({
+    allData.value = (res?.data || []).map((item) => ({
       ...item,
-      InvoiceDate: item.InvoiceDate
-        ? dayjs(item.InvoiceDate).format("YYYY-MM-DD")
-        : "",
+      InvoiceNo: item.ID,
+      InvoiceDate: item.Date ? dayjs(item.Date).format("YYYY-MM-DD") : "",
+      NET: item.Amount,
     }));
+    totalSelectedNet.value = allData.value.reduce(
+      (sum, item) => sum + (Number(item.NET) || 0),
+      0
+    );
+    checkedInvoice.value = [];
   } catch (error) {
     console.error(error);
     showNotification("error", "Failed to fetch sales details.");
@@ -580,7 +585,7 @@ const fetchAllData = async () => {
 const customerfetch = async (search = "") => {
   try {
     const res = await axios.get(
-      `${apiBase}/get_customer?q=${search}`,
+      `${apiBase}/member-collection-voucher/get-customer?q=${search}`,
       getToken()
     );
     if (res?.data) {

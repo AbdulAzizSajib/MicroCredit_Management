@@ -102,9 +102,15 @@ import CashFlowStatementReport from "@/views/finance/reports/cash-flow-statement
 import BalanceSheetDetails from "@/views/finance/reports/Balance-sheet-details.vue";
 import AccountRatioReport from "@/views/finance/reports/account-ratio-report.vue";
 
-//sale voucher
-import SaleVoucher from "@/views/finance/reports/sale-voucher.vue";
-import SaleVoucherAdd from "@/views/finance/reports/sale-voucher-add.vue";
+import TotalMembers from "@/views/finance/total-members.vue";
+import LoanMembers from "@/views/finance/loan-members.vue";
+import TotalSaving from "@/views/finance/total-saving.vue";
+import TotalLoan from "@/views/finance/total-loan.vue";
+import TotalEarning from "@/views/finance/total-earning.vue";
+
+//member savings
+import MemberSavings from "@/views/finance/reports/member-savings.vue";
+import MemberSavingsAdd from "@/views/finance/reports/member-savings-add.vue";
 
 //Purchase Voucher
 import PurchaseVoucher from "@/views/finance/reports/purchase-voucher.vue";
@@ -560,9 +566,34 @@ const routes = [
     component: VoucherAdd,
   },
   {
-    path: "/transaction/sale-voucher",
-    name: "sale-voucher",
-    component: SaleVoucher,
+    path: "/transaction/member-savings",
+    name: "member-savings",
+    component: MemberSavings,
+  },
+  {
+    path: "/dashboard/total-members",
+    name: "total-members",
+    component: TotalMembers,
+  },
+  {
+    path: "/dashboard/loan-members",
+    name: "loan-members",
+    component: LoanMembers,
+  },
+  {
+    path: "/dashboard/total-saving",
+    name: "total-saving",
+    component: TotalSaving,
+  },
+  {
+    path: "/dashboard/total-loan",
+    name: "total-loan",
+    component: TotalLoan,
+  },
+  {
+    path: "/dashboard/total-earning",
+    name: "total-earning",
+    component: TotalEarning,
   },
   {
     path: "/transaction/purchase-voucher",
@@ -570,9 +601,9 @@ const routes = [
     component: PurchaseVoucher,
   },
   {
-    path: "/transaction/sale-voucher/sale-voucher-add",
-    name: "sale-voucher-add",
-    component: SaleVoucherAdd,
+    path: "/transaction/member-savings/member-savings-add",
+    name: "member-savings-add",
+    component: MemberSavingsAdd,
   },
   {
     path: "/transaction/bill-receive",
