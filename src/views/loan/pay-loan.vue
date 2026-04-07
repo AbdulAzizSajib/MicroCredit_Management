@@ -19,6 +19,7 @@
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN ID</th>
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN TYPE</th>
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">EMPLOYEE</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">EMPLOYEE NAME</th>
             <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN AMOUNT</th>
             <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">INSTALLMENT</th>
             <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">ACTION</th>
@@ -34,6 +35,7 @@
             <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.LoanId }}</td>
             <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.type?.LoanTypeDetails }}</td>
             <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.EmpCode }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.AMDetails }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.LoanAmount }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.NofInstallment }}</td>
             <td class="px-6 py-4 text-center">

@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member vvv Savings</h1>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member Savings</h1>
 
     <div class="bg-white shadow-md rounded-xl p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -179,7 +179,7 @@
     </table>
     <a-modal
       v-model:open="isModalOpen"
-      title="Add Sale Voucher"
+      title="Add Member Savings Voucher"
       :footer="false"
       :width="1000"
       :maskClosable="false"
