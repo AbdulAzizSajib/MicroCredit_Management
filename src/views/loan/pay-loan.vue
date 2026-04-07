@@ -75,7 +75,7 @@
           <div class="grid grid-cols-4 gap-4 items-center">
             <label class="text-sm font-medium text-gray-700">Loan Type <span class="text-red-500">*</span></label>
             <div class="col-span-3">
-              <a-select class="w-full" placeholder="Select Loan Type" v-model:value="formData.LoanType">
+              <a-select class="w-full" placeholder="Select Loan Type" v-model:value="formData.LoanType" :status="fieldErrors.LoanType ? 'error' : ''">
                 <a-select-option v-for="type in loanTypeData" :key="type.LoanType" :value="type.LoanType">
                   {{ type.LoanTypeDetails }}
                 </a-select-option>
@@ -92,6 +92,7 @@
                 placeholder="Select Employee"
                 v-model:value="formData.EmpCode"
                 :filter-option="false"
+                :status="fieldErrors.EmpCode ? 'error' : ''"
                 @input="getCustomerData($event.target.value)"
               >
                 <a-select-option
@@ -108,7 +109,7 @@
           <div class="grid grid-cols-4 gap-4 items-center">
             <label class="text-sm font-medium text-gray-700">Date <span class="text-red-500">*</span></label>
             <div class="col-span-3">
-              <a-date-picker class="w-full" placeholder="Date" v-model:value="formData.LoanDate" />
+              <a-date-picker class="w-full" placeholder="Date" v-model:value="formData.LoanDate" :status="fieldErrors.LoanDate ? 'error' : ''" />
             </div>
           </div>
 
@@ -122,6 +123,7 @@
                 format="YYYYMM"
                 value-format="YYYYMM"
                 v-model:value="formData.EffectivePeriod"
+                :status="fieldErrors.EffectivePeriod ? 'error' : ''"
               />
             </div>
           </div>
@@ -134,6 +136,7 @@
                 placeholder="Loan Amount"
                 v-model:value="formData.LoanAmount"
                 :precision="2"
+                :status="fieldErrors.LoanAmount ? 'error' : ''"
               />
             </div>
           </div>
@@ -147,6 +150,7 @@
                 v-model:value="formData.NofInstallment"
                 :min="1"
                 :precision="0"
+                :status="fieldErrors.NofInstallment ? 'error' : ''"
               />
             </div>
           </div>
@@ -174,6 +178,7 @@
                 v-model:value="formData.InterestRate"
                 :min="0"
                 :precision="2"
+                :status="fieldErrors.InterestRate ? 'error' : ''"
               />
             </div>
           </div>
@@ -186,6 +191,7 @@
                 placeholder="Interest Amount"
                 v-model:value="formData.InterestAmount"
                 :precision="2"
+                :status="fieldErrors.InterestAmount ? 'error' : ''"
               />
             </div>
           </div>
@@ -198,9 +204,9 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-start">
-            <label class="text-sm font-medium text-gray-700 mt-2">Remarks <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700 mt-2">Remarks</label>
             <div class="col-span-3">
-              <a-textarea class="w-full" placeholder="Remarks" v-model:value="formData.Remarks" :rows="4" />
+              <a-textarea class="w-full" placeholder="Remarks" v-model:value="formData.Remarks" :rows="4" :status="fieldErrors.Remarks ? 'error' : ''" />
             </div>
           </div>
         </div>
@@ -469,6 +475,47 @@ const formData = ref({
   InterestRate: null,
   InterestAmount: null,
 });
+
+const fieldErrors = ref({});
+
+const requiredFields = {
+  LoanType: "Loan Type",
+  EmpCode: "Employee Code",
+  LoanDate: "Date",
+  EffectivePeriod: "Effective Period",
+  LoanAmount: "Loan Amount",
+  NofInstallment: "No of Installment",
+  InterestRate: "Interest Rate",
+  InterestAmount: "Interest Amount",
+};
+
+const validateForm = () => {
+  const errors = {};
+  for (const key in requiredFields) {
+    const v = formData.value[key];
+    if (v === null || v === undefined || v === "") {
+      errors[key] = `${requiredFields[key]} is required`;
+    }
+  }
+  fieldErrors.value = errors;
+  return errors;
+};
+
+watch(
+  formData,
+  () => {
+    if (Object.keys(fieldErrors.value).length === 0) return;
+    const errors = {};
+    for (const key in requiredFields) {
+      const v = formData.value[key];
+      if (v === null || v === undefined || v === "") {
+        errors[key] = `${requiredFields[key]} is required`;
+      }
+    }
+    fieldErrors.value = errors;
+  },
+  { deep: true }
+);
 
 watch(
   () => [formData.value.InterestAmount, formData.value.NofInstallment],
@@ -787,6 +834,11 @@ const submitPayment = async () => {
 
 const createLoan = async () => {
   try {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      showNotification("error", Object.values(errors)[0]);
+      return;
+    }
     const loanAmount = Number(formData.value.LoanAmount);
     if (!Number.isFinite(loanAmount) || loanAmount <= 0) {
       showNotification("error", "Please enter a valid Loan Amount.");
@@ -796,6 +848,7 @@ const createLoan = async () => {
     const payload = {
       ...formData.value,
       LoanAmount: loanAmount,
+      Remarks: formData.value.Remarks || "",
       PrepareDate: dayjs().format("YYYY-MM-DD"),
       AMCode: formData.value.EmpCode,
       EffectivePeriod: formData.value.EffectivePeriod
@@ -812,6 +865,7 @@ const createLoan = async () => {
     if (res.data) {
       showNotification("success", "Loan created successfully!");
       isCreateModalVisible.value = false;
+      fieldErrors.value = {};
       formData.value = {
         LoanType: "",
         EmpCode: "",
@@ -838,7 +892,11 @@ const createLoan = async () => {
     }
   } catch (error) {
     console.log(error);
-    showNotification("error", "Failed to create loan.");
+    const msg =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Failed to create loan.";
+    showNotification("error", msg);
   }
 };
 
