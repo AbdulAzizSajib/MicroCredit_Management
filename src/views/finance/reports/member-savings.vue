@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member Savings</h1>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Member vvv Savings</h1>
 
     <div class="bg-white shadow-md rounded-xl p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -878,69 +878,27 @@ const saveSaleVoucher = async () => {
     return;
   }
 
-  // CRITICAL FIX: Get the BillNo from the first credit entry to satisfy the validator for Details.0.
-  const firstCreditEntryBillNo = creditVoucherEntries.value[0]?.BillNo || "";
-
-  // Construct the final Details array for the API (Debit line + all Credit lines)
-  const finalDetails = [
-    // 1. Debit Entry (The single balancing line)
-    {
-      Person: "",
-      ChequeNo: debitVoucherEntry.value.AccountCode.includes("NCC")
-        ? chequeDetails.value.ChequeNo
-        : "",
-      ChequeName: debitVoucherEntry.value.AccountCode.includes("NCC")
-        ? chequeDetails.value.ChequeName
-        : "",
-      ChequePayDate: debitVoucherEntry.value.AccountCode.includes("NCC")
-        ? chequeDetails.value.ChequePayDate
-          ? dayjs(chequeDetails.value.ChequePayDate).format("YYYY-MM-DD")
-          : null
-        : null,
-      Narration: debitVoucherEntry.value.Narration,
-      Credit: 0,
-      Debit: parseFloat(calculateTotalCredit()),
-      BillNo: firstCreditEntryBillNo, // <--- THIS IS THE FIX
-      BillDate: null,
-      TransType: "",
-      AccountCode: debitVoucherEntry.value.AccountCode,
-    },
-    // 2. All accumulated Credit Entries
-    ...creditVoucherEntries.value.map((d) => ({
-      Person: d.Person,
-      ChequeNo: d.ChequeNo || "",
-      ChequeName: d.ChequeName || "",
-      ChequePayDate: d.ChequePayDate
-        ? dayjs(d.ChequePayDate).format("YYYY-MM-DD")
-        : null,
-      Narration: d.Narration,
-      Credit: parseFloat(d.Credit),
-      Debit: 0,
-      BillNo: d.BillNo, // This was already correct
-      BillDate: d.BillDate ? dayjs(d.BillDate).format("YYYY-MM-DD") : null,
-      TransType: d.TransType,
-      AccountCode: d.AccountCode,
-    })),
-  ];
-
   try {
+    const jvDate = modalForm.value.JVDate
+      ? dayjs(modalForm.value.JVDate).format("YYYY-MM-DD")
+      : dayjs().format("YYYY-MM-DD");
+
     const payload = {
-      ...modalForm.value,
-      JVDate: modalForm.value.JVDate
-        ? modalForm.value.JVDate.format("YYYY-MM-DD")
-        : "",
-      TransDate: modalForm.value.TransDate
-        ? modalForm.value.TransDate.format("YYYY-MM-DD")
-        : "",
-      EditDate: modalForm.value.EditDate
-        ? modalForm.value.EditDate.format("YYYY-MM-DD")
-        : "",
-      EditUserID: modalForm.value.EditUserID,
-      Details: finalDetails.filter((d) => d.Credit > 0 || d.Debit > 0),
+      SiteCode: modalForm.value.SiteCode || "01",
+      Period: Number(dayjs(jvDate).format("YYYYMM")),
+      JVType: modalForm.value.JVType || "CSH",
+      JVCat: modalForm.value.JVCat || "P",
+      JVDate: jvDate,
+      AMCode: modalForm.value.AMCode,
+      CollectionIDs: checkedInvoice.value.map((id) => Number(id)),
     };
 
     // Post data to API
-    await axios.post(`${apiBase}/sales_voucher_add`, payload, getToken());
+    await axios.post(
+      `${apiBase}/member-collection-voucher/store`,
+      payload,
+      getToken()
+    );
     showNotification("success", "Voucher saved successfully!");
     isModalOpen.value = false;
 

@@ -71,7 +71,7 @@
       <form @submit.prevent="createLoan">
         <div class="space-y-4">
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Loan Type</label>
+            <label class="text-sm font-medium text-gray-700">Loan Type <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-select class="w-full" placeholder="Select Loan Type" v-model:value="formData.LoanType">
                 <a-select-option v-for="type in loanTypeData" :key="type.LoanType" :value="type.LoanType">
@@ -82,7 +82,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Employee Code</label>
+            <label class="text-sm font-medium text-gray-700">Employee Code <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-select
                 show-search
@@ -104,14 +104,14 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Date</label>
+            <label class="text-sm font-medium text-gray-700">Date <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-date-picker class="w-full" placeholder="Date" v-model:value="formData.LoanDate" />
             </div>
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Effective Period</label>
+            <label class="text-sm font-medium text-gray-700">Effective Period <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-date-picker
                 class="w-full"
@@ -125,7 +125,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Loan Amount</label>
+            <label class="text-sm font-medium text-gray-700">Loan Amount <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -137,7 +137,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">No of Installment</label>
+            <label class="text-sm font-medium text-gray-700">No of Installment <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -164,7 +164,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Interest Rate (%)</label>
+            <label class="text-sm font-medium text-gray-700">Interest Rate (%) <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -177,7 +177,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Interest Amount</label>
+            <label class="text-sm font-medium text-gray-700">Interest Amount <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -196,7 +196,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-start">
-            <label class="text-sm font-medium text-gray-700 mt-2">Remarks</label>
+            <label class="text-sm font-medium text-gray-700 mt-2">Remarks <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-textarea class="w-full" placeholder="Remarks" v-model:value="formData.Remarks" :rows="4" />
             </div>
@@ -469,13 +469,13 @@ const formData = ref({
 });
 
 watch(
-  () => [formData.value.LoanAmount, formData.value.NofInstallment],
-  ([loanAmount, nofInstallment]) => {
-    const amount = Number(loanAmount);
+  () => [formData.value.InterestAmount, formData.value.NofInstallment],
+  ([interestAmount, nofInstallment]) => {
+    const total = Number(interestAmount);
     const count = Number(nofInstallment);
 
-    if (amount > 0 && count > 0) {
-      formData.value.Installment = Number((amount / count).toFixed(2));
+    if (total > 0 && count > 0) {
+      formData.value.Installment = Number((total / count).toFixed(2));
       return;
     }
 
