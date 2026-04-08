@@ -55,6 +55,10 @@
                 @click="openDetailsModal(data)" title="Details">
                 <i class="bi bi-eye"></i>
               </button>
+              <button type="button" class="px-2 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+                @click="openCollectionsModal(data)" title="Collections">
+                <i class="bi bi-cash-stack"></i>
+              </button>
               <button type="button" class="px-2 py-1 bg-secondary text-white rounded-md hover:bg-primary"
                 @click="openEditModal(data)">
                 <i class="bi bi-pencil"></i>
@@ -215,6 +219,40 @@
       </form>
     </a-modal>
 
+    <!-- Collections Modal -->
+    <a-modal v-model:open="isCollectionsModalVisible" title="Customer Collections" @cancel="isCollectionsModalVisible = false"
+      :footer="null" width="800px">
+      <div v-if="collectionsLoading" class="text-center py-8"><a-spin /></div>
+      <div v-else>
+        <div v-if="collectionsData.length" class="mb-3 grid grid-cols-3 gap-3 p-3 bg-gray-50 rounded">
+          <div><span class="font-semibold">Code:</span> {{ collectionsData[0].CustomerCode }}</div>
+          <div><span class="font-semibold">Name:</span> {{ collectionsData[0].CustomerName }}</div>
+          <div><span class="font-semibold">Saving Amount:</span> {{ Number(collectionsData[0].SavingAmount || 0).toFixed(2) }}</div>
+        </div>
+        <table class="w-full border text-sm">
+          <thead class="bg-primary text-white">
+            <tr>
+              <th class="border px-2 py-1 text-left">Period</th>
+              <th class="border px-2 py-1 text-right">Amount</th>
+              <th class="border px-2 py-1 text-left">Date</th>
+              <th class="border px-2 py-1 text-center">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(c, i) in collectionsData" :key="i">
+              <td class="border px-2 py-1">{{ formatPeriod(c.Period) }}</td>
+              <td class="border px-2 py-1 text-right">{{ Number(c.Amount || 0).toFixed(2) }}</td>
+              <td class="border px-2 py-1">{{ formatDate(c.Date) }}</td>
+              <td class="border px-2 py-1 text-center">{{ c.CollectionType === 'W' ? 'Weekly' : 'Monthly' }}</td>
+            </tr>
+            <tr v-if="!collectionsData.length">
+              <td colspan="4" class="text-center py-3 text-gray-500">No collections found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </a-modal>
+
     <!-- Details Modal -->
     <a-modal v-model:open="isDetailsModalVisible" title="Customer Details" @cancel="isDetailsModalVisible = false"
       :footer="null" width="700px">
@@ -304,6 +342,39 @@ const isEditModalVisible = ref(false);
 const isDetailsModalVisible = ref(false);
 const detailsLoading = ref(false);
 const detailsData = ref(null);
+
+const isCollectionsModalVisible = ref(false);
+const collectionsLoading = ref(false);
+const collectionsData = ref([]);
+
+const formatDate = (d) => {
+  if (!d) return "";
+  const dt = new Date(d);
+  if (isNaN(dt)) return String(d).split(" ")[0];
+  return dt.toISOString().split("T")[0];
+};
+
+const formatPeriod = (period) => {
+  if (!period) return "";
+  const s = String(period);
+  if (s.length !== 6) return s;
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[parseInt(s.slice(4, 6), 10) - 1] || ""} ${s.slice(0, 4)}`;
+};
+
+const openCollectionsModal = async (data) => {
+  isCollectionsModalVisible.value = true;
+  collectionsLoading.value = true;
+  collectionsData.value = [];
+  try {
+    const res = await axios.get(`${apiBase}/customer/${data.CustomerCode}/collections`, getToken());
+    collectionsData.value = res?.data?.data || [];
+  } catch (error) {
+    showNotification("error", "Failed to load collections.");
+  } finally {
+    collectionsLoading.value = false;
+  }
+};
 
 const openDetailsModal = async (data) => {
   isDetailsModalVisible.value = true;

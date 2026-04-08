@@ -131,6 +131,20 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">AM Code</label>
             <a-input :value="formData.AMCode" disabled placeholder="Auto filled" />
           </div>
+          <div v-if="customerInfo" class="grid grid-cols-3 gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
+            <div class="text-center">
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">Total</div>
+              <div class="text-sm font-bold text-blue-700">{{ Number(customerInfo.TotalAmount || 0).toFixed(2) }}</div>
+            </div>
+            <div class="text-center border-x">
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">Receivable</div>
+              <div class="text-sm font-bold text-green-700">{{ Number(customerInfo.TotalGivenAmount || 0).toFixed(2) }}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">Due</div>
+              <div class="text-sm font-bold text-red-600">{{ Number(customerInfo.DueAmount || 0).toFixed(2) }}</div>
+            </div>
+          </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
             <a-date-picker
@@ -156,6 +170,7 @@
               placeholder="Select Month"
               value-format="YYYYMM"
               format="MMM YYYY"
+              :disabled-date="disabledPeriodDate"
               v-model:value="formData.Period"
             />
           </div>
@@ -308,6 +323,20 @@ const defaultForm = {
 const formData = ref({ ...defaultForm });
 const editFormData = ref({ ...defaultForm, ID: null });
 const customerList = ref([]);
+const customerInfo = ref(null);
+const allowedPeriods = ref([]);
+
+const currentPeriod = () => {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
+
+const disabledPeriodDate = (current) => {
+  if (!current) return false;
+  const p = `${current.year()}${String(current.month() + 1).padStart(2, "0")}`;
+  const allowed = new Set([...allowedPeriods.value, currentPeriod()]);
+  return !allowed.has(p);
+};
 
 const searchCustomer = async (q) => {
   try {
@@ -325,7 +354,19 @@ const onCustomerChange = async (val, mode) => {
   } else {
     editFormData.value.AMCode = selected?.AMCode || "";
   }
-  if (!val) return;
+  if (!val) {
+    customerInfo.value = null;
+    allowedPeriods.value = [];
+    return;
+  }
+  try {
+    const infoRes = await axios.get(`${apiBase}/customer/${val}/info`, getToken());
+    customerInfo.value = infoRes?.data?.data?.[0] || null;
+  } catch (e) { customerInfo.value = null; }
+  try {
+    const mRes = await axios.get(`${apiBase}/customer/${val}/missing-installment`, getToken());
+    allowedPeriods.value = (mRes?.data?.data || []).map(x => String(x.MissingPeriod));
+  } catch (e) { allowedPeriods.value = []; }
   try {
     const res = await axios.get(`${apiBase}/customer/${val}`, getToken());
     const cust = res?.data?.data || {};
@@ -391,6 +432,7 @@ const fetchAllData = async () => {
 // Create
 const openCreateModal = () => {
   formData.value = { ...defaultForm };
+  customerInfo.value = null;
   isCreateModalVisible.value = true;
 };
 
