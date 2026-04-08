@@ -1,11 +1,11 @@
 <template>
   <MainLayout>
     <div class="space-y-8 max-w-7xl mx-auto">
-      <h1 class="text-3xl font-bold text-primary">Dashboard</h1>
+      <h1 class="text-3xl font-bold text-primary">{{ $t('dashboard.title') }}</h1>
 
       <div v-if="loading" class="text-center py-12">
         <a-spin size="large" />
-        <div class="mt-3 text-gray-500">Loading dashboard...</div>
+        <div class="mt-3 text-gray-500">{{ $t('common.loadingDashboard') }}</div>
       </div>
 
       <div v-else-if="summaryData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -16,7 +16,7 @@
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">Total Members</div>
+              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">{{ $t('dashboard.totalMembers') }}</div>
               <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ summaryData.allMemberCount }}</div>
             </div>
           </div>
@@ -29,7 +29,7 @@
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Loan Members</div>
+              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.loanMembers') }}</div>
               <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ summaryData.loanMemberCount }}</div>
             </div>
           </div>
@@ -42,7 +42,7 @@
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">Total Saving</div>
+              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving') }}</div>
               <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData.totalSaving || 0)) }}</div>
             </div>
           </div>
@@ -55,7 +55,7 @@
               <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">Total Loan</div>
+              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalLoan') }}</div>
               <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(summaryData.totalLoan || 0)) }}</div>
             </div>
           </div>
@@ -68,7 +68,7 @@
               <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">Total Earning</div>
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning') }}</div>
               <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData.totalEarning || 0)) }}</div>
             </div>
           </div>
@@ -81,14 +81,14 @@
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">Remaining Balance</div>
+              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.remainingBalance') }}</div>
               <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData.remaingBalance || 0)) }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else class="text-center py-12 text-gray-500">No data available.</div>
+      <div v-else class="text-center py-12 text-gray-500">{{ $t('common.noData') }}</div>
     </div>
   </MainLayout>
 </template>
@@ -121,7 +121,10 @@ import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
+
+const { t } = useI18n();
 
 const summaryData = ref(null);
 const loading = ref(false);
@@ -135,7 +138,7 @@ const fetchSummary = async () => {
     }
   } catch (error) {
     console.log(error);
-    showNotification("error", "Failed to fetch summary.");
+    showNotification("error", t("dashboard.fetchError"));
   } finally {
     loading.value = false;
   }

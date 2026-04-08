@@ -13,7 +13,7 @@
       <div v-if="showBackButton" class="flex items-center">
         <button @click="goBack"
           class="custom-back-btn bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300 flex items-center justify-center">
-          <icon :icon="'akar-icons:arrow-back'" class="icon" /> Back
+          <icon :icon="'akar-icons:arrow-back'" class="icon" /> {{ $t('common.back') }}
         </button>
       </div>
 
@@ -32,17 +32,19 @@
             <span class="font-bold">{{ date }}</span>
           </li>
           <li>
+            <LanguageSwitcher />
+          </li>
+          <li>
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link cursor-pointer flex items-center gap-2" @click.prevent>
                 <i class="bi bi-person-circle text-lg mr-2 text-indigo-500"></i>
-                <!-- <Icon icon="uim:user-nurse" class="size-6"/> -->
-                <span class="text-xs lg:text-base">{{ userInfo?.name || 'Admin' }}</span>
+                <span class="text-xs lg:text-base">{{ userInfo?.name || $t('common.admin') }}</span>
               </a>
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
                     <button type="button" class="w-full text-left" @click="handleLogout($router)">
-                      Logout
+                      {{ $t('common.logout') }}
                     </button>
                   </a-menu-item>
                 </a-menu>
@@ -61,6 +63,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from '@iconify/vue'; // Import Iconify component
 import axios from "axios";
+import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 
 
 // Define props, emits, and state variables

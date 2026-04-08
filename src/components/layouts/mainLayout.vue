@@ -81,7 +81,10 @@ import {
   InboxOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import Header from "./header.vue";
+
+const { t } = useI18n();
 
 const collapsed = ref(false);
 const siderRef = ref(null);
@@ -140,148 +143,143 @@ const navigateTo = (path) => {
   };
 };
 
-const items = reactive([
+const items = computed(() => [
   {
     key: "/finance-dashboard",
-    label: "Dashboard",
+    label: t("menu.dashboard"),
     icon: () => h(ContainerOutlined),
     onClick: navigateTo("/finance-dashboard"),
   },
   {
     key: "savings",
-    label: "Savings",
+    label: t("menu.savings"),
     icon: () => h(UserOutlined),
     children: [
       {
-        key: "/savings/member-collection",
-        label: "Member Collection",
-        onClick: navigateTo("/savings/member-collection"),
+        key: "/savings/customer",
+        label: t("menu.customer"),
+        onClick: navigateTo("/savings/customer"),
       },
       {
-        key: "/savings/customer",
-        label: "Customer",
-        onClick: navigateTo("/savings/customer"),
+        key: "/savings/member-collection",
+        label: t("menu.memberCollection"),
+        onClick: navigateTo("/savings/member-collection"),
       },
     ],
   },
   {
     key: "loan",
-    label: "Loan",
+    label: t("menu.loan"),
     icon: () => h(InboxOutlined),
     children: [
       {
         key: "/loan/pay-loan",
-        label: "Pay Loan",
+        label: t("menu.payLoan"),
         onClick: navigateTo("/loan/pay-loan"),
-      },
-      {
-        key: "/loan/customer-ledger",
-        label: "Customer Ledger",
-        onClick: navigateTo("/loan/customer-ledger"),
       },
     ],
   },
 
   {
     key: "files",
-    label: "Files",
+    label: t("menu.files"),
     icon: () => h(FileTextOutlined),
     children: [
       {
         key: "/files/group-code",
-        label: "Group Code",
+        label: t("menu.groupCode"),
         onClick: navigateTo("/files/group-code"),
       },
       {
         key: "/files/voucher-type",
-        label: "voucher type",
+        label: t("menu.voucherType"),
         onClick: navigateTo("/files/voucher-type"),
       },
       {
         key: "/files/voucher-category",
-        label: "voucher category",
+        label: t("menu.voucherCategory"),
         onClick: navigateTo("/files/voucher-category"),
       },
       {
         key: "/files/ac-type",
-        label: "A/C Type",
+        label: t("menu.acType"),
         onClick: navigateTo("/files/ac-type"),
       },
       {
         key: "/files/ac-sub-group",
-        label: "A/C Sub Group",
+        label: t("menu.acSubGroup"),
         onClick: navigateTo("/files/ac-sub-group"),
       },
       {
         key: "/files/cash-flow",
-        label: "Cash Flow",
+        label: t("menu.cashFlow"),
         onClick: navigateTo("/files/cash-flow"),
       },
       {
         key: "/files/search-chart-of-accounts",
-        label: "Chart of Accounts",
+        label: t("menu.chartOfAccounts"),
         onClick: navigateTo("/files/search-chart-of-accounts"),
       },
       {
         key: "/files/sub-ledger-category",
-        label: "Sub-Ledger Category",
+        label: t("menu.subLedgerCategory"),
         onClick: navigateTo("/files/sub-ledger-category"),
       },
       {
         key: "/files/sub-ledger",
-        label: "Sub Ledger",
+        label: t("menu.subLedger"),
         onClick: navigateTo("/files/sub-ledger"),
       },
       {
         key: "/files/opening",
-        label: "Opening",
+        label: t("menu.opening"),
         onClick: navigateTo("/files/opening"),
       },
       {
         key: "/files/cheque-no",
-        label: "Cheque No",
+        label: t("menu.chequeNo"),
         onClick: navigateTo("/files/cheque-no"),
       },
       {
         key: "/files/cheque-book-entry",
-        label: "Cheque Book",
+        label: t("menu.chequeBook"),
         onClick: navigateTo("/files/cheque-book-entry"),
       },
       {
         key: "/files/financial-month",
-        label: "Financial Month",
+        label: t("menu.financialMonth"),
         onClick: navigateTo("/files/financial-month"),
       },
       {
         key: "/files/set-period",
-        label: "Set Period",
+        label: t("menu.setPeriod"),
         onClick: navigateTo("/files/set-period"),
       },
       {
         key: "/files/site",
-        label: "Site",
+        label: t("menu.site"),
         onClick: navigateTo("/files/site"),
       },
       {
         key: "/files/vendor-entry",
-        label: "Vendor Entry",
+        label: t("menu.vendorEntry"),
         onClick: navigateTo("/files/vendor-entry"),
       },
       {
         key: "/files/vendor-type",
-        label: "Vendor Type",
+        label: t("menu.vendorType"),
         onClick: navigateTo("/files/vendor-type"),
       },
     ],
   },
   {
     key: "transaction",
-    label: "Transaction",
+    label: t("menu.transaction"),
     icon: () => h(FileTextOutlined),
     children: [
       {
         key: "/transaction/voucher-list",
-        label: "Voucher Entry",
+        label: t("menu.voucherEntry"),
         onClick: navigateTo("/transaction/voucher-list"),
       },
       // {
@@ -306,7 +304,7 @@ const items = reactive([
       // },
       {
         key: "/transaction/member-savings",
-        label: "Member Savings",
+        label: t("menu.memberSavings"),
         onClick: navigateTo("/transaction/member-savings"),
       },
       // {
@@ -323,27 +321,32 @@ const items = reactive([
   },
   {
     key: "/reports",
-    label: "Reports",
+    label: t("menu.reports"),
     icon: () => h(FileTextOutlined),
     children: [
       {
+        key: "/loan/customer-ledger",
+        label: t("menu.customerLedger"),
+        onClick: navigateTo("/loan/customer-ledger"),
+      },
+      {
         key: "/reports/voucher-print",
-        label: "Voucher Print",
+        label: t("menu.voucherPrint"),
         onClick: navigateTo("/reports/voucher-print"),
       },
       {
         key: "/reports/search-voucher-report",
-        label: "Search Voucher",
+        label: t("menu.searchVoucher"),
         onClick: navigateTo("/reports/search-voucher-report"),
       },
       {
         key: "/reports/journal-book-report",
-        label: "Journal Book",
+        label: t("menu.journalBook"),
         onClick: navigateTo("/reports/journal-book-report"),
       },
       {
         key: "/reports/ledger-report",
-        label: "Ledger",
+        label: t("menu.ledger"),
         onClick: navigateTo("/reports/ledger-report"),
       },
       // {
@@ -353,74 +356,69 @@ const items = reactive([
       // },
       {
         key: "/reports/balance-sheet-new",
-        label: "Balance Sheet ",
+        label: t("menu.balanceSheet"),
         onClick: navigateTo("/reports/balance-sheet-new"),
       },
       {
         key: "/reports/balance-sheet-petra",
-        label: "Balance Sheet Petra",
+        label: t("menu.balanceSheetPetra"),
         onClick: navigateTo("/reports/balance-sheet-petra"),
       },
-      // {
-      //   key: "/reports/balance-sheet-details",
-      //   label: "Balance Sheet Details",
-      //   onClick: navigateTo("/reports/balance-sheet-details"),
-      // },
       {
         key: "/reports/payment-receipt",
-        label: "Payment Receipt",
+        label: t("menu.paymentReceipt"),
         onClick: navigateTo("/reports/payment-receipt"),
       },
       {
         key: "/reports/income-statement",
-        label: "Income Statement",
+        label: t("menu.incomeStatement"),
         onClick: navigateTo("/reports/income-statement"),
       },
       {
         key: "/reports/chart-of-accounts-reports",
-        label: "Chart of Accounts",
+        label: t("menu.chartOfAccounts"),
         onClick: navigateTo("/reports/chart-of-accounts-reports"),
       },
       {
         key: "/reports/cash-flow-statement-report",
-        label: "Cash Flow Statement",
+        label: t("menu.cashFlowStatement"),
         onClick: navigateTo("/reports/cash-flow-statement-report"),
       },
       {
         key: "/reports/account-ratio-report",
-        label: "Account Ratio",
+        label: t("menu.accountRatio"),
         onClick: navigateTo("/reports/account-ratio-report"),
       },
       {
         key: "/reports/trial-balance",
-        label: "Trial Balance",
+        label: t("menu.trialBalance"),
         onClick: navigateTo("/reports/trial-balance"),
       },
       {
         key: "/reports/trial-balance-sub",
-        label: "Trial Balance Sub",
+        label: t("menu.trialBalanceSub"),
         onClick: navigateTo("/reports/trial-balance-sub"),
       },
     ],
   },
   {
     key: "user",
-    label: "User Management",
+    label: t("menu.userManagement"),
     icon: () => h(UserOutlined),
     children: [
       {
         key: "/user",
-        label: "User",
+        label: t("menu.user"),
         onClick: navigateTo("/user"),
       },
       {
         key: "/role",
-        label: "Role",
+        label: t("menu.role"),
         onClick: navigateTo("/role"),
       },
       {
         key: "/permission",
-        label: "Permission",
+        label: t("menu.permission"),
         onClick: navigateTo("/permission"),
       },
     ],
@@ -448,13 +446,13 @@ function indexItems(list, parentKey = null) {
 }
 
 // build the parent map once
-indexItems(items);
+indexItems(items.value);
 
 // watch the route and update menu state
 watch(
   () => route.path,
   async (newPath) => {
-    const flat = flattenItems(items);
+    const flat = flattenItems(items.value);
 
     // find exact match or fallback to prefix
     const exact = flat.find((i) => i.key === newPath);

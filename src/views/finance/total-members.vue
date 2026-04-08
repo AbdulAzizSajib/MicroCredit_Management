@@ -15,6 +15,7 @@
           <thead>
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
+              <th class="border border-white px-4 py-2">Customer Name</th>
               <th class="border border-white px-4 py-2">AM Code</th>
               <th class="border border-white px-4 py-2">AM Details</th>
               <th class="border border-white px-4 py-2">Member Code</th>
@@ -24,18 +25,28 @@
           </thead>
           <tbody>
             <tr v-if="members.length === 0">
-              <td colspan="6" class="text-center py-4 text-gray-500">
+              <td colspan="7" class="text-center py-4 text-gray-500">
                 No data available.
               </td>
             </tr>
-            <tr v-for="(item, index) in members" :key="item.AMCode">
-              <td class="px-4 border">{{ index + 1 }}</td>
-              <td class="px-4 border">{{ item.AMCode }}</td>
-              <td class="px-4 border">{{ item.AMDetails }}</td>
-              <td class="px-4 border">{{ item.MemberCode }}</td>
-              <td class="px-4 border">{{ item.ACType1 }}</td>
-              <td class="px-4 border">{{ item.UserId }}</td>
-            </tr>
+            <template
+              v-for="(group, gIndex) in groupedMembers"
+              :key="group.MemberCode"
+            >
+              <tr v-for="(item, i) in group.items" :key="item.AMCode">
+                <td v-if="i === 0" class="px-4 border" :rowspan="group.items.length">
+                  {{ gIndex + 1 }}
+                </td>
+                <td v-if="i === 0" class="px-4 border" :rowspan="group.items.length">
+                  {{ group.CustomerName }}
+                </td>
+                <td class="px-4 border">{{ item.AMCode }}</td>
+                <td class="px-4 border">{{ item.AMDetails }}</td>
+                <td class="px-4 border">{{ item.MemberCode }}</td>
+                <td class="px-4 border">{{ item.ACType1 }}</td>
+                <td class="px-4 border">{{ item.UserId }}</td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -44,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
@@ -52,6 +63,25 @@ import { getToken, showNotification } from "@/utilities/common.js";
 
 const loading = ref(false);
 const members = ref([]);
+
+const groupedMembers = computed(() => {
+  const map = new Map();
+  members.value.forEach((item) => {
+    const key = item.MemberCode;
+    if (!map.has(key)) {
+      const name = String(item.AMDetails || "")
+        .replace(/\s+(Loan|Saving|Savings)$/i, "")
+        .trim();
+      map.set(key, {
+        MemberCode: key,
+        CustomerName: name,
+        items: [],
+      });
+    }
+    map.get(key).items.push(item);
+  });
+  return Array.from(map.values());
+});
 
 const fetchMembers = async () => {
   loading.value = true;

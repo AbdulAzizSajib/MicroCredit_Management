@@ -29,9 +29,10 @@
           <th class="border border-white px-4 py-2">ID</th>
           <th class="border border-white px-4 py-2">Customer Code</th>
           <th class="border border-white px-4 py-2">Customer Name</th>
-          <th class="border border-white px-4 py-2">Date</th>
+          <th class="border border-white px-4 py-2">Period</th>
           <th class="border border-white px-4 py-2 text-right">Amount</th>
           <th class="border border-white px-4 py-2">Remarks</th>
+          <th class="border border-white px-4 py-2">Date</th>
           <th class="border border-white px-4 py-2 text-center">Actions</th>
         </tr>
       </thead>
@@ -40,9 +41,10 @@
           <td class="px-4 border">{{ data?.ID }}</td>
           <td class="px-4 border">{{ data?.CustomerCode }}</td>
           <td class="px-4 border">{{ data?.CustomerName || '-' }}</td>
-          <td class="px-4 border">{{ formatDate(data?.Date) }}</td>
+          <td class="px-4 border">{{ formatPeriod(data?.Period) }}</td>
           <td class="px-4 border text-right">{{ formatAmount(Number(data?.Amount || 0)) }}</td>
           <td class="px-4 border">{{ data?.Remarks }}</td>
+          <td class="px-4 border">{{ formatDate(data?.Date) }}</td>
           <td class="px-4 border text-center">
             <div class="flex justify-center gap-x-3">
               <button
@@ -139,6 +141,25 @@
             />
           </div>
           <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Period <span class="text-red-500">*</span></label>
+            <a-week-picker
+              v-if="formData.CollectionType === 'W'"
+              class="w-full"
+              placeholder="Select Week"
+              value-format="YYYYWW"
+              format="[Week] WW, YYYY"
+              v-model:value="formData.Period"
+            />
+            <a-month-picker
+              v-else
+              class="w-full"
+              placeholder="Select Month"
+              value-format="YYYYMM"
+              format="MMM YYYY"
+              v-model:value="formData.Period"
+            />
+          </div>
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Amount <span class="text-red-500">*</span></label>
             <a-input-number
               class="w-full"
@@ -183,24 +204,10 @@
         <div class="space-y-4 mb-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name <span class="text-red-500">*</span></label>
-            <a-select
-              show-search
-              class="w-full"
-              placeholder="Search Customer"
-              v-model:value="editFormData.CustomerCode"
-              :filter-option="false"
-              @input="searchCustomer($event.target.value)"
-              @change="(val) => onCustomerChange(val, 'edit')"
-              allowClear
-            >
-              <a-select-option
-                v-for="c in customerList"
-                :key="c.AMCode"
-                :value="c.CustomerCode"
-              >
-                {{ c.AMDetails }} ({{ c.CustomerCode }})
-              </a-select-option>
-            </a-select>
+            <a-input
+              :value="`${editFormData.CustomerName || ''} (${editFormData.CustomerCode || ''})`"
+              disabled
+            />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
@@ -209,6 +216,25 @@
               placeholder="Select Date"
               value-format="YYYY-MM-DD"
               v-model:value="editFormData.Date"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Period <span class="text-red-500">*</span></label>
+            <a-week-picker
+              v-if="editFormData.CollectionType === 'W'"
+              class="w-full"
+              placeholder="Select Week"
+              value-format="YYYYWW"
+              format="[Week] WW, YYYY"
+              v-model:value="editFormData.Period"
+            />
+            <a-month-picker
+              v-else
+              class="w-full"
+              placeholder="Select Month"
+              value-format="YYYYMM"
+              format="MMM YYYY"
+              v-model:value="editFormData.Period"
             />
           </div>
           <div>
@@ -268,7 +294,9 @@ const isUpdating = ref(false);
 
 const defaultForm = {
   CustomerCode: "",
+  CollectionType: "M",
   Date: null,
+  Period: null,
   Amount: null,
   Remarks: "",
   AMCode: "",
@@ -290,12 +318,28 @@ const searchCustomer = async (q) => {
   }
 };
 
-const onCustomerChange = (val, mode) => {
+const onCustomerChange = async (val, mode) => {
   const selected = customerList.value.find(c => c.CustomerCode === val);
   if (mode === 'create') {
     formData.value.AMCode = selected?.AMCode || "";
   } else {
     editFormData.value.AMCode = selected?.AMCode || "";
+  }
+  if (!val) return;
+  try {
+    const res = await axios.get(`${apiBase}/customer/${val}`, getToken());
+    const cust = res?.data?.data || {};
+    const amount = Number(cust.SavingAmount || 0);
+    if (mode === 'create') {
+      formData.value.Amount = amount;
+      formData.value.CollectionType = cust.CollectionType || 'M';
+      formData.value.Period = null;
+    } else {
+      editFormData.value.Amount = amount;
+      editFormData.value.CollectionType = cust.CollectionType || 'M';
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -306,6 +350,16 @@ const handleSearch = () => {
 
 const formatDate = (date) => {
   return date ? dayjs(date).format("DD-MMM-YYYY") : "";
+};
+
+const formatPeriod = (period) => {
+  if (!period) return "";
+  const s = String(period);
+  if (s.length !== 6) return s;
+  const year = s.slice(0, 4);
+  const month = parseInt(s.slice(4, 6), 10);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[month - 1] || ""} ${year}`;
 };
 
 const formatAmount = (amount) => {
@@ -343,6 +397,7 @@ const openCreateModal = () => {
 const createCollection = async () => {
   if (!formData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
   if (!formData.value.Date) return showNotification("error", "Date is required.");
+  if (!formData.value.Period) return showNotification("error", "Period is required.");
   if (!formData.value.Amount || formData.value.Amount <= 0) return showNotification("error", "Amount is required.");
   if (!formData.value.Remarks?.trim()) return showNotification("error", "Remarks is required.");
   isCreating.value = true;
@@ -372,10 +427,18 @@ const openEditModal = async (data) => {
       getToken()
     );
     const item = res?.data?.data || data;
+    let collectionType = 'M';
+    try {
+      const cRes = await axios.get(`${apiBase}/customer/${item.CustomerCode}`, getToken());
+      collectionType = cRes?.data?.data?.CollectionType || 'M';
+    } catch (e) { console.log(e); }
     editFormData.value = {
       ID: item.ID,
       CustomerCode: item.CustomerCode,
+      CustomerName: item.CustomerName,
+      CollectionType: collectionType,
       Date: item.Date ? dayjs(item.Date).format("YYYY-MM-DD") : null,
+      Period: item.Period || null,
       Amount: Number(item.Amount) || null,
       Remarks: item.Remarks,
     };
@@ -388,6 +451,7 @@ const openEditModal = async (data) => {
 const updateCollection = async () => {
   if (!editFormData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
   if (!editFormData.value.Date) return showNotification("error", "Date is required.");
+  if (!editFormData.value.Period) return showNotification("error", "Period is required.");
   if (!editFormData.value.Amount || editFormData.value.Amount <= 0) return showNotification("error", "Amount is required.");
   if (!editFormData.value.Remarks?.trim()) return showNotification("error", "Remarks is required.");
   isUpdating.value = true;
@@ -397,6 +461,7 @@ const updateCollection = async () => {
       {
         CustomerCode: editFormData.value.CustomerCode,
         Date: editFormData.value.Date,
+        Period: editFormData.value.Period,
         Amount: editFormData.value.Amount,
         Remarks: editFormData.value.Remarks,
       },
