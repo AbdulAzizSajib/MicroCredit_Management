@@ -13,13 +13,13 @@
 
         <!-- Content Overlay -->
         <div class="relative z-10 h-full flex items-center justify-center p-8 lg:p-16">
-          <div class="text-center lg:text-left max-w-lg">
-            <img src="@/assets/images/aa.png" class="w-32 h-32 mx-auto lg:mx-0 mb-8 drop-shadow-2xl" alt="Logo" />
+          <div class="text-center lg:text-left max-w-lg" data-aos="fade-right" data-aos-duration="800">
+            <AppLogo :size="120" :dark="true" class="mx-auto lg:mx-0 mb-8 drop-shadow-2xl" />
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-              Welcome Back!
+              {{ $t('login.welcome') }}
             </h1>
             <p class="text-white/90 text-lg lg:text-xl leading-relaxed">
-              Sign in to continue your journey with us. Secure, fast, and reliable access to your account.
+              {{ $t('login.subtitle') }}
             </p>
           </div>
         </div>
@@ -27,17 +27,17 @@
 
       <!-- Right Side - Login Form -->
       <div class="lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-gray-50">
-        <div class="w-full max-w-md">
+        <div class="w-full max-w-md" data-aos="fade-left" data-aos-delay="200" data-aos-duration="800">
 
           <!-- Mobile Logo (hidden on desktop) -->
           <div class="lg:hidden mb-8 text-center">
-            <img src="@/assets/images/aa.png" class="w-24 h-24 mx-auto" alt="Logo" />
+            <AppLogo :size="90" :dark="false" class="mx-auto" />
           </div>
 
           <!-- Form Header -->
           <div class="mb-10">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-3">Sign In</h2>
-            <p class="text-gray-600">Enter your credentials to access your account</p>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-3">{{ $t('login.signIn') }}</h2>
+            <p class="text-gray-600">{{ $t('login.credentials') }}</p>
           </div>
 
           <!-- Login Form -->
@@ -46,13 +46,13 @@
             <!-- User ID Input -->
             <div class="group">
               <label for="userId" class="block text-sm font-semibold text-gray-700 mb-2">
-                User ID
+                {{ $t('login.userId') }}
               </label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <img src="@/assets/images/user.png" alt="User" class="w-5 h-5 opacity-60" />
                 </div>
-                <input id="userId" v-model="form.UserId" type="text" required placeholder="Enter your user ID"
+                <input id="userId" v-model="form.UserId" type="text" required :placeholder="$t('login.enterUserId')"
                   class="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 transition-all duration-300  focus:outline-none hover:border-gray-300" />
               </div>
             </div>
@@ -60,14 +60,14 @@
             <!-- Password Input -->
             <div class="group">
               <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                Password
+                {{ $t('login.password') }}
               </label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <img src="@/assets/images/lock.png" alt="Lock" class="w-5 h-5 opacity-60" />
                 </div>
                 <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" required
-                  placeholder="Enter your password"
+                  :placeholder="$t('login.enterPassword')"
                   class="w-full pl-12 pr-14 py-4 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 transition-all duration-300  focus:outline-none hover:border-gray-300" />
                 <button type="button" @click="showPassword = !showPassword"
                   class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-purple-600 transition-colors">
@@ -89,7 +89,7 @@
             <button type="submit" :disabled="isLoading"
               class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform  transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none focus:outline-none focus:ring-4 focus:ring-purple-300">
               <span v-if="!isLoading" class="flex items-center justify-center">
-                <span>Sign In</span>
+                <span>{{ $t('login.signIn') }}</span>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -117,6 +117,7 @@
 
 <script setup>
 import { ref } from "vue";
+import AppLogo from "@/components/AppLogo.vue";
 import { login } from "@/stores/login.js";
 import router from "@/router/index.js";
 

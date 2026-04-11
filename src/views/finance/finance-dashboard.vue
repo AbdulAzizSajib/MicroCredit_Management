@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="space-y-8 max-w-7xl mx-auto">
-      <h1 class="text-3xl font-bold text-primary">{{ $t('dashboard.title') }}</h1>
+      <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ $t('dashboard.title') }}</h1>
 
       <div v-if="loading" class="text-center py-12">
         <a-spin size="large" />
@@ -10,7 +10,8 @@
 
       <div v-else-if="summaryData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total Members -->
-        <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')">
+        <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')"
+          data-aos="fade-up" data-aos-delay="100">
           <div class="flex items-center gap-5">
             <div class="bg-purple-200/40 rounded-2xl p-4">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
@@ -23,7 +24,8 @@
         </div>
 
         <!-- Loan Members -->
-        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/dashboard/loan-members')">
+        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/dashboard/loan-members')"
+          data-aos="fade-up" data-aos-delay="200">
           <div class="flex items-center gap-5">
             <div class="bg-indigo-200/40 rounded-2xl p-4">
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
@@ -36,7 +38,8 @@
         </div>
 
         <!-- Total Saving -->
-        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')">
+        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')"
+          data-aos="fade-up" data-aos-delay="300">
           <div class="flex items-center gap-5">
             <div class="bg-green-200/40 rounded-2xl p-4">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
@@ -49,7 +52,8 @@
         </div>
 
         <!-- Total Loan -->
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/total-loan')"
+          data-aos="fade-up" data-aos-delay="400">
           <div class="flex items-center gap-5">
             <div class="bg-blue-200/40 rounded-2xl p-4">
               <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
@@ -62,7 +66,8 @@
         </div>
 
         <!-- Total Earning -->
-        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')">
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')"
+          data-aos="fade-up" data-aos-delay="500">
           <div class="flex items-center gap-5">
             <div class="bg-amber-200/40 rounded-2xl p-4">
               <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
@@ -75,7 +80,8 @@
         </div>
 
         <!-- Remaining Balance -->
-        <div class="glass-card glass-rose">
+        <div class="glass-card glass-rose"
+          data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-5">
             <div class="bg-rose-200/40 rounded-2xl p-4">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />

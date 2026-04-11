@@ -20,14 +20,14 @@
     >
       <div class="logo px-5 pt-1 pb-0 my-2.5 flex justify-center items-center">
         <router-link :to="{ name: 'overview' }" class="!text-white">
-          <img class="w-16" src="@/assets/images/finance.png" alt="" />
+          <AppLogo :size="collapsed ? 40 : 70" :dark="true" :showText="!collapsed" />
         </router-link>
       </div>
       <a-menu
         :items="items"
         :openKeys="state.openKeys"
         :selectedKeys="state.selectedKeys"
-        @openChange="(keys) => (state.openKeys = keys)"
+        @openChange="(keys) => (state.openKeys = keys.length ? [keys[keys.length - 1]] : [])"
         theme="dark"
         mode="inline"
         class="capitalize"
@@ -83,6 +83,7 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import Header from "./header.vue";
+import AppLogo from "@/components/AppLogo.vue";
 
 const { t } = useI18n();
 

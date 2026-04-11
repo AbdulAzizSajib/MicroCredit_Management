@@ -1,28 +1,28 @@
 <template>
   <MainLayout>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Loan Payment List</h1>
+      <h1 class="text-2xl font-bold text-gray-800" data-aos="fade-right">{{ $t('loan.paymentList') }}</h1>
       <div class="mb-4">
         <button
           class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700"
           @click="isCreateModalVisible = true"
         >
-          New Loan Add
+          {{ $t('loan.newLoanAdd') }}
         </button>
       </div>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <div class="overflow-x-auto bg-white rounded-lg shadow" data-aos="fade-up" data-aos-delay="150">
       <table class="w-full border-collapse">
         <thead>
           <tr class="bg-gray-100 border-b-2 border-gray-300">
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN ID</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN TYPE</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">EMPLOYEE</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">EMPLOYEE NAME</th>
-            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">LOAN AMOUNT</th>
-            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">INSTALLMENT</th>
-            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">ACTION</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanId') }}</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanType') }}</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.employee') }}</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.employeeName') }}</th>
+            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanAmount') }}</th>
+            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.installment') }}</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('common.action') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -39,19 +39,17 @@
             <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.LoanAmount }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.NofInstallment }}</td>
             <td class="px-6 py-4 text-center">
-              <div class="flex justify-center gap-2">
-                <button
-                  @click="viewLoan(loan?.LoanId)"
-                  class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
-                >
-                  VIEW
-                </button>
-                <button
-                  @click="makePayment(loan)"
-                  class="bg-cyan-400 hover:bg-cyan-500 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
-                >
-                  PAYMENT
-                </button>
+              <div class="flex justify-center items-center gap-1">
+                <a-tooltip :title="$t('loan.loanDetails')">
+                  <button type="button" class="action-btn action-btn-info" @click="viewLoan(loan?.LoanId)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </a-tooltip>
+                <a-tooltip :title="$t('loan.payment')">
+                  <button type="button" class="action-btn action-btn-primary" @click="makePayment(loan)">
+                    <i class="bi bi-credit-card"></i>
+                  </button>
+                </a-tooltip>
               </div>
             </td>
           </tr>
@@ -67,13 +65,13 @@
       width="600px"
     >
       <div class="mb-6">
-        <h2 class="text-lg font-bold text-gray-800">PAYLOAN FORM</h2>
+        <h2 class="text-lg font-bold text-gray-800">{{ $t('loan.payLoanForm') }}</h2>
       </div>
 
       <form @submit.prevent="createLoan">
         <div class="space-y-4">
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Loan Type <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.loanType') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-select class="w-full" placeholder="Select Loan Type" v-model:value="formData.LoanType" :status="fieldErrors.LoanType ? 'error' : ''">
                 <a-select-option v-for="type in loanTypeData" :key="type.LoanType" :value="type.LoanType">
@@ -84,7 +82,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Employee Code <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.employeeCode') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-select
                 show-search
@@ -107,14 +105,14 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Date <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.loanDate') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-date-picker class="w-full" placeholder="Date" v-model:value="formData.LoanDate" :status="fieldErrors.LoanDate ? 'error' : ''" />
             </div>
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Effective Period <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.effectivePeriod') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-date-picker
                 class="w-full"
@@ -129,7 +127,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Loan Amount <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.loanAmount') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -142,7 +140,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">No of Installment <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.noOfInstallment') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -156,7 +154,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Installment Amount</label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.installmentAmount') }}</label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -170,7 +168,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Interest Rate (%) <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.interestRate') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -184,7 +182,7 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Interest Amount <span class="text-red-500">*</span></label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.interestAmount') }} <span class="text-red-500">*</span></label>
             <div class="col-span-3">
               <a-input-number
                 class="w-full"
@@ -197,14 +195,14 @@
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-center">
-            <label class="text-sm font-medium text-gray-700">Reference No</label>
+            <label class="text-sm font-medium text-gray-700">{{ $t('loan.referenceNo') }}</label>
             <div class="col-span-3">
               <a-input class="w-full" placeholder="Reference No" v-model:value="formData.Reference" />
             </div>
           </div>
 
           <div class="grid grid-cols-4 gap-4 items-start">
-            <label class="text-sm font-medium text-gray-700 mt-2">Remarks</label>
+            <label class="text-sm font-medium text-gray-700 mt-2">{{ $t('common.remarks') }}</label>
             <div class="col-span-3">
               <a-textarea class="w-full" placeholder="Remarks" v-model:value="formData.Remarks" :rows="4" :status="fieldErrors.Remarks ? 'error' : ''" />
             </div>
@@ -216,7 +214,7 @@
             type="submit"
             class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
           >
-            Submit
+            {{ $t('common.submit') }}
           </button>
         </div>
       </form>
@@ -224,83 +222,83 @@
 
     <a-modal
       v-model:open="isViewModalVisible"
-      title="Loan Details"
+      :title="$t('loan.loanDetails')"
       @cancel="isViewModalVisible = false"
       :footer="null"
       width="650px"
     >
-      <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">Loading details...</div>
+      <div v-if="isLoadingDetails" class="py-8 text-center text-gray-500">{{ $t('loan.loadingDetails') }}</div>
 
       <div v-else-if="viewLoanData">
         <!-- Loan Info -->
         <div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-5">
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Loan ID:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.loanId') }}:</span>
             <span class="text-sm">{{ viewLoanData.LoanId }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Status:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('common.status') }}:</span>
             <span class="text-sm">{{ viewLoanData.Status === 'A' ? 'Active' : viewLoanData.Status }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Loan Type:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.loanType') }}:</span>
             <span class="text-sm">{{ viewLoanData.type?.LoanTypeDetails }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Employee:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.employee') }}:</span>
             <span class="text-sm">{{ viewLoanData.EmpCode }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Account:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.account') }}:</span>
             <span class="text-sm">{{ viewLoanData.account?.AMDetails }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Loan Date:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.loanDate') }}:</span>
             <span class="text-sm">{{ formatDate(viewLoanData.LoanDate) }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Loan Amount:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.loanAmount') }}:</span>
             <span class="text-sm font-medium">{{ formatAmount(Number(viewLoanData.LoanAmount || 0)) }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Installment:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.installment') }}:</span>
             <span class="text-sm">{{ formatAmount(Number(viewLoanData.Installment || 0)) }} x {{ viewLoanData.NofInstallment }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Effective Period:</span>
-            <span class="text-sm">{{ viewLoanData.EffectivePeriod }}</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.effectivePeriod') }}:</span>
+            <span class="text-sm">{{ formatPeriod(viewLoanData.EffectivePeriod) }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Reference:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.referenceNo') }}:</span>
             <span class="text-sm">{{ viewLoanData.Reference }}</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Interest Rate:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.interestRate') }}:</span>
             <span class="text-sm">{{ viewLoanData.InterestRate }}%</span>
           </div>
           <div class="flex justify-between border-b pb-1">
-            <span class="font-semibold text-sm text-gray-600">Interest Amount:</span>
+            <span class="font-semibold text-sm text-gray-600">{{ $t('loan.interestAmount') }}:</span>
             <span class="text-sm font-medium">{{ formatAmount(Number(viewLoanData.InterestAmount || 0)) }}</span>
           </div>
         </div>
 
         <!-- Remarks -->
         <div v-if="viewLoanData.Remarks" class="mb-5">
-          <span class="font-semibold text-sm text-gray-600">Remarks:</span>
+          <span class="font-semibold text-sm text-gray-600">{{ $t('common.remarks') }}:</span>
           <span class="text-sm ml-2">{{ viewLoanData.Remarks }}</span>
         </div>
 
         <!-- Payment History -->
         <div class="mb-2">
-          <h3 class="text-sm font-bold text-gray-700 mb-2">Payment History</h3>
+          <h3 class="text-sm font-bold text-gray-700 mb-2">{{ $t('loan.paymentHistory') }}</h3>
           <div class="overflow-x-auto" v-if="viewPayments.length">
             <table class="w-full border-collapse text-sm">
               <thead>
                 <tr class="bg-gray-100 border-b border-gray-300">
-                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Payment Date</th>
-                  <th class="px-3 py-2 text-right font-semibold text-gray-700">Amount</th>
-                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry By</th>
-                  <th class="px-3 py-2 text-left font-semibold text-gray-700">Entry Date</th>
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.paymentDate') }}</th>
+                  <th class="px-3 py-2 text-right font-semibold text-gray-700">{{ $t('common.amount') }}</th>
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.entryBy') }}</th>
+                  <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.entryDate') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -317,23 +315,23 @@
               </tbody>
               <tfoot>
                 <tr class="bg-gray-50 border-t-2 border-gray-300">
-                  <td class="px-3 py-2 font-bold text-gray-700">Total Paid</td>
+                  <td class="px-3 py-2 font-bold text-gray-700">{{ $t('loan.totalPaid') }}</td>
                   <td class="px-3 py-2 text-right font-bold text-green-600">{{ formatAmount(viewTotalPayment) }}</td>
                   <td colspan="2" class="px-3 py-2"></td>
                 </tr>
                 <tr class="bg-gray-50">
-                  <td class="px-3 py-2 font-bold text-gray-700">Remaining</td>
+                  <td class="px-3 py-2 font-bold text-gray-700">{{ $t('loan.remaining') }}</td>
                   <td class="px-3 py-2 text-right font-bold text-red-500">{{ formatAmount(Number(viewLoanData.LoanAmount || 0) - viewTotalPayment) }}</td>
                   <td colspan="2" class="px-3 py-2"></td>
                 </tr>
               </tfoot>
             </table>
           </div>
-          <div v-else class="text-sm text-gray-500">No payments yet.</div>
+          <div v-else class="text-sm text-gray-500">{{ $t('loan.noPayments') }}</div>
         </div>
       </div>
 
-      <div v-else class="py-8 text-center text-gray-500">No loan details found.</div>
+      <div v-else class="py-8 text-center text-gray-500">{{ $t('loan.noDetails') }}</div>
 
       <div v-if="viewLoanData" class="flex justify-end mt-4">
         <button
@@ -344,22 +342,28 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          Download Report
+          {{ $t('common.downloadReport') }}
         </button>
       </div>
     </a-modal>
 
     <a-modal
       v-model:open="isPaymentModalVisible"
-      title="Payment"
+      :title="$t('loan.payment')"
       @cancel="isPaymentModalVisible = false"
       :footer="null"
       width="500px"
     >
       <form @submit.prevent="submitPayment" v-if="selectedLoan">
+        <div class="mb-4 p-3 bg-blue-50 rounded-lg border text-sm">
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.installment') }}:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoan.Installment || 0)) }} x {{ selectedLoan.NofInstallment }}</span>
+          </div>
+        </div>
         <div class="space-y-5 mb-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Payment</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.payment') }}</label>
             <a-input
               class="w-full"
               placeholder="Enter Payment Amount"
@@ -369,7 +373,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.paymentDate') }}</label>
             <a-date-picker
               class="w-full"
               placeholder="Payment Date"
@@ -379,12 +383,12 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Entry By</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.entryBy') }}</label>
             <a-input class="w-full" placeholder="Entry By" v-model:value="paymentFormData.EntryBy" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Entry Date</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.entryDate') }}</label>
             <a-date-picker
               class="w-full"
               placeholder="Entry Date"
@@ -400,13 +404,13 @@
             @click="isPaymentModalVisible = false"
             class="px-6 py-2 rounded font-semibold bg-gray-500 text-white hover:bg-gray-600 transition-colors"
           >
-            Close
+            {{ $t('common.close') }}
           </button>
           <button
             type="submit"
             class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
           >
-            Save changes
+            {{ $t('loan.saveChanges') }}
           </button>
         </div>
       </form>
@@ -418,7 +422,7 @@
       :page-size="per_page"
       :total="total"
       :show-size-changer="false"
-      :show-total="(t) => `Total ${t} items`"
+      :show-total="(t) => $t('common.totalItems', { total: t })"
       @change="
         (pageNo) => {
           page = pageNo;
@@ -771,6 +775,14 @@ const viewLoan = async (id) => {
   }
 };
 
+const formatPeriod = (period) => {
+  if (!period) return "";
+  const s = String(period);
+  if (s.length !== 6) return s;
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  return `${months[parseInt(s.slice(4, 6), 10) - 1] || ""} ${s.slice(0, 4)}`;
+};
+
 const formatDate = (date) => {
   if (!date) return "";
   const parsed = dayjs(date);
@@ -779,11 +791,8 @@ const formatDate = (date) => {
 
 const makePayment = (loan) => {
   selectedLoan.value = loan;
-  const loanAmount = Number(loan.LoanAmount || 0);
-  const installments = Number(loan.NofInstallment || 1);
-  const installmentAmount = Number((loanAmount / installments).toFixed(2));
   paymentFormData.value = {
-    Payment: installmentAmount,
+    Payment: Number(loan.Installment || 0),
     PaymentDate: dayjs().format("YYYY-MM-DD"),
     EntryBy: "admin",
     EntryDate: dayjs().format("YYYY-MM-DD"),

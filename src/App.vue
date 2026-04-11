@@ -3,7 +3,11 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+    <transition name="page-fade" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </RouterView>
 </template>
 
 <style>
@@ -43,11 +47,18 @@ section.ant-layout {
   overflow: auto !important;
 }
 
-/* .ant-select-item-option.ant-select-item-option-selected {
-  background-color: #99d3ff !important;
+/* Page transition */
+.page-fade-enter-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
-
-.ant-select-item-option:hover{
-  background-color: #cce9ff !important;
-} */
+.page-fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-fade-leave-to {
+  opacity: 0;
+}
 </style>

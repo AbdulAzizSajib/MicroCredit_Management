@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <div class="mb-4">
         <a-input
-          placeholder="Search here..."
+          :placeholder="$t('common.searchHere')"
           v-model:value="search"
           @input="handleSearch"
           class="w-64"
@@ -14,26 +14,26 @@
           class="bg-primary text-white px-4 py-2 rounded"
           @click="openCreateModal"
         >
-          Add Collection
+          {{ $t('collection.addCollection') }}
         </button>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4">
-      Member Collection ({{ total }})
+    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
+      {{ $t('collection.title') }} ({{ total }})
     </h1>
 
     <!-- Table -->
-    <table class="w-full border border-collapse text-left">
+    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">ID</th>
-          <th class="border border-white px-4 py-2">Customer Code</th>
-          <th class="border border-white px-4 py-2">Customer Name</th>
-          <th class="border border-white px-4 py-2">Period</th>
-          <th class="border border-white px-4 py-2 text-right">Amount</th>
-          <th class="border border-white px-4 py-2">Remarks</th>
-          <th class="border border-white px-4 py-2">Date</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('collection.id') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('collection.customerCode') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('collection.customerName') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.period') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
@@ -46,26 +46,23 @@
           <td class="px-4 border">{{ data?.Remarks }}</td>
           <td class="px-4 border">{{ formatDate(data?.Date) }}</td>
           <td class="px-4 border text-center">
-            <div class="flex justify-center gap-x-3">
-              <button
-                type="button"
-                class="px-2 py-1 bg-secondary text-white rounded-md hover:bg-primary"
-                @click="openEditModal(data)"
-              >
-                <i class="bi bi-pencil"></i>
-              </button>
+            <div class="flex justify-center items-center gap-1" v-if="data?.IsVoucher === 'N'">
+              <a-tooltip :title="$t('common.edit')">
+                <button type="button" class="action-btn action-btn-edit" @click="openEditModal(data)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </a-tooltip>
               <a-popconfirm
                 @confirm="deleteCollection(data?.ID)"
-                title="Are you sure?"
-                ok-text="Yes"
-                cancel-text="No"
+                :title="$t('common.areYouSure')"
+                :ok-text="$t('common.yes')"
+                :cancel-text="$t('common.no')"
               >
-                <button
-                  type="button"
-                  class="px-2 py-1 bg-danger text-white rounded-md hover:bg-dangerDark"
-                >
-                  <i class="bi bi-trash3"></i>
-                </button>
+                <a-tooltip :title="$t('common.delete')">
+                  <button type="button" class="action-btn action-btn-danger">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </a-tooltip>
               </a-popconfirm>
             </div>
           </td>
@@ -86,7 +83,7 @@
       :page-size="per_page"
       :total="total"
       :show-size-changer="false"
-      :show-total="(total) => `Total ${total} items`"
+      :show-total="(total) => $t('common.totalItems', { total })"
       @change="
         (pageNo) => {
           page = pageNo;
@@ -99,7 +96,7 @@
     <!-- Create Modal -->
     <a-modal
       v-model:open="isCreateModalVisible"
-      title="Add Collection"
+      :title="$t('collection.addCollection')"
       @cancel="isCreateModalVisible = false"
       :footer="null"
       width="550px"
@@ -107,11 +104,11 @@
       <form @submit.prevent="createCollection">
         <div class="space-y-4 mb-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('collection.customerName') }} <span class="text-red-500">*</span></label>
             <a-select
               show-search
               class="w-full"
-              placeholder="Search Customer"
+              :placeholder="$t('common.search')"
               v-model:value="formData.CustomerCode"
               :filter-option="false"
               @input="searchCustomer($event.target.value)"
@@ -128,38 +125,29 @@
             </a-select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">AM Code</label>
-            <a-input :value="formData.AMCode" disabled placeholder="Auto filled" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('customer.amCode') }}</label>
+            <a-input :value="formData.AMCode" disabled :placeholder="$t('common.autoGenerated')" />
           </div>
           <div v-if="customerInfo" class="grid grid-cols-3 gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
             <div class="text-center">
-              <div class="text-[10px] uppercase text-gray-500 font-semibold">Total</div>
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('collection.totalAmount') }}</div>
               <div class="text-sm font-bold text-blue-700">{{ Number(customerInfo.TotalAmount || 0).toFixed(2) }}</div>
             </div>
             <div class="text-center border-x">
-              <div class="text-[10px] uppercase text-gray-500 font-semibold">Receivable</div>
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('collection.receivable') }}</div>
               <div class="text-sm font-bold text-green-700">{{ Number(customerInfo.TotalGivenAmount || 0).toFixed(2) }}</div>
             </div>
             <div class="text-center">
-              <div class="text-[10px] uppercase text-gray-500 font-semibold">Due</div>
+              <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('collection.dueAmount') }}</div>
               <div class="text-sm font-bold text-red-600">{{ Number(customerInfo.DueAmount || 0).toFixed(2) }}</div>
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
-            <a-date-picker
-              class="w-full"
-              placeholder="Select Date"
-              value-format="YYYY-MM-DD"
-              v-model:value="formData.Date"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Period <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.period') }} <span class="text-red-500">*</span></label>
             <a-week-picker
               v-if="formData.CollectionType === 'W'"
               class="w-full"
-              placeholder="Select Week"
+              :placeholder="$t('common.period')"
               value-format="YYYYWW"
               format="[Week] WW, YYYY"
               v-model:value="formData.Period"
@@ -167,7 +155,7 @@
             <a-month-picker
               v-else
               class="w-full"
-              placeholder="Select Month"
+              :placeholder="$t('common.period')"
               value-format="YYYYMM"
               format="MMM YYYY"
               :disabled-date="disabledPeriodDate"
@@ -175,17 +163,17 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Amount <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.amount') }} <span class="text-red-500">*</span></label>
             <a-input-number
               class="w-full"
               v-model:value="formData.Amount"
-              placeholder="Amount"
+              :placeholder="$t('common.amount')"
               :precision="2"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Remarks <span class="text-red-500">*</span></label>
-            <a-textarea v-model:value="formData.Remarks" placeholder="Remarks" :rows="3" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.remarks') }} <span class="text-red-500">*</span></label>
+            <a-textarea v-model:value="formData.Remarks" :placeholder="$t('common.remarks')" :rows="3" />
           </div>
         </div>
         <div class="flex items-center gap-3">
@@ -194,14 +182,14 @@
             @click="isCreateModalVisible = false"
             class="px-6 py-2 rounded font-semibold bg-gray-500 text-white hover:bg-gray-600 transition-colors"
           >
-            Close
+            {{ $t('common.close') }}
           </button>
           <button
             type="submit"
             :disabled="isCreating"
             class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
           >
-            {{ isCreating ? 'Saving...' : 'Save' }}
+            {{ isCreating ? $t('common.saving') : $t('common.save') }}
           </button>
         </div>
       </form>
@@ -210,7 +198,7 @@
     <!-- Edit Modal -->
     <a-modal
       v-model:open="isEditModalVisible"
-      title="Edit Collection"
+      :title="$t('collection.editCollection')"
       @cancel="isEditModalVisible = false"
       :footer="null"
       width="550px"
@@ -218,27 +206,18 @@
       <form @submit.prevent="updateCollection">
         <div class="space-y-4 mb-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('collection.customerName') }} <span class="text-red-500">*</span></label>
             <a-input
               :value="`${editFormData.CustomerName || ''} (${editFormData.CustomerCode || ''})`"
               disabled
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
-            <a-date-picker
-              class="w-full"
-              placeholder="Select Date"
-              value-format="YYYY-MM-DD"
-              v-model:value="editFormData.Date"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Period <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.period') }} <span class="text-red-500">*</span></label>
             <a-week-picker
               v-if="editFormData.CollectionType === 'W'"
               class="w-full"
-              placeholder="Select Week"
+              :placeholder="$t('common.period')"
               value-format="YYYYWW"
               format="[Week] WW, YYYY"
               v-model:value="editFormData.Period"
@@ -246,24 +225,24 @@
             <a-month-picker
               v-else
               class="w-full"
-              placeholder="Select Month"
+              :placeholder="$t('common.period')"
               value-format="YYYYMM"
               format="MMM YYYY"
               v-model:value="editFormData.Period"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Amount <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.amount') }} <span class="text-red-500">*</span></label>
             <a-input-number
               class="w-full"
               v-model:value="editFormData.Amount"
-              placeholder="Amount"
+              :placeholder="$t('common.amount')"
               :precision="2"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Remarks <span class="text-red-500">*</span></label>
-            <a-textarea v-model:value="editFormData.Remarks" placeholder="Remarks" :rows="3" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.remarks') }} <span class="text-red-500">*</span></label>
+            <a-textarea v-model:value="editFormData.Remarks" :placeholder="$t('common.remarks')" :rows="3" />
           </div>
         </div>
         <div class="flex items-center gap-3">
@@ -272,14 +251,14 @@
             @click="isEditModalVisible = false"
             class="px-6 py-2 rounded font-semibold bg-gray-500 text-white hover:bg-gray-600 transition-colors"
           >
-            Close
+            {{ $t('common.close') }}
           </button>
           <button
             type="submit"
             :disabled="isUpdating"
             class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
           >
-            {{ isUpdating ? 'Updating...' : 'Update' }}
+            {{ isUpdating ? $t('common.updating') : $t('common.update') }}
           </button>
         </div>
       </form>
@@ -325,17 +304,21 @@ const editFormData = ref({ ...defaultForm, ID: null });
 const customerList = ref([]);
 const customerInfo = ref(null);
 const allowedPeriods = ref([]);
-
-const currentPeriod = () => {
-  const d = new Date();
-  return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
-};
+const startPeriod = ref(null);
 
 const disabledPeriodDate = (current) => {
   if (!current) return false;
   const p = `${current.year()}${String(current.month() + 1).padStart(2, "0")}`;
-  const allowed = new Set([...allowedPeriods.value, currentPeriod()]);
-  return !allowed.has(p);
+  // missing periods are always enabled
+  if (allowedPeriods.value.includes(p)) return false;
+  // current period enabled
+  const now = new Date();
+  const cp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
+  if (p === cp) return false;
+  // future periods → enable
+  if (p > cp) return false;
+  // everything else (past paid periods) → disable
+  return true;
 };
 
 const searchCustomer = async (q) => {
@@ -357,6 +340,7 @@ const onCustomerChange = async (val, mode) => {
   if (!val) {
     customerInfo.value = null;
     allowedPeriods.value = [];
+    startPeriod.value = null;
     return;
   }
   try {
@@ -365,8 +349,10 @@ const onCustomerChange = async (val, mode) => {
   } catch (e) { customerInfo.value = null; }
   try {
     const mRes = await axios.get(`${apiBase}/customer/${val}/missing-installment`, getToken());
-    allowedPeriods.value = (mRes?.data?.data || []).map(x => String(x.MissingPeriod));
-  } catch (e) { allowedPeriods.value = []; }
+    const periods = (mRes?.data?.data || []).map(x => String(x.MissingPeriod));
+    allowedPeriods.value = periods;
+    startPeriod.value = periods.length ? periods.sort()[0] : null;
+  } catch (e) { allowedPeriods.value = []; startPeriod.value = null; }
   try {
     const res = await axios.get(`${apiBase}/customer/${val}`, getToken());
     const cust = res?.data?.data || {};
@@ -438,8 +424,8 @@ const openCreateModal = () => {
 
 const createCollection = async () => {
   if (!formData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
-  if (!formData.value.Date) return showNotification("error", "Date is required.");
   if (!formData.value.Period) return showNotification("error", "Period is required.");
+  formData.value.Date = dayjs().format("YYYY-MM-DD");
   if (!formData.value.Amount || formData.value.Amount <= 0) return showNotification("error", "Amount is required.");
   if (!formData.value.Remarks?.trim()) return showNotification("error", "Remarks is required.");
   isCreating.value = true;
@@ -492,8 +478,8 @@ const openEditModal = async (data) => {
 
 const updateCollection = async () => {
   if (!editFormData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
-  if (!editFormData.value.Date) return showNotification("error", "Date is required.");
   if (!editFormData.value.Period) return showNotification("error", "Period is required.");
+  editFormData.value.Date = dayjs().format("YYYY-MM-DD");
   if (!editFormData.value.Amount || editFormData.value.Amount <= 0) return showNotification("error", "Amount is required.");
   if (!editFormData.value.Remarks?.trim()) return showNotification("error", "Remarks is required.");
   isUpdating.value = true;

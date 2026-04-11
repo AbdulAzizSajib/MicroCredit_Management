@@ -17,6 +17,23 @@ body {
     font-family: "Roboto", sans-serif;
     font-size: 14px;
     overflow-x: hidden;
+    background: #f0f2f5;
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #bfcad6;
+    border-radius: 3px;
+    &:hover {
+        background: #8fa3b8;
+    }
 }
 
 input,
@@ -42,7 +59,7 @@ select {
 }
 
 .create_btn {
-    @apply font-medium border border-primary bg-primary text-white rounded text-primary bg-gray-600 text-white capitalize whitespace-nowrap py-2 px-3 mb-3
+    @apply font-medium border border-primary bg-primary text-white rounded capitalize whitespace-nowrap py-2 px-3 mb-3;
 }
 
 .edit_btn {
@@ -50,15 +67,15 @@ select {
 }
 
 .del_btn {
-    @apply border border-danger rounded bg-danger text-white bg-transparent text-danger px-3 py-2;
+    @apply border border-danger rounded bg-transparent text-danger px-3 py-2;
 }
 
 .table_edit_btn {
-    @apply border border-secondary rounded bg-secondary text-white bg-transparent text-secondary w-8 h-8;
+    @apply border border-secondary rounded bg-transparent text-secondary w-8 h-8;
 }
 
 .table_del_btn {
-    @apply border border-danger rounded bg-danger text-white bg-transparent text-danger w-8 h-8;
+    @apply border border-danger rounded bg-transparent text-danger w-8 h-8;
 }
 
 .c_table {
@@ -77,7 +94,7 @@ select {
 
         tbody {
             tr {
-                @apply bg-white bg-gray-50 border-b border-gray-200;
+                @apply bg-gray-50 border-b border-gray-200;
 
                 td {
                     @apply px-4 py-2 whitespace-nowrap align-baseline
@@ -132,6 +149,67 @@ select {
 
 
 
+
+// Action Buttons
+.action-btn {
+  @apply inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm transition-all duration-200 border;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.action-btn-info {
+  @apply bg-blue-50 text-blue-600 border-blue-200;
+  &:hover {
+    @apply bg-blue-600 text-white border-blue-600;
+  }
+}
+
+.action-btn-primary {
+  @apply bg-indigo-50 text-indigo-600 border-indigo-200;
+  &:hover {
+    @apply bg-indigo-600 text-white border-indigo-600;
+  }
+}
+
+.action-btn-edit {
+  @apply bg-amber-50 text-amber-600 border-amber-200;
+  &:hover {
+    @apply bg-amber-600 text-white border-amber-600;
+  }
+}
+
+.action-btn-danger {
+  @apply bg-red-50 text-red-600 border-red-200;
+  &:hover {
+    @apply bg-red-600 text-white border-red-600;
+  }
+}
+
+// Table enhancements
+table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+// Modal animations
+.ant-modal {
+  animation: modalSlideIn 0.25s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 // table customisation
 
