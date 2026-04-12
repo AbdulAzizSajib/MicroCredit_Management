@@ -43,6 +43,9 @@ import TaxCertificate from "@/views/payroll/payroll-settings/tax-certificate.vue
 // finance
 // transactions
 import FinanceDashboard from "@/views/finance/finance-dashboard.vue";
+import ShouldPay from "@/views/finance/should-pay.vue";
+import TotalSavingDetails from "@/views/finance/total-saving-details.vue";
+import TotalDueDetails from "@/views/finance/total-due-details.vue";
 
 // files menu import
 // files menu import
@@ -314,6 +317,26 @@ const routes = [
     path: "/finance-dashboard",
     name: "finance-dashboard",
     component: FinanceDashboard,
+  },
+  {
+    path: "/accountant-dashboard",
+    name: "accountant-dashboard",
+    component: FinanceDashboard,
+  },
+  {
+    path: "/dashboard/should-pay",
+    name: "should-pay",
+    component: ShouldPay,
+  },
+  {
+    path: "/dashboard/total-saving-details",
+    name: "total-saving-details",
+    component: TotalSavingDetails,
+  },
+  {
+    path: "/dashboard/total-due-details",
+    name: "total-due-details",
+    component: TotalDueDetails,
   },
   {
     path: "/home",

@@ -87,16 +87,17 @@
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
-import {showNotification} from "@/utilities/common.js";
+import {getToken, showNotification} from "@/utilities/common.js";
 import { Icon } from "@iconify/vue";
 import { useRouter } from "vue-router";
+import { apiBase } from "@/config";
 const router = useRouter();
 const goBack = () => {
   router.push({ name: 'overview' });
 };
 
 // Replace with your real API base
-const apiBase = "https://wa.acibd.com/api/accounting/api";
+
 
 // State
 const permissionList = ref([]);
@@ -119,13 +120,12 @@ const filteredPermissions = computed(() => {
 });
 
 // Axios headers
-const headers = { headers: { Authorization: `Bearer 10|D9no0WZNCrzPWFfb6CcclHZ3d8C96zulQDK63dhHd5644453` } };
 
 // Fetch permissions
 const fetchPermissions = async () => {
   loading.value = true;
   try {
-    const res = await axios.get(`${apiBase}/permissions`, headers);
+    const res = await axios.get(`${apiBase}/permissions`, getToken());
     permissionList.value = res.data.permissions || [];
   } catch (err) {
     console.error(err);
@@ -141,7 +141,7 @@ const createPermission = async name => {
 
     const formData = new FormData();
     formData.append("name", name);
-    const res = await axios.post(`${apiBase}/permissions`, formData, headers);
+    const res = await axios.post(`${apiBase}/permissions`, formData, getToken());
     await fetchPermissions();
     showNotification("success", res.data.message);
   } catch (err) {
@@ -154,7 +154,7 @@ const createPermission = async name => {
 const updatePermission = async (id, name) => {
   loading.value = true;
   try {
-    const res = await axios.put(`${apiBase}/permissions/${id}?name=${encodeURIComponent(name)}`, null, headers);
+    const res = await axios.put(`${apiBase}/permissions/${id}?name=${encodeURIComponent(name)}`, null, getToken());
     await fetchPermissions();
     showNotification("success", res.data.message);
   } catch (err) {
@@ -167,7 +167,7 @@ const updatePermission = async (id, name) => {
 const deletePermission = async id => {
   loading.value = true;
   try {
-    const res = await axios.delete(`${apiBase}/permissions/${id}`, headers);
+    const res = await axios.delete(`${apiBase}/permissions/${id}`, getToken());
     permissionList.value = permissionList.value.filter(p => p.id !== id);
     showNotification("success", res.data.message);
   } catch (err) {

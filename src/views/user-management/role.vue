@@ -28,15 +28,18 @@
             <span v-else>No permissions</span>
           </td>
           <td class="px-4 border text-center w-8">
-            <div class="flex justify-center gap-x-3">
-              <button class="px-2 py-1 bg-secondary text-white rounded-md hover:bg-primary"
-                @click="openEditModal(role)">
-                <i class="bi bi-pencil"></i>
-              </button>
-              <a-popconfirm title="Are you sure?" ok-text="Yes" cancel-text="No" @confirm="deleteRole(role.id)">
-                <button class="px-2 py-1 bg-danger text-white rounded-md hover:bg-dangerDark">
-                  <i class="bi bi-trash3"></i>
+            <div class="flex justify-center items-center gap-1">
+              <a-tooltip title="Edit">
+                <button type="button" class="action-btn action-btn-edit" @click="openEditModal(role)">
+                  <i class="bi bi-pencil-square"></i>
                 </button>
+              </a-tooltip>
+              <a-popconfirm title="Are you sure?" ok-text="Yes" cancel-text="No" @confirm="deleteRole(role.id)">
+                <a-tooltip title="Delete">
+                  <button type="button" class="action-btn action-btn-danger">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </a-tooltip>
               </a-popconfirm>
             </div>
           </td>
@@ -160,8 +163,7 @@ const fetchRoles = async () => {
 const fetchPermissions = async () => {
   try {
     const res = await axios.get(`${apiBase}/permissions`, getToken());
-    permissionList.value = res.data.permissions;
-
+    permissionList.value = res.data.permissions || res.data.data || [];
   } catch (err) {
     console.error(err);
     permissionList.value = [];

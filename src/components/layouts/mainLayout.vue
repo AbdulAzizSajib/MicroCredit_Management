@@ -146,10 +146,21 @@ const navigateTo = (path) => {
 
 const items = computed(() => [
   {
-    key: "/finance-dashboard",
+    key: "dashboard",
     label: t("menu.dashboard"),
     icon: () => h(ContainerOutlined),
-    onClick: navigateTo("/finance-dashboard"),
+    children: [
+      {
+        key: "/finance-dashboard",
+        label: t("menu.customerDashboard"),
+        onClick: navigateTo("/finance-dashboard"),
+      },
+      {
+        key: "/accountant-dashboard",
+        label: t("menu.accountantDashboard"),
+        onClick: navigateTo("/accountant-dashboard"),
+      },
+    ],
   },
   {
     key: "savings",
@@ -186,6 +197,11 @@ const items = computed(() => [
     label: t("menu.files"),
     icon: () => h(FileTextOutlined),
     children: [
+      {
+        key: "/files/customer",
+        label: t("menu.customer"),
+        onClick: navigateTo("/savings/customer"),
+      },
       {
         key: "/files/group-code",
         label: t("menu.groupCode"),

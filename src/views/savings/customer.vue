@@ -270,68 +270,66 @@
 
     <!-- Details Modal -->
     <a-modal v-model:open="isDetailsModalVisible" :title="$t('customer.details')" @cancel="isDetailsModalVisible = false"
-      :footer="null" width="700px">
+      :footer="null" width="800px">
       <div v-if="detailsLoading" class="text-center py-8"><a-spin /></div>
-      <div v-else-if="detailsData" class="space-y-4">
-        <div class="grid grid-cols-2 gap-3 border-b pb-3">
-          <div><span class="font-semibold">{{ $t('common.code') }}:</span> {{ detailsData.CustomerCode }}</div>
-          <div><span class="font-semibold">{{ $t('common.name') }}:</span> {{ detailsData.CustomerName }}</div>
-          <div class="col-span-2"><span class="font-semibold">{{ $t('common.mobile') }}:</span> {{ detailsData.Mobile }}</div>
+      <div v-else-if="detailsData" class="space-y-5">
+        <!-- Customer Info -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-lg">
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.code') }}</span><div class="font-semibold">{{ detailsData.CustomerCode }}</div></div>
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.name') }}</span><div class="font-semibold">{{ detailsData.CustomerName }}</div></div>
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('customer.customerBanglaName') }}</span><div class="font-semibold">{{ detailsData.CustomerBanglaName }}</div></div>
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.mobile') }}</span><div class="font-semibold">{{ detailsData.Mobile }}</div></div>
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.address') }}</span><div class="font-semibold">{{ detailsData.Add1 }}</div></div>
+          <div><span class="text-gray-500 text-xs uppercase">{{ $t('customer.collectionType') }}</span><div class="font-semibold">{{ detailsData.CollectionType === 'W' ? $t('common.weekly') : $t('common.monthly') }}</div></div>
         </div>
 
-        <div v-if="detailsData.SavingAccounts?.length">
-          <h3 class="font-bold text-primary mb-2">{{ $t('customer.savingAccounts') }}</h3>
-          <table class="w-full border text-sm">
-            <thead class="bg-gray-100">
-              <tr><th class="border px-2 py-1 text-left">{{ $t('customer.amCode') }}</th><th class="border px-2 py-1 text-left">{{ $t('customer.acType') }}</th><th class="border px-2 py-1 text-left">{{ $t('common.details') }}</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="(a, i) in detailsData.SavingAccounts" :key="i">
-                <td class="border px-2 py-1">{{ a.AMCode }}</td>
-                <td class="border px-2 py-1">{{ a.ACType1 }}</td>
-                <td class="border px-2 py-1">{{ a.AMDetails }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div v-if="detailsData.LoanAccounts?.length">
-          <h3 class="font-bold text-primary mb-2">{{ $t('customer.loanAccounts') }}</h3>
-          <table class="w-full border text-sm">
-            <thead class="bg-gray-100">
-              <tr><th class="border px-2 py-1 text-left">{{ $t('customer.amCode') }}</th><th class="border px-2 py-1 text-left">{{ $t('customer.acType') }}</th><th class="border px-2 py-1 text-left">{{ $t('common.details') }}</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="(a, i) in detailsData.LoanAccounts" :key="i">
-                <td class="border px-2 py-1">{{ a.AMCode }}</td>
-                <td class="border px-2 py-1">{{ a.ACType1 }}</td>
-                <td class="border px-2 py-1">{{ a.AMDetails }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div v-if="detailsData.Saving">
-          <h3 class="font-bold text-primary mb-2">{{ $t('customer.savingSummary') }}</h3>
-          <div class="grid grid-cols-2 gap-2 text-sm border rounded p-3 bg-green-50">
-            <div>{{ $t('customer.monthlyTarget') }}: <b>{{ Number(detailsData.Saving.MonthlyTarget || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.currentPeriod') }}: <b>{{ formatPeriodFull(detailsData.Saving.CurrentPeriod) }}</b></div>
-            <div>{{ $t('customer.collectedPeriod') }}: <b>{{ detailsData.Saving.CollectedPeriod }}</b></div>
-            <div>{{ $t('customer.due') }}: <b class="text-red-600">{{ Number(detailsData.Saving.Due || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.totalDeposit') }}: <b>{{ Number(detailsData.Saving.TotalDeposit || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.totalWithdraw') }}: <b>{{ Number(detailsData.Saving.TotalWithdraw || 0).toFixed(2) }}</b></div>
-            <div class="col-span-2">{{ $t('customer.balance') }}: <b class="text-green-700">{{ Number(detailsData.Saving.Balance || 0).toFixed(2) }}</b></div>
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="text-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+            <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('customer.savingAmount') }}</div>
+            <div class="text-lg font-bold text-blue-700">{{ Number(detailsData.SavingAmount || 0).toFixed(2) }}</div>
+          </div>
+          <div class="text-center p-3 bg-green-50 rounded-lg border border-green-100">
+            <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('customer.collectedPeriod') }}</div>
+            <div class="text-lg font-bold text-green-700">{{ Number(detailsData.CollectedThisPeriod || 0).toFixed(2) }}</div>
+          </div>
+          <div class="text-center p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+            <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('customer.totalDeposit') }}</div>
+            <div class="text-lg font-bold text-indigo-700">{{ Number(detailsData.TotalCollection || 0).toFixed(2) }}</div>
+          </div>
+          <div class="text-center p-3 bg-rose-50 rounded-lg border border-rose-100">
+            <div class="text-[10px] uppercase text-gray-500 font-semibold">{{ $t('customer.due') }}</div>
+            <div class="text-lg font-bold text-rose-700">{{ Number(detailsData.Due || 0).toFixed(2) }}</div>
           </div>
         </div>
 
-        <div v-if="detailsData.Loan">
-          <h3 class="font-bold text-primary mb-2">{{ $t('customer.loanSummary') }}</h3>
-          <div class="grid grid-cols-2 gap-2 text-sm border rounded p-3 bg-blue-50">
-            <div>{{ $t('customer.totalDisbursed') }}: <b>{{ Number(detailsData.Loan.TotalDisbursed || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.totalRepaid') }}: <b>{{ Number(detailsData.Loan.TotalRepaid || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.outstanding') }}: <b class="text-orange-600">{{ Number(detailsData.Loan.Outstanding || 0).toFixed(2) }}</b></div>
-            <div>{{ $t('customer.due') }}: <b class="text-red-600">{{ Number(detailsData.Loan.Due || 0).toFixed(2) }}</b></div>
-          </div>
+        <!-- Current Period -->
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-500">{{ $t('customer.currentPeriod') }}:</span>
+          <span class="font-bold text-primary">{{ formatPeriodFull(detailsData.CurrentPeriod) }}</span>
+        </div>
+
+        <!-- Collections Table -->
+        <div v-if="detailsData.Collections?.length">
+          <h3 class="font-bold text-primary mb-2">{{ $t('customer.collections') }}</h3>
+          <table class="w-full border text-sm">
+            <thead class="bg-primary text-white">
+              <tr>
+                <th class="border border-white px-3 py-1.5 text-left">{{ $t('common.period') }}</th>
+                <th class="border border-white px-3 py-1.5 text-right">{{ $t('common.amount') }}</th>
+                <th class="border border-white px-3 py-1.5 text-left">{{ $t('common.remarks') }}</th>
+                <th class="border border-white px-3 py-1.5 text-left">{{ $t('common.date') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(c, i) in detailsData.Collections" :key="i" class="hover:bg-gray-50">
+                <td class="border px-3 py-1.5">{{ formatPeriod(c.Period) }}</td>
+                <td class="border px-3 py-1.5 text-right">{{ Number(c.Amount || 0).toFixed(2) }}</td>
+                <td class="border px-3 py-1.5">{{ c.Remarks }}</td>
+                <td class="border px-3 py-1.5">{{ formatDate(c.Date) }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </a-modal>
@@ -404,7 +402,7 @@ const openDetailsModal = async (data) => {
   detailsLoading.value = true;
   detailsData.value = null;
   try {
-    const res = await axios.get(`${apiBase}/customer/${data.CustomerCode}/summary`, getToken());
+    const res = await axios.get(`${apiBase}/customer/${data.CustomerCode}/summary_member_collection`, getToken());
     detailsData.value = res?.data?.data || null;
   } catch (error) {
     showNotification("error", "Failed to load details.");

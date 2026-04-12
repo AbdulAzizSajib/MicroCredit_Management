@@ -126,6 +126,8 @@
   },
   "menu": {
     "dashboard": "ড্যাশবোর্ড",
+    "customerDashboard": "গ্রাহক ড্যাশবোর্ড",
+    "accountantDashboard": "হিসাবরক্ষক ড্যাশবোর্ড",
     "savings": "সঞ্চয়",
     "memberCollection": "সদস্য আদায়",
     "customer": "গ্রাহক",
@@ -178,6 +180,8 @@
     "totalSaving": "মোট সঞ্চয়",
     "totalLoan": "মোট ঋণ",
     "totalEarning": "মোট আয়",
+    "totalShouldPay": "মোট আদায়যোগ্য",
+    "totalDue": "মোট বকেয়া",
     "remainingBalance": "অবশিষ্ট স্থিতি",
     "fetchError": "তথ্য আনতে ব্যর্থ হয়েছে।"
   },

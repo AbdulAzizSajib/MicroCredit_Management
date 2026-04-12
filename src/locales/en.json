@@ -126,6 +126,8 @@
   },
   "menu": {
     "dashboard": "Dashboard",
+    "customerDashboard": "Customer Dashboard",
+    "accountantDashboard": "Accountant Dashboard",
     "savings": "Savings",
     "memberCollection": "Member Collection",
     "customer": "Customer",
@@ -178,6 +180,8 @@
     "totalSaving": "Total Saving",
     "totalLoan": "Total Loan",
     "totalEarning": "Total Earning",
+    "totalShouldPay": "Total Should Pay",
+    "totalDue": "Total Due",
     "remainingBalance": "Remaining Balance",
     "fetchError": "Failed to fetch summary."
   },

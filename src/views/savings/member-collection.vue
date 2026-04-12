@@ -29,6 +29,7 @@
           <th class="border border-white px-4 py-2">{{ $t('collection.id') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('collection.customerCode') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('collection.customerName') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('customer.customerBanglaName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.period') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
@@ -41,6 +42,7 @@
           <td class="px-4 border">{{ data?.ID }}</td>
           <td class="px-4 border">{{ data?.CustomerCode }}</td>
           <td class="px-4 border">{{ data?.CustomerName || '-' }}</td>
+          <td class="px-4 border">{{ data?.CustomerBanglaName || '-' }}</td>
           <td class="px-4 border">{{ formatPeriod(data?.Period) }}</td>
           <td class="px-4 border text-right">{{ formatAmount(Number(data?.Amount || 0)) }}</td>
           <td class="px-4 border">{{ data?.Remarks }}</td>
