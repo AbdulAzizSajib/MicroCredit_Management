@@ -16,6 +16,7 @@ export const login = async (data, router) => {
             Cookies.set("token", res?.data?.token);
             localStorage.setItem("user_info", JSON.stringify(res?.data?.user));
             localStorage.setItem("user_permissions", JSON.stringify(res?.data?.user?.all_permissions?.map((item) => item?.name)));
+            localStorage.setItem("user_roles", JSON.stringify(res?.data?.user?.roles?.map((r) => r?.name) || []));
             localStorage.setItem("company_code", data.CompanyCode);
             localStorage.setItem("company_name", data.CompanyName || "");
             router.push({ name: "overview" });

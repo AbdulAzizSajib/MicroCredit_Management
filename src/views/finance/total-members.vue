@@ -15,7 +15,7 @@
           <thead>
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
-              <th class="border border-white px-4 py-2">Customer Name</th>
+              <th class="border border-white px-4 py-2">Member Name</th>
               <th class="border border-white px-4 py-2">AM Code</th>
               <th class="border border-white px-4 py-2">AM Details</th>
               <th class="border border-white px-4 py-2">Member Code</th>

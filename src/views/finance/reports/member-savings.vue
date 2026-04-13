@@ -88,8 +88,8 @@
           </th>
           <th class="border border-white px-4 py-2">Invoice No</th>
           <th class="border border-white px-4 py-2">Invoice Date</th>
-          <th class="border border-white px-4 py-2">Customer Code</th>
-          <th class="border border-white px-4 py-2">Customer Name</th>
+          <th class="border border-white px-4 py-2">Member Code</th>
+          <th class="border border-white px-4 py-2">Member Name</th>
           <th class="border border-white px-4 py-2">Amount</th>
         </tr>
       </thead>

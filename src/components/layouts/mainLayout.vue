@@ -92,6 +92,9 @@ const siderRef = ref(null);
 const route = useRoute();
 const router = useRouter();
 
+const userPermissions = JSON.parse(localStorage.getItem("user_permissions") || "[]");
+const hasPermission = (name) => userPermissions.includes(name);
+
 const sidebarWidth = 250;
 let time = ref();
 let date = ref();
@@ -144,23 +147,20 @@ const navigateTo = (path) => {
   };
 };
 
-const items = computed(() => [
+const allMenuItems = computed(() => [
   {
-    key: "dashboard",
-    label: t("menu.dashboard"),
+    key: "/finance-dashboard",
+    label: t("menu.customerDashboard"),
     icon: () => h(ContainerOutlined),
-    children: [
-      {
-        key: "/finance-dashboard",
-        label: t("menu.customerDashboard"),
-        onClick: navigateTo("/finance-dashboard"),
-      },
-      {
-        key: "/accountant-dashboard",
-        label: t("menu.accountantDashboard"),
-        onClick: navigateTo("/accountant-dashboard"),
-      },
-    ],
+    onClick: navigateTo("/finance-dashboard"),
+    permission: "Customer Dashboard",
+  },
+  {
+    key: "/accountant-dashboard",
+    label: t("menu.accountantDashboard"),
+    icon: () => h(ContainerOutlined),
+    onClick: navigateTo("/accountant-dashboard"),
+    permission: "Accountant Dashboard",
   },
   {
     key: "savings",
@@ -178,6 +178,7 @@ const items = computed(() => [
         onClick: navigateTo("/savings/member-collection"),
       },
     ],
+    permission: "Saving",
   },
   {
     key: "loan",
@@ -190,17 +191,19 @@ const items = computed(() => [
         onClick: navigateTo("/loan/pay-loan"),
       },
     ],
+    permission: "Loan",
   },
 
   {
     key: "files",
     label: t("menu.files"),
     icon: () => h(FileTextOutlined),
+    permission: "Files",
     children: [
       {
         key: "/files/customer",
         label: t("menu.customer"),
-        onClick: navigateTo("/savings/customer"),
+        onClick: navigateTo("/files/customer"),
       },
       {
         key: "/files/group-code",
@@ -293,6 +296,7 @@ const items = computed(() => [
     key: "transaction",
     label: t("menu.transaction"),
     icon: () => h(FileTextOutlined),
+    permission: "Transaction",
     children: [
       {
         key: "/transaction/voucher-list",
@@ -340,6 +344,7 @@ const items = computed(() => [
     key: "/reports",
     label: t("menu.reports"),
     icon: () => h(FileTextOutlined),
+    permission: "Reports",
     children: [
       {
         key: "/loan/customer-ledger",
@@ -422,6 +427,7 @@ const items = computed(() => [
     key: "user",
     label: t("menu.userManagement"),
     icon: () => h(UserOutlined),
+    permission: "User Management",
     children: [
       {
         key: "/user",
@@ -441,6 +447,14 @@ const items = computed(() => [
     ],
   },
 ]);
+
+// Filter menu by permission
+const items = computed(() => {
+  return allMenuItems.value.filter((item) => {
+    if (!item.permission) return true;
+    return hasPermission(item.permission);
+  });
+});
 
 const normalizeKey = (key) => {
   return key.replace(/^\/+/, "");

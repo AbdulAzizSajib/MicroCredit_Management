@@ -125,6 +125,7 @@ import PayLoan from "@/views/loan/pay-loan.vue";
 import CustomerLedger from "@/views/loan/customer-ledger.vue";
 import MemberCollection from "@/views/savings/member-collection.vue";
 import SavingsCustomer from "@/views/savings/customer.vue";
+import FilesCustomer from "@/views/finance/files/customer.vue";
 
 const routes = [
   {
@@ -272,6 +273,11 @@ const routes = [
     path: "/savings/customer",
     name: "savings-customer",
     component: SavingsCustomer,
+  },
+  {
+    path: "/files/customer",
+    name: "files-customer",
+    component: FilesCustomer,
   },
   {
     path: "/files/group-code",

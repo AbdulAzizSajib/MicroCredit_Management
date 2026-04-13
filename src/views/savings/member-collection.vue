@@ -425,7 +425,7 @@ const openCreateModal = () => {
 };
 
 const createCollection = async () => {
-  if (!formData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
+  if (!formData.value.CustomerCode?.trim()) return showNotification("error", "Member Name is required.");
   if (!formData.value.Period) return showNotification("error", "Period is required.");
   formData.value.Date = dayjs().format("YYYY-MM-DD");
   if (!formData.value.Amount || formData.value.Amount <= 0) return showNotification("error", "Amount is required.");
@@ -479,7 +479,7 @@ const openEditModal = async (data) => {
 };
 
 const updateCollection = async () => {
-  if (!editFormData.value.CustomerCode?.trim()) return showNotification("error", "Customer Name is required.");
+  if (!editFormData.value.CustomerCode?.trim()) return showNotification("error", "Member Name is required.");
   if (!editFormData.value.Period) return showNotification("error", "Period is required.");
   editFormData.value.Date = dayjs().format("YYYY-MM-DD");
   if (!editFormData.value.Amount || editFormData.value.Amount <= 0) return showNotification("error", "Amount is required.");

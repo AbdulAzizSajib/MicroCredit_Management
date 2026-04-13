@@ -9,51 +9,51 @@
       </div>
 
       <!-- Collection Summary (Customer Dashboard) -->
-      <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')" data-aos="fade-up" data-aos-delay="100">
-          <div class="flex items-center gap-5">
-            <div class="bg-purple-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
+          <div class="flex items-center gap-4">
+            <div class="bg-purple-200/40 rounded-xl p-3">
+              <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">{{ $t('dashboard.totalMembers') }}</div>
-              <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ collectionData.TotalMemeber }}</div>
+              <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider">{{ $t('dashboard.totalMembers') }}</div>
+              <div class="text-2xl font-bold text-purple-700 mt-0.5">{{ collectionData.TotalMemeber }}</div>
             </div>
           </div>
         </div>
 
         <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/should-pay')" data-aos="fade-up" data-aos-delay="200">
-          <div class="flex items-center gap-5">
-            <div class="bg-blue-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:cash-check" class="text-blue-600 text-5xl" />
+          <div class="flex items-center gap-4">
+            <div class="bg-blue-200/40 rounded-xl p-3">
+              <Icon icon="mdi:cash-check" class="text-blue-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalShouldPay') }}</div>
-              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(collectionData.totalShouldPay || 0)) }}</div>
+              <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalShouldPay') }}</div>
+              <div class="text-2xl font-bold text-blue-700 mt-0.5">{{ formatAmount(Number(collectionData.totalShouldPay || 0)) }}</div>
             </div>
           </div>
         </div>
 
         <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving-details')" data-aos="fade-up" data-aos-delay="300">
-          <div class="flex items-center gap-5">
-            <div class="bg-green-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
+          <div class="flex items-center gap-4">
+            <div class="bg-green-200/40 rounded-xl p-3">
+              <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving') }}</div>
-              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(collectionData.TotalSaving || 0)) }}</div>
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving') }}</div>
+              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalSaving || 0)) }}</div>
             </div>
           </div>
         </div>
 
         <div class="glass-card glass-rose cursor-pointer" @click="$router.push('/dashboard/total-due-details')" data-aos="fade-up" data-aos-delay="400">
-          <div class="flex items-center gap-5">
-            <div class="bg-rose-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:alert-circle-outline" class="text-rose-600 text-5xl" />
+          <div class="flex items-center gap-4">
+            <div class="bg-rose-200/40 rounded-xl p-3">
+              <Icon icon="mdi:alert-circle-outline" class="text-rose-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.totalDue') }}</div>
-              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(collectionData.TotalDue || 0)) }}</div>
+              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.totalDue') }}</div>
+              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDue || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.25rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
