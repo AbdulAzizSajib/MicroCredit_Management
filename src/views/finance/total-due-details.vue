@@ -28,6 +28,17 @@
           </tr>
         </tbody>
       </table>
+
+      <a-pagination
+        class="mt-4"
+        v-model:current="page"
+        :page-size="perPage"
+        :total="total"
+        :show-size-changer="false"
+        :show-total="(t) => $t('common.totalItems', { total: t })"
+        @change="(pageNo) => { page = pageNo; fetchData(); }"
+        v-if="total > perPage"
+      />
     </div>
   </MainLayout>
 </template>
@@ -41,12 +52,16 @@ import axios from "axios";
 
 const allData = ref([]);
 const loading = ref(false);
+const page = ref(1);
+const perPage = ref(10);
+const total = ref(0);
 
 const fetchData = async () => {
   loading.value = true;
   try {
-    const res = await axios.get(`${apiBase}/member-wise-collection`, getToken());
+    const res = await axios.get(`${apiBase}/member-wise-collection?page=${page.value}&limit=${perPage.value}`, getToken());
     allData.value = res?.data?.data || [];
+    total.value = res?.data?.pagination?.total || 0;
   } catch (error) {
     console.log(error);
   } finally {
