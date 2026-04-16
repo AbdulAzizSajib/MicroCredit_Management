@@ -126,7 +126,7 @@
   },
   "menu": {
     "dashboard": "Dashboard",
-    "customerDashboard": "Member Dashboard",
+    "customerDashboard": "Cashier Dashboard",
     "accountantDashboard": "Accountant Dashboard",
     "savings": "Savings",
     "memberCollection": "Member Collection",

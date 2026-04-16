@@ -68,7 +68,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 
 // Define props, emits, and state variables
 const companyName = ref(localStorage.getItem("company_name") || "");
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+const userInfo = JSON.parse(localStorage.getItem("user_info") || "null");
 const cash_opening = JSON.parse(localStorage.getItem("cash_opening"));
 const router = useRouter();
 const showBackButton = ref(true); // Control whether to show the back button or not

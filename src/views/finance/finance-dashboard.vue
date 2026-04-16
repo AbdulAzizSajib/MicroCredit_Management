@@ -1,7 +1,17 @@
 <template>
   <MainLayout>
     <div class="space-y-8 max-w-7xl mx-auto">
-      <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ isCustomerDashboard ? $t('menu.customerDashboard') : $t('menu.accountantDashboard') }}</h1>
+      <div class="flex flex-wrap justify-between items-center gap-3">
+        <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ isCustomerDashboard ? $t('menu.customerDashboard') : $t('menu.accountantDashboard') }}</h1>
+        <div v-if="isCustomerDashboard" class="flex items-center gap-2">
+          <a-range-picker
+            v-model:value="dateRange"
+            value-format="YYYY-MM-DD"
+            format="DD-MMM-YYYY"
+            @change="handleDateChange"
+          />
+        </div>
+      </div>
 
       <div v-if="loading" class="text-center py-12">
         <a-spin size="large" />
@@ -10,7 +20,7 @@
 
       <!-- Collection Summary (Customer Dashboard) -->
       <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')" data-aos="fade-up" data-aos-delay="100">
+        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/dashboard/total-members')" data-aos="fade-up" data-aos-delay="100">
           <div class="flex items-center gap-4">
             <div class="bg-purple-200/40 rounded-xl p-3">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl" />
@@ -22,7 +32,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/should-pay')" data-aos="fade-up" data-aos-delay="200">
+        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/dashboard/should-pay')" data-aos="fade-up" data-aos-delay="200">
           <div class="flex items-center gap-4">
             <div class="bg-blue-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-check" class="text-blue-600 text-3xl" />
@@ -34,7 +44,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving-details')" data-aos="fade-up" data-aos-delay="300">
+        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-saving-details')" data-aos="fade-up" data-aos-delay="300">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl" />
@@ -46,7 +56,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="$router.push('/dashboard/total-due-details')" data-aos="fade-up" data-aos-delay="400">
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-due-details')" data-aos="fade-up" data-aos-delay="400">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:alert-circle-outline" class="text-rose-600 text-3xl" />
@@ -170,7 +180,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
@@ -187,6 +197,25 @@ const summaryData = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
+const dateRange = ref([]);
+
+const router = useRouter();
+
+const buildDateQuery = () => {
+  if (dateRange.value?.length === 2 && dateRange.value[0] && dateRange.value[1]) {
+    return `?from_date=${dateRange.value[0]}&to_date=${dateRange.value[1]}`;
+  }
+  return "";
+};
+
+const goToPage = (path) => {
+  const query = {};
+  if (dateRange.value?.length === 2 && dateRange.value[0] && dateRange.value[1]) {
+    query.from_date = dateRange.value[0];
+    query.to_date = dateRange.value[1];
+  }
+  router.push({ path, query });
+};
 
 const fetchSummary = async () => {
   try {
@@ -206,7 +235,7 @@ const fetchSummary = async () => {
 const fetchCollectionSummary = async () => {
   try {
     loading.value = true;
-    const res = await axios.get(`${apiBase}/collection-summary`, getToken());
+    const res = await axios.get(`${apiBase}/collection-summary${buildDateQuery()}`, getToken());
     if (res.data?.success && res.data.data?.length) {
       collectionData.value = res.data.data[0];
     }
@@ -216,6 +245,10 @@ const fetchCollectionSummary = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const handleDateChange = () => {
+  fetchCollectionSummary();
 };
 
 const formatAmount = (amount) => {

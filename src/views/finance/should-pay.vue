@@ -45,11 +45,13 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken } from "@/utilities/common.js";
 import axios from "axios";
 
+const route = useRoute();
 const allData = ref([]);
 const loading = ref(false);
 const page = ref(1);
@@ -59,7 +61,10 @@ const total = ref(0);
 const fetchData = async () => {
   loading.value = true;
   try {
-    const res = await axios.get(`${apiBase}/member-wise-collection?page=${page.value}&limit=${perPage.value}`, getToken());
+    const params = new URLSearchParams({ page: page.value, per_page: perPage.value });
+    if (route.query.from_date) params.append("from_date", route.query.from_date);
+    if (route.query.to_date) params.append("to_date", route.query.to_date);
+    const res = await axios.get(`${apiBase}/member-wise-collection?${params.toString()}`, getToken());
     allData.value = res?.data?.data || [];
     total.value = res?.data?.pagination?.total || 0;
   } catch (error) {

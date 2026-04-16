@@ -2,8 +2,8 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">Total Members</h1>
-        <a-button @click="$router.back()">Back</a-button>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('dashboard.totalMembers') }}</h1>
+        <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 
       <div class="">
@@ -15,18 +15,18 @@
           <thead>
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
-              <th class="border border-white px-4 py-2">Member Name</th>
-              <th class="border border-white px-4 py-2">AM Code</th>
-              <th class="border border-white px-4 py-2">AM Details</th>
-              <th class="border border-white px-4 py-2">Member Code</th>
-              <th class="border border-white px-4 py-2">AC Type</th>
-              <th class="border border-white px-4 py-2">User Id</th>
+              <th class="border border-white px-4 py-2">{{ $t('customer.customerName') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('customer.amCode') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('common.details') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('customer.customerCode') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('customer.acType') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('login.userId') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="members.length === 0">
               <td colspan="7" class="text-center py-4 text-gray-500">
-                No data available.
+                {{ $t('common.noData') }}
               </td>
             </tr>
             <template
@@ -56,11 +56,13 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
 
+const route = useRoute();
 const loading = ref(false);
 const members = ref([]);
 
@@ -86,7 +88,11 @@ const groupedMembers = computed(() => {
 const fetchMembers = async () => {
   loading.value = true;
   try {
-    const res = await axios.get(`${apiBase}/dashboard/members`, getToken());
+    const params = new URLSearchParams();
+    if (route.query.from_date) params.append("from_date", route.query.from_date);
+    if (route.query.to_date) params.append("to_date", route.query.to_date);
+    const qs = params.toString();
+    const res = await axios.get(`${apiBase}/dashboard/members${qs ? `?${qs}` : ""}`, getToken());
     members.value = res?.data?.data || [];
   } catch (error) {
     console.error(error);
