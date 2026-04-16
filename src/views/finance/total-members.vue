@@ -3,7 +3,11 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-indigo-700">{{ $t('dashboard.totalMembers') }}</h1>
-        <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
+        <div class="flex items-center gap-2">
+          <a-range-picker v-model:value="dateRange" value-format="YYYY-MM-DD" format="DD-MMM-YYYY"
+            @change="handleDateChange" />
+          <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
+        </div>
       </div>
 
       <div class="">
@@ -29,10 +33,7 @@
                 {{ $t('common.noData') }}
               </td>
             </tr>
-            <template
-              v-for="(group, gIndex) in groupedMembers"
-              :key="group.MemberCode"
-            >
+            <template v-for="(group, gIndex) in groupedMembers" :key="group.MemberCode">
               <tr v-for="(item, i) in group.items" :key="item.AMCode">
                 <td v-if="i === 0" class="px-4 border" :rowspan="group.items.length">
                   {{ gIndex + 1 }}
@@ -56,15 +57,36 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
 
 const route = useRoute();
+const router = useRouter();
 const loading = ref(false);
 const members = ref([]);
+
+const toYmd = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const getCurrentMonthDateRange = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return [toYmd(start), toYmd(end)];
+};
+
+const defaultDateRange = getCurrentMonthDateRange();
+const dateRange = ref([
+  route.query.from_date || defaultDateRange[0],
+  route.query.to_date || defaultDateRange[1],
+]);
 
 const groupedMembers = computed(() => {
   const map = new Map();
@@ -89,8 +111,8 @@ const fetchMembers = async () => {
   loading.value = true;
   try {
     const params = new URLSearchParams();
-    if (route.query.from_date) params.append("from_date", route.query.from_date);
-    if (route.query.to_date) params.append("to_date", route.query.to_date);
+    if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
+    if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
     const qs = params.toString();
     const res = await axios.get(`${apiBase}/dashboard/members${qs ? `?${qs}` : ""}`, getToken());
     members.value = res?.data?.data || [];
@@ -100,6 +122,17 @@ const fetchMembers = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const handleDateChange = () => {
+  router.replace({
+    query: {
+      ...route.query,
+      from_date: dateRange.value?.[0] || undefined,
+      to_date: dateRange.value?.[1] || undefined,
+    },
+  });
+  fetchMembers();
 };
 
 onMounted(fetchMembers);

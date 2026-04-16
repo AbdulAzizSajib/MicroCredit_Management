@@ -2,14 +2,11 @@
   <MainLayout>
     <div class="space-y-8 max-w-7xl mx-auto">
       <div class="flex flex-wrap justify-between items-center gap-3">
-        <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ isCustomerDashboard ? $t('menu.customerDashboard') : $t('menu.accountantDashboard') }}</h1>
+        <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ isCustomerDashboard ?
+          $t('menu.customerDashboard') : $t('menu.accountantDashboard') }}</h1>
         <div v-if="isCustomerDashboard" class="flex items-center gap-2">
-          <a-range-picker
-            v-model:value="dateRange"
-            value-format="YYYY-MM-DD"
-            format="DD-MMM-YYYY"
-            @change="handleDateChange"
-          />
+          <a-range-picker v-model:value="dateRange" value-format="YYYY-MM-DD" format="DD-MMM-YYYY"
+            @change="handleDateChange" />
         </div>
       </div>
 
@@ -20,50 +17,61 @@
 
       <!-- Collection Summary (Customer Dashboard) -->
       <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/dashboard/total-members')" data-aos="fade-up" data-aos-delay="100">
+        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/dashboard/total-members')"
+          data-aos="fade-up" data-aos-delay="100">
           <div class="flex items-center gap-4">
             <div class="bg-purple-200/40 rounded-xl p-3">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider">{{ $t('dashboard.totalMembers') }}</div>
+              <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider">{{
+                $t('dashboard.totalMembers') }}</div>
               <div class="text-2xl font-bold text-purple-700 mt-0.5">{{ collectionData.TotalMemeber }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/dashboard/should-pay')" data-aos="fade-up" data-aos-delay="200">
+        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/dashboard/should-pay')" data-aos="fade-up"
+          data-aos-delay="200">
           <div class="flex items-center gap-4">
             <div class="bg-blue-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-check" class="text-blue-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalShouldPay') }}</div>
-              <div class="text-2xl font-bold text-blue-700 mt-0.5">{{ formatAmount(Number(collectionData.totalShouldPay || 0)) }}</div>
+              <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider">{{
+                $t('dashboard.totalShouldPay') }}</div>
+              <div class="text-2xl font-bold text-blue-700 mt-0.5">{{ formatAmount(Number(collectionData.totalShouldPay
+                || 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-saving-details')" data-aos="fade-up" data-aos-delay="300">
+        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-saving-details')"
+          data-aos="fade-up" data-aos-delay="300">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving') }}</div>
-              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalSaving || 0)) }}</div>
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving')
+              }}</div>
+              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalSaving ||
+                0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-due-details')" data-aos="fade-up" data-aos-delay="400">
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-due-details')"
+          data-aos="fade-up" data-aos-delay="400">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:alert-circle-outline" class="text-rose-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.totalDue') }}</div>
-              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDue || 0)) }}</div>
+              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.totalDue') }}
+              </div>
+              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDue || 0))
+              }}</div>
             </div>
           </div>
         </div>
@@ -78,7 +86,8 @@
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">{{ $t('dashboard.totalMembers') }}</div>
+              <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">{{
+                $t('dashboard.totalMembers') }}</div>
               <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ summaryData.allMemberCount }}</div>
             </div>
           </div>
@@ -91,7 +100,8 @@
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.loanMembers') }}</div>
+              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.loanMembers')
+              }}</div>
               <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ summaryData.loanMemberCount }}</div>
             </div>
           </div>
@@ -104,8 +114,10 @@
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving') }}</div>
-              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData.totalSaving || 0)) }}</div>
+              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving')
+              }}</div>
+              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData.totalSaving ||
+                0)) }}</div>
             </div>
           </div>
         </div>
@@ -117,8 +129,10 @@
               <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalLoan') }}</div>
-              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(summaryData.totalLoan || 0)) }}</div>
+              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalLoan') }}
+              </div>
+              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(summaryData.totalLoan ||
+                0)) }}</div>
             </div>
           </div>
         </div>
@@ -130,27 +144,31 @@
               <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning') }}</div>
-              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData.totalEarning || 0)) }}</div>
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning')
+              }}</div>
+              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData.totalEarning
+                || 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-rose"
-          data-aos="fade-up" data-aos-delay="600">
+        <div class="glass-card glass-rose" data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-5">
             <div class="bg-rose-200/40 rounded-2xl p-4">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{ $t('dashboard.remainingBalance') }}</div>
-              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData.remaingBalance || 0)) }}</div>
+              <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{
+                $t('dashboard.remainingBalance') }}</div>
+              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData.remaingBalance
+                || 0)) }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="!loading && !summaryData && !collectionData" class="text-center py-12 text-gray-500">{{ $t('common.noData') }}</div>
+      <div v-if="!loading && !summaryData && !collectionData" class="text-center py-12 text-gray-500">{{
+        $t('common.noData') }}</div>
     </div>
 
   </MainLayout>
@@ -166,16 +184,35 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }
+
 .glass-card:hover {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
-.glass-purple { background: linear-gradient(135deg, rgba(243, 232, 255, 0.7), rgba(233, 213, 255, 0.5)); }
-.glass-indigo { background: linear-gradient(135deg, rgba(224, 231, 255, 0.7), rgba(199, 210, 254, 0.5)); }
-.glass-green  { background: linear-gradient(135deg, rgba(220, 252, 231, 0.7), rgba(187, 247, 208, 0.5)); }
-.glass-blue   { background: linear-gradient(135deg, rgba(219, 234, 254, 0.7), rgba(191, 219, 254, 0.5)); }
-.glass-amber  { background: linear-gradient(135deg, rgba(254, 243, 199, 0.7), rgba(253, 230, 138, 0.5)); }
-.glass-rose   { background: linear-gradient(135deg, rgba(255, 228, 230, 0.7), rgba(254, 205, 211, 0.5)); }
+
+.glass-purple {
+  background: linear-gradient(135deg, rgba(243, 232, 255, 0.7), rgba(233, 213, 255, 0.5));
+}
+
+.glass-indigo {
+  background: linear-gradient(135deg, rgba(224, 231, 255, 0.7), rgba(199, 210, 254, 0.5));
+}
+
+.glass-green {
+  background: linear-gradient(135deg, rgba(220, 252, 231, 0.7), rgba(187, 247, 208, 0.5));
+}
+
+.glass-blue {
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.7), rgba(191, 219, 254, 0.5));
+}
+
+.glass-amber {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.7), rgba(253, 230, 138, 0.5));
+}
+
+.glass-rose {
+  background: linear-gradient(135deg, rgba(255, 228, 230, 0.7), rgba(254, 205, 211, 0.5));
+}
 </style>
 
 <script setup>
@@ -197,7 +234,17 @@ const summaryData = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
-const dateRange = ref([]);
+
+const getCurrentMonthDateRange = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const lastDayOfMonth = String(new Date(year, now.getMonth() + 1, 0).getDate()).padStart(2, "0");
+
+  return [`${year}-${month}-01`, `${year}-${month}-${lastDayOfMonth}`];
+};
+
+const dateRange = ref(getCurrentMonthDateRange());
 
 const router = useRouter();
 
