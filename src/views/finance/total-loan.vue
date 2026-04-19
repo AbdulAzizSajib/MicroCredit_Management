@@ -8,12 +8,8 @@
 
       <div class="text-right mb-3 flex justify-end items-center gap-2">
         <label class="font-semibold text-gray-700">Total Loan</label>
-        <input
-          type="text"
-          class="w-32 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
-          :value="totalLoan"
-          readonly
-        />
+        <input type="text" class="w-32 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
+          :value="totalLoan" readonly />
       </div>
 
       <div class="">

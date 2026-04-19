@@ -109,6 +109,9 @@ import TotalMembers from "@/views/finance/total-members.vue";
 import LoanMembers from "@/views/finance/loan-members.vue";
 import TotalSaving from "@/views/finance/total-saving.vue";
 import TotalLoan from "@/views/finance/total-loan.vue";
+import TotalLoanPayable from "@/views/finance/total-loan-payable.vue";
+import TotalLoanPaid from "@/views/finance/total-loan-paid.vue";
+import TotalLoanDue from "@/views/finance/total-loan-due.vue";
 import TotalEarning from "@/views/finance/total-earning.vue";
 
 //member savings
@@ -647,6 +650,24 @@ const routes = [
     component: TotalLoan,
   },
   {
+    path: "/dashboard/total-loan-payable",
+    name: "total-loan-payable",
+    component: TotalLoanPayable,
+    meta: { permission: "Customer Dashboard" },
+  },
+  {
+    path: "/dashboard/total-loan-paid",
+    name: "total-loan-paid",
+    component: TotalLoanPaid,
+    meta: { permission: "Customer Dashboard" },
+  },
+  {
+    path: "/dashboard/total-loan-due",
+    name: "total-loan-due",
+    component: TotalLoanDue,
+    meta: { permission: "Customer Dashboard" },
+  },
+  {
     path: "/dashboard/total-earning",
     name: "total-earning",
     component: TotalEarning,
@@ -710,10 +731,14 @@ router.beforeEach((to, from, next) => {
   // Permission check
   const requiredPermission =
     to.meta?.permission ||
-    Object.entries(pathPermissionMap).find(([path]) => to.path.startsWith(path))?.[1];
+    Object.entries(pathPermissionMap).find(([path]) =>
+      to.path.startsWith(path),
+    )?.[1];
 
   if (requiredPermission) {
-    const permissions = JSON.parse(localStorage.getItem("user_permissions") || "[]");
+    const permissions = JSON.parse(
+      localStorage.getItem("user_permissions") || "[]",
+    );
     if (!permissions.includes(requiredPermission)) {
       return next("/overview");
     }

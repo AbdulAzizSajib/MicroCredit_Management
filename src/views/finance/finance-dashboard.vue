@@ -84,8 +84,10 @@
               <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.interestAmount') }}</div>
-              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount || 0)) }}</div>
+              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.interestAmount') }}
+              </div>
+              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount
+                || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -96,8 +98,10 @@
               <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('loan.loanAmount') }}</div>
-              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.LoanAmount || 0)) }}</div>
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('loan.loanAmount') }}
+              </div>
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.LoanAmount ||
+                0)) }}</div>
             </div>
           </div>
         </div>
@@ -108,8 +112,10 @@
               <Icon icon="mdi:cash-multiple" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('loan.totalPaid') }}</div>
-              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayment || 0)) }}</div>
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('loan.totalPaid') }}
+              </div>
+              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayment
+                || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -121,7 +127,8 @@
             </div>
             <div class="flex-1 text-right">
               <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('loan.remaining') }}</div>
-              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDueAmount || 0)) }}</div>
+              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDueAmount
+                || 0)) }}</div>
             </div>
           </div>
         </div>
