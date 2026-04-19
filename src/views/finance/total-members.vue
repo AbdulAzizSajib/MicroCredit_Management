@@ -20,16 +20,14 @@
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
               <th class="border border-white px-4 py-2">{{ $t('customer.customerName') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('customer.amCode') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('common.details') }}</th>
+              <th class="border border-white px-4 py-2">বাংলা নাম</th>
               <th class="border border-white px-4 py-2">{{ $t('customer.customerCode') }}</th>
               <th class="border border-white px-4 py-2">{{ $t('customer.acType') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('login.userId') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="members.length === 0">
-              <td colspan="7" class="text-center py-4 text-gray-500">
+              <td colspan="5" class="text-center py-4 text-gray-500">
                 {{ $t('common.noData') }}
               </td>
             </tr>
@@ -41,11 +39,11 @@
                 <td v-if="i === 0" class="px-4 border" :rowspan="group.items.length">
                   {{ group.CustomerName }}
                 </td>
-                <td class="px-4 border">{{ item.AMCode }}</td>
-                <td class="px-4 border">{{ item.AMDetails }}</td>
+                <td v-if="i === 0" class="px-4 border" :rowspan="group.items.length">
+                  {{ item.CustomerBanglaName }}
+                </td>
                 <td class="px-4 border">{{ item.MemberCode }}</td>
                 <td class="px-4 border">{{ item.ACType1 }}</td>
-                <td class="px-4 border">{{ item.UserId }}</td>
               </tr>
             </template>
           </tbody>

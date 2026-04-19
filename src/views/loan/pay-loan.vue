@@ -1,8 +1,14 @@
 <template>
   <MainLayout>
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
       <h1 class="text-2xl font-bold text-gray-800" data-aos="fade-right">{{ $t('loan.paymentList') }}</h1>
-      <div class="mb-4">
+      <div class="flex items-center gap-2">
+        <a-range-picker
+          v-model:value="dateRange"
+          value-format="YYYY-MM-DD"
+          format="DD-MMM-YYYY"
+          @change="handleDateChange"
+        />
         <button
           class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700"
           @click="isCreateModalVisible = true"
@@ -441,6 +447,23 @@ import axios from "axios";
 import { apiBase } from "@/config";
 import dayjs from "dayjs";
 
+const toYmd = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const now = new Date();
+const dateRange = ref([
+  toYmd(new Date(now.getFullYear(), now.getMonth(), 1)),
+  toYmd(now),
+]);
+
+const handleDateChange = () => {
+  getLoadData();
+};
+
 const isCreateModalVisible = ref(false);
 const isViewModalVisible = ref(false);
 const isPaymentModalVisible = ref(false);
@@ -578,8 +601,11 @@ const loanData = ref([]);
 const getLoadData = async () => {
   try {
     loadDataloading.value = true;
+    const params = new URLSearchParams({ search: "", per_page: 10 });
+    if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
+    if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
     const res = await axios.get(
-      `${apiBase}/settings/pay-loan?search=&per_page=10`,
+      `${apiBase}/settings/pay-loan?${params.toString()}`,
       getToken(),
     );
     if (res.data) {

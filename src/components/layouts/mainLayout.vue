@@ -163,35 +163,29 @@ const allMenuItems = computed(() => [
     permission: "Accountant Dashboard",
   },
   {
-    key: "savings",
-    label: t("menu.savings"),
+    key: "/savings/customer",
+    label: t("menu.customer"),
     icon: () => h(UserOutlined),
-    children: [
-      {
-        key: "/savings/customer",
-        label: t("menu.customer"),
-        onClick: navigateTo("/savings/customer"),
-      },
-      {
-        key: "/savings/member-collection",
-        label: t("menu.memberCollection"),
-        onClick: navigateTo("/savings/member-collection"),
-      },
-    ],
+    onClick: navigateTo("/savings/customer"),
     permission: "Saving",
   },
   {
-    key: "loan",
-    label: t("menu.loan"),
+    key: "collection",
+    label: t("menu.collection"),
     icon: () => h(InboxOutlined),
     children: [
       {
+        key: "/savings/member-collection",
+        label: t("menu.savings"),
+        onClick: navigateTo("/savings/member-collection"),
+      },
+      {
         key: "/loan/pay-loan",
-        label: t("menu.payLoan"),
+        label: t("menu.loan"),
         onClick: navigateTo("/loan/pay-loan"),
       },
     ],
-    permission: "Loan",
+    permission: "Saving",
   },
 
   {

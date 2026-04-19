@@ -75,6 +75,55 @@
             </div>
           </div>
         </div>
+
+        <!-- Loan Summary Cards -->
+        <div class="glass-card glass-amber" data-aos="fade-up" data-aos-delay="500">
+          <div class="flex items-center gap-4">
+            <div class="bg-amber-200/40 rounded-xl p-3">
+              <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.interestAmount') }}</div>
+              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glass-indigo" data-aos="fade-up" data-aos-delay="600">
+          <div class="flex items-center gap-4">
+            <div class="bg-indigo-200/40 rounded-xl p-3">
+              <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('loan.loanAmount') }}</div>
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.LoanAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glass-green" data-aos="fade-up" data-aos-delay="700">
+          <div class="flex items-center gap-4">
+            <div class="bg-green-200/40 rounded-xl p-3">
+              <Icon icon="mdi:cash-multiple" class="text-green-600 text-3xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('loan.totalPaid') }}</div>
+              <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayment || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glass-rose" data-aos="fade-up" data-aos-delay="800">
+          <div class="flex items-center gap-4">
+            <div class="bg-rose-200/40 rounded-xl p-3">
+              <Icon icon="mdi:cash-clock" class="text-rose-600 text-3xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('loan.remaining') }}</div>
+              <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDueAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Accountant Dashboard Cards -->

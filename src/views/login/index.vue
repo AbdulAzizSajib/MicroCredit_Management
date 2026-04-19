@@ -1,5 +1,8 @@
 <template>
-  <section class="login-wrapper">
+  <section class="login-wrapper relative">
+    <div class="absolute top-4 right-4 z-50">
+      <LanguageSwitcher />
+    </div>
     <div class="min-h-screen flex flex-col lg:flex-row">
 
       <!-- Left Side - Image -->
@@ -34,7 +37,6 @@
             <AppLogo :size="90" :dark="false" class="mx-auto" />
           </div>
 
-          <!-- Form Header -->
           <div class="mb-10">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-3">{{ $t('login.signIn') }}</h2>
             <p class="text-gray-600">{{ $t('login.credentials') }}</p>
@@ -118,6 +120,7 @@
 <script setup>
 import { ref } from "vue";
 import AppLogo from "@/components/AppLogo.vue";
+import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 import { login } from "@/stores/login.js";
 import router from "@/router/index.js";
 

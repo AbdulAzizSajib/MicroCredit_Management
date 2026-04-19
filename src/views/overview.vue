@@ -54,19 +54,22 @@
             </h2>
           </div>
 
-          <button
-            @click="handleLogout($router)"
-            class="group flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 hover:from-red-500/30 hover:to-orange-500/30 rounded-xl transition-all duration-300 border border-red-500/30 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/30"
-          >
-            <Icon
-              class="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors duration-300"
-              icon="mdi:logout"
-            />
-            <span
-              class="text-red-400 group-hover:text-red-300 text-sm font-semibold uppercase tracking-wide transition-colors duration-300"
-              >Logout</span
+          <div class="flex items-center gap-3">
+            <LanguageSwitcher />
+            <button
+              @click="handleLogout($router)"
+              class="group flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 hover:from-red-500/30 hover:to-orange-500/30 rounded-xl transition-all duration-300 border border-red-500/30 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/30"
             >
-          </button>
+              <Icon
+                class="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors duration-300"
+                icon="mdi:logout"
+              />
+              <span
+                class="text-red-400 group-hover:text-red-300 text-sm font-semibold uppercase tracking-wide transition-colors duration-300"
+                >{{ $t('common.logout') }}</span
+              >
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -79,11 +82,10 @@
           Hi, <span class="font-bold">{{ name }}</span>!
         </h3> -->
         <p class="text-lg lg:text-xl text-gray-600 mt-2">
-          Welcome to your
+          {{ $t('login.welcome') }}
           <span class="font-bold uppercase text-indigo-600"
             >Micro Credit Management</span
           >
-          Dashboard
         </p>
         <div
           class="w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto mt-4 rounded-full"
@@ -176,11 +178,11 @@ import project from "@/assets/images/icons/project.png";
 import approveIcon from "@/assets/images/icons/approveal.png";
 import reportIcon from "@/assets/images/icons/report.png";
 import { Icon } from "@iconify/vue";
+import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 import Cookies from "js-cookie";
 import { computed, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-const name = localStorage.getItem("name");
 const router = useRouter();
 
 const handleLogout = (router) => {
@@ -188,38 +190,6 @@ const handleLogout = (router) => {
   localStorage.clear();
   router.push({ name: "login" });
 };
-
-const card = [
-  {
-    title: "Finance & Accounting",
-    icon: customerIcon,
-    route: "finance-dashboard",
-    bg: "#ffe2e5",
-    iconBg: "#fa5a7d",
-    disabled: false,
-  },
-  // {
-  //   title: "PAYROLL",
-  //   icon: performanceIcon,
-  //   route: "personal-info",
-  //   bg: "#fff4de",
-  //   iconBg: "#ff947a",
-  //   disabled: true,
-  // },
-
-  // {
-  //   title: "REPORT",
-  //   icon: reportIcon,
-  //   // route: "reports",
-  //   bg: "#cbd7ff",
-  //   iconBg: "#3c60d8",
-  //   disabled: true,
-  // },
-];
-
-const filteredCard = computed(() =>
-  card.filter((item) => !item.permission || hasPermission(item.permission)),
-);
 
 const user_permissions = ref(
   JSON.parse(localStorage.getItem("user_permissions") || "[]"),
@@ -229,40 +199,37 @@ const hasPermission = (permission) => {
   return user_permissions.value.includes(permission);
 };
 
-const roles = JSON.parse(localStorage.getItem("roles") || "[]");
-
-const roleRouteMap = {
-  "Super Admin": "business-dashboard",
-  Admin: "individual-target",
-  User: "individual-target",
-  Supervisor: "individual-target",
-  "Senior Supervisor": "department-target-result",
-  "Head of Department": "department-dashboard",
-  "Head of Business": "business-dashboard",
-};
-
-const priorityList = [
-  "Super Admin",
-  "Admin",
-  "User",
-  "Supervisor",
-  "Senior Supervisor",
-  "Head of Department",
-  "Head of Business",
+const card = [
+  {
+    title: "Cashier Dashboard",
+    icon: customerIcon,
+    route: "finance-dashboard",
+    bg: "#ffe2e5",
+    iconBg: "#fa5a7d",
+    permission: "Customer Dashboard",
+  },
+  {
+    title: "Accountant Dashboard",
+    icon: performanceIcon,
+    route: "accountant-dashboard",
+    bg: "#fff4de",
+    iconBg: "#ff947a",
+    permission: "Accountant Dashboard",
+  },
 ];
 
-const storedRoles = JSON.parse(localStorage.getItem("roles") || "[]");
-const roleNames = storedRoles.map((role) => role.name);
-const matchedRole = priorityList.find((role) => roleNames.includes(role));
+const filteredCard = computed(() =>
+  card.filter((item) => !item.permission || hasPermission(item.permission)),
+);
 
-card.forEach((item) => {
-  if (item.title === "PERFORMANCE MANAGEMENT") {
-    item.route = roleRouteMap[matchedRole];
-  }
-});
-
-// Add entrance animations
+// Auto-redirect if only one card available
 onMounted(() => {
+  if (filteredCard.value.length === 1) {
+    router.replace({ name: filteredCard.value[0].route });
+    return;
+  }
+
+  // Entrance animations
   const cards = document.querySelectorAll(".card-animation");
   cards.forEach((card, index) => {
     setTimeout(() => {

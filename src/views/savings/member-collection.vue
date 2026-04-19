@@ -1,15 +1,21 @@
 <template>
   <MainLayout>
-    <div class="flex justify-between">
-      <div class="mb-4">
+    <div class="flex flex-wrap justify-end items-center gap-3">
+      <div class="flex items-center gap-2">
         <a-input
           :placeholder="$t('common.searchHere')"
           v-model:value="search"
           @input="handleSearch"
           class="w-64"
         />
+        <a-range-picker
+          v-model:value="dateRange"
+          value-format="YYYY-MM-DD"
+          format="DD-MMM-YYYY"
+          @change="handleDateChange"
+        />
       </div>
-      <div class="mb-4">
+      <div>
         <button
           class="bg-primary text-white px-4 py-2 rounded"
           @click="openCreateModal"
@@ -283,6 +289,23 @@ const search = ref("");
 const allData = ref([]);
 const loading = ref(false);
 
+const toYmd = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+const now = new Date();
+const dateRange = ref([
+  toYmd(new Date(now.getFullYear(), now.getMonth(), 1)),
+  toYmd(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
+]);
+
+const handleDateChange = () => {
+  page.value = 1;
+  fetchAllData();
+};
+
 const isCreateModalVisible = ref(false);
 const isEditModalVisible = ref(false);
 const isCreating = ref(false);
@@ -403,7 +426,7 @@ const fetchAllData = async () => {
   loading.value = true;
   try {
     const res = await axios.get(
-      `${apiBase}/member-collection?search=${search.value}&limit=${per_page.value}&page=${page.value}`,
+      `${apiBase}/member-collection?search=${search.value}&limit=${per_page.value}&page=${page.value}&from_date=${dateRange.value?.[0] || ''}&to_date=${dateRange.value?.[1] || ''}`,
       getToken()
     );
     loading.value = false;

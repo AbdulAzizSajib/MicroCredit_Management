@@ -258,91 +258,109 @@ const routes = [
     path: "/loan/pay-loan",
     name: "pay-loan",
     component: PayLoan,
+    meta: { permission: "Loan" },
   },
   {
     path: "/loan/customer-ledger",
     name: "customer-ledger",
     component: CustomerLedger,
+    meta: { permission: "Reports" },
   },
   {
     path: "/savings/member-collection",
     name: "member-collection",
     component: MemberCollection,
+    meta: { permission: "Saving" },
   },
   {
     path: "/savings/customer",
     name: "savings-customer",
     component: SavingsCustomer,
+    meta: { permission: "Saving" },
   },
   {
     path: "/files/customer",
     name: "files-customer",
     component: FilesCustomer,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/group-code",
     name: "group-code",
     component: GroupCode,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/cash-flow",
     name: "cash-flow",
     component: CashFlow,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/voucher-type",
     name: "voucher-type",
     component: VoucherType,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/voucher-category",
     name: "voucher-category",
     component: VoucherCategory,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/ac-type",
     name: "ac-type",
     component: AcType,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/ac-sub-group",
     name: "ac-sub-group",
     component: AcSubGroup,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/sub-ledger",
     name: "sub-ledger",
     component: SubLedger,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/opening",
     name: "opening",
     component: Opening,
+    meta: { permission: "Files" },
   },
   {
     path: "/finance-dashboard",
     name: "finance-dashboard",
     component: FinanceDashboard,
+    meta: { permission: "Customer Dashboard" },
   },
   {
     path: "/accountant-dashboard",
     name: "accountant-dashboard",
     component: FinanceDashboard,
+    meta: { permission: "Accountant Dashboard" },
   },
   {
     path: "/dashboard/should-pay",
     name: "should-pay",
     component: ShouldPay,
+    meta: { permission: "Customer Dashboard" },
   },
   {
     path: "/dashboard/total-saving-details",
     name: "total-saving-details",
     component: TotalSavingDetails,
+    meta: { permission: "Customer Dashboard" },
   },
   {
     path: "/dashboard/total-due-details",
     name: "total-due-details",
     component: TotalDueDetails,
+    meta: { permission: "Customer Dashboard" },
   },
   {
     path: "/home",
@@ -358,71 +376,80 @@ const routes = [
     path: "/user",
     name: "user",
     component: User,
+    meta: { permission: "User Management" },
   },
   {
     path: "/role",
     name: "role",
     component: RoleIndex,
+    meta: { permission: "User Management" },
   },
   {
     path: "/permission",
     name: "permission",
     component: PermissionIndex,
+    meta: { permission: "User Management" },
   },
 
   {
     path: "/files/search-chart-of-accounts/chart-of-accounts",
     name: "chart-of-accounts",
     component: ChartOfAccounts,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/search-chart-of-accounts/chart-of-accounts-edit/:am_code",
     name: "chart-of-accounts-edit",
     component: ChartOfAccountsEdit,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/search-chart-of-accounts",
     name: "search-chart-of-accounts",
     component: SearchChartOfAccounts,
+    meta: { permission: "Files" },
   },
-
   {
     path: "/files/financial-month",
     name: "financial-month",
     component: FinancialMonth,
+    meta: { permission: "Files" },
   },
-
   {
     path: "/files/set-period",
     name: "set-period",
     component: SetPeriod,
+    meta: { permission: "Files" },
   },
-
   {
     path: "/files/site",
     name: "site",
     component: Site,
+    meta: { permission: "Files" },
   },
-
   {
     path: "/files/vendor-entry",
     name: "vendor-entry",
     component: VendorEntry,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/vendor-type",
     name: "vendor-type",
     component: VendorType,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/sub-ledger-category",
     name: "sub-ledger-category",
     component: SubLedgerCategory,
+    meta: { permission: "Files" },
   },
   {
     path: "/files/cheque-no",
     name: "cheque-no",
     component: ChequeNo,
+    meta: { permission: "Files" },
   },
 
   // transactions voucher
@@ -658,16 +685,40 @@ const router = createRouter({
   routes,
 });
 
+// Path-to-permission mapping for routes without meta.permission
+const pathPermissionMap = {
+  "/transaction": "Transaction",
+  "/reports": "Reports",
+  "/files": "Files",
+  "/dashboard/total-members": "Customer Dashboard",
+  "/dashboard/loan-members": "Accountant Dashboard",
+  "/dashboard/total-saving": "Accountant Dashboard",
+  "/dashboard/total-loan": "Accountant Dashboard",
+  "/dashboard/total-earning": "Accountant Dashboard",
+};
+
 router.beforeEach((to, from, next) => {
   const token = Cookies.get("token");
   if (to.path === "/" && !token) {
-    next();
+    return next();
   } else if (to.path === "/" && token) {
-    next("/home");
-  } else if (token) {
-    next();
-  } else {
-    next("/");
+    return next("/overview");
+  } else if (!token) {
+    return next("/");
   }
+
+  // Permission check
+  const requiredPermission =
+    to.meta?.permission ||
+    Object.entries(pathPermissionMap).find(([path]) => to.path.startsWith(path))?.[1];
+
+  if (requiredPermission) {
+    const permissions = JSON.parse(localStorage.getItem("user_permissions") || "[]");
+    if (!permissions.includes(requiredPermission)) {
+      return next("/overview");
+    }
+  }
+
+  next();
 });
 export default router;
