@@ -16,6 +16,7 @@
       </div>
 
       <!-- Collection Summary (Customer Dashboard) -->
+      <!-- Collection Summary (Customer Dashboard) -->
       <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/dashboard/total-members')"
           data-aos="fade-up" data-aos-delay="100">
