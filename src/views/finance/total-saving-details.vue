@@ -34,14 +34,14 @@
       </table>
 
       <a-pagination class="mt-4" v-model:current="page" :page-size="perPage" :total="total" :show-size-changer="false"
-        :show-total="(t) => $t('common.totalItems', { total: t })" @change="(pageNo) => { page = pageNo; fetchData(); }"
+        :show-total="(t) => $t('common.totalItems', { total: t })"
         v-if="total > perPage" />
     </div>
   </MainLayout>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
@@ -50,11 +50,16 @@ import axios from "axios";
 
 const route = useRoute();
 const router = useRouter();
-const allData = ref([]);
+const filteredData = ref([]);
 const loading = ref(false);
 const page = ref(1);
 const perPage = ref(10);
-const total = ref(0);
+
+const total = computed(() => filteredData.value.length);
+const allData = computed(() => {
+  const start = (page.value - 1) * perPage.value;
+  return filteredData.value.slice(start, start + perPage.value);
+});
 
 const toYmd = (date) => {
   const y = date.getFullYear();
@@ -76,21 +81,23 @@ const dateRange = ref([
   route.query.to_date || defaultDateRange[1],
 ]);
 
-const fetchData = async () => {
+const fetchAllPages = async () => {
   loading.value = true;
   try {
-    const params = new URLSearchParams({ page: page.value, per_page: perPage.value });
+    const params = new URLSearchParams({ page: 1, per_page: 1000 });
     if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
     if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
     const res = await axios.get(`${apiBase}/member-wise-collection?${params.toString()}`, getToken());
-    allData.value = res?.data?.data || [];
-    total.value = res?.data?.pagination?.total || 0;
+    const raw = res?.data?.data || [];
+    filteredData.value = raw.filter(item => Number(item.PaidAmount || 0) > 0);
   } catch (error) {
     console.log(error);
   } finally {
     loading.value = false;
   }
 };
+
+const fetchData = fetchAllPages;
 
 const handleDateChange = () => {
   page.value = 1;

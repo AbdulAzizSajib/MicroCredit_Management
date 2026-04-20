@@ -9,16 +9,27 @@
     boxShadow: '1px 1px 1px #d5d5d5',
   }">
     <div class="flex justify-between items-center">
-      <!-- Custom Back Button with Iconify Icon -->
-      <div v-if="showBackButton" class="flex items-center">
-        <button @click="goBack"
-          class="custom-back-btn bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300 flex items-center justify-center">
-          <icon :icon="'akar-icons:arrow-back'" class="icon" /> {{ $t('common.back') }}
+      <div class="flex items-center gap-2">
+        <!-- Mobile hamburger toggle -->
+        <button
+          v-if="isMobile"
+          @click="toggleCollapsed"
+          class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+        >
+          <Icon icon="mdi:menu" class="text-xl text-gray-700" />
         </button>
+
+        <!-- Custom Back Button with Iconify Icon -->
+        <div v-if="showBackButton">
+          <button @click="goBack"
+            class="custom-back-btn bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300 flex items-center justify-center">
+            <icon :icon="'akar-icons:arrow-back'" class="icon" /> {{ $t('common.back') }}
+          </button>
+        </div>
       </div>
 
       <!-- Address & Time Section -->
-      <div class="text-secondary font-bold uppercase text-center text-[10px]">
+      <div class="text-secondary font-bold uppercase text-center text-[10px] hidden sm:block">
         <p class="text-[8px]">{{ userInfo?.branch?.address }}</p>
       </div>
 
@@ -38,7 +49,7 @@
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link cursor-pointer flex items-center gap-2" @click.prevent>
                 <i class="bi bi-person-circle text-lg mr-2 text-indigo-500"></i>
-                <span class="text-xs lg:text-base">{{ userInfo?.name || $t('common.admin') }}</span>
+                <span class="text-xs lg:text-base hidden sm:inline">{{ userInfo?.name || $t('common.admin') }}</span>
               </a>
               <template #overlay>
                 <a-menu>
@@ -61,7 +72,7 @@
 import Cookies from "js-cookie";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Icon } from '@iconify/vue'; // Import Iconify component
+import { Icon } from '@iconify/vue';
 import axios from "axios";
 import LanguageSwitcher from "@/components/LanguageSwitcher.vue";
 
@@ -71,10 +82,10 @@ const companyName = ref(localStorage.getItem("company_name") || "");
 const userInfo = JSON.parse(localStorage.getItem("user_info") || "null");
 const cash_opening = JSON.parse(localStorage.getItem("cash_opening"));
 const router = useRouter();
-const showBackButton = ref(true); // Control whether to show the back button or not
+const showBackButton = ref(true);
 
-const props = defineProps(["collapsed"]);
-const emit = defineEmits();
+const props = defineProps(["collapsed", "isMobile"]);
+const emit = defineEmits(["update:collapsed"]);
 
 const toggleCollapsed = () => {
   emit("update:collapsed", !props.collapsed);
@@ -110,7 +121,7 @@ onMounted(async () => {
 
 // Add listener for the back button action
 const goBack = () => {
-  window.history.back(); // Navigates to the previous page in history
+  window.history.back();
 };
 
 window.addEventListener("keydown", (event) => {
@@ -133,8 +144,6 @@ const handleLogout = (router) => {
 </script>
 
 <style scoped>
-
-
 .icon {
   font-size: 20px;
   margin-right: 8px;

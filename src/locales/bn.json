@@ -106,7 +106,7 @@
     "installment": "কিস্তি",
     "installmentAmount": "কিস্তির পরিমাণ",
     "interestRate": "সুদের হার (%)",
-    "interestAmount": "সুদের পরিমাণ",
+    "interestAmount": "লাভের  পরিমাণ",
     "referenceNo": "রেফারেন্স নম্বর",
     "loanId": "ঋণ আইডি",
     "loanDetails": "ঋণের বিবরণ",
@@ -122,7 +122,18 @@
     "noDetails": "ঋণের বিবরণ পাওয়া যায়নি।",
     "loadingDetails": "বিবরণ লোড হচ্ছে...",
     "view": "দেখুন",
-    "saveChanges": "পরিবর্তন সংরক্ষণ"
+    "saveChanges": "পরিবর্তন সংরক্ষণ",
+    "memberCode": "সদস্য কোড",
+    "customerName": "সদস্যের নাম",
+    "banglaName": "বাংলা নাম",
+    "totalPayment": "মোট পরিশোধ",
+    "totalLoanPayable": "মোট ঋণ আদায়যোগ্য",
+    "totalLoanPaid": "মোট ঋণ পরিশোধ",
+    "totalLoanDue": "মোট ঋণ বকেয়া",
+    "fetchErrorPayable": "মোট ঋণ আদায়যোগ্য আনতে ব্যর্থ হয়েছে।",
+    "fetchErrorPaid": "মোট ঋণ পরিশোধ আনতে ব্যর্থ হয়েছে।",
+    "fetchErrorDue": "মোট ঋণ বকেয়া আনতে ব্যর্থ হয়েছে।",
+    "fetchErrorInterest": "সুদের পরিমাণ আনতে ব্যর্থ হয়েছে।"
   },
   "menu": {
     "dashboard": "ড্যাশবোর্ড",

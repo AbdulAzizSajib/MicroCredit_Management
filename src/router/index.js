@@ -113,6 +113,7 @@ import TotalLoanPayable from "@/views/finance/total-loan-payable.vue";
 import TotalLoanPaid from "@/views/finance/total-loan-paid.vue";
 import TotalLoanDue from "@/views/finance/total-loan-due.vue";
 import TotalEarning from "@/views/finance/total-earning.vue";
+import InterestAmount from "@/views/finance/interest-amount.vue";
 
 //member savings
 import MemberSavings from "@/views/finance/reports/member-savings.vue";
@@ -671,6 +672,12 @@ const routes = [
     path: "/dashboard/total-earning",
     name: "total-earning",
     component: TotalEarning,
+  },
+  {
+    path: "/dashboard/interest-amount",
+    name: "interest-amount",
+    component: InterestAmount,
+    meta: { permission: "Customer Dashboard" },
   },
   {
     path: "/transaction/purchase-voucher",

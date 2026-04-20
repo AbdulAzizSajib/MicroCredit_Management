@@ -297,7 +297,7 @@ const toYmd = (date) => {
 };
 const now = new Date();
 const dateRange = ref([
-  toYmd(new Date(now.getFullYear(), now.getMonth(), 1)),
+  "2024-06-01",
   toYmd(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
 ]);
 
@@ -328,22 +328,18 @@ const formData = ref({ ...defaultForm });
 const editFormData = ref({ ...defaultForm, ID: null });
 const customerList = ref([]);
 const customerInfo = ref(null);
-const allowedPeriods = ref([]);
-const startPeriod = ref(null);
+const paidPeriods = ref([]);
+const minPaidPeriod = ref(null);
 
 const disabledPeriodDate = (current) => {
   if (!current) return false;
+  if (!minPaidPeriod.value) return false;
   const p = `${current.year()}${String(current.month() + 1).padStart(2, "0")}`;
-  // missing periods are always enabled
-  if (allowedPeriods.value.includes(p)) return false;
-  // current period enabled
-  const now = new Date();
-  const cp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
-  if (p === cp) return false;
-  // future periods → enable
-  if (p > cp) return false;
-  // everything else (past paid periods) → disable
-  return true;
+  // Disable periods before the minimum paid period
+  if (p < minPaidPeriod.value) return true;
+  // Disable paid periods themselves
+  if (paidPeriods.value.includes(p)) return true;
+  return false;
 };
 
 const searchCustomer = async (q) => {
@@ -364,8 +360,8 @@ const onCustomerChange = async (val, mode) => {
   }
   if (!val) {
     customerInfo.value = null;
-    allowedPeriods.value = [];
-    startPeriod.value = null;
+    paidPeriods.value = [];
+    minPaidPeriod.value = null;
     return;
   }
   try {
@@ -374,10 +370,10 @@ const onCustomerChange = async (val, mode) => {
   } catch (e) { customerInfo.value = null; }
   try {
     const mRes = await axios.get(`${apiBase}/customer/${val}/missing-installment`, getToken());
-    const periods = (mRes?.data?.data || []).map(x => String(x.MissingPeriod));
-    allowedPeriods.value = periods;
-    startPeriod.value = periods.length ? periods.sort()[0] : null;
-  } catch (e) { allowedPeriods.value = []; startPeriod.value = null; }
+    const periods = (mRes?.data?.data || []).map(x => String(x.PaidPeriod));
+    paidPeriods.value = periods;
+    minPaidPeriod.value = periods.length ? periods.sort()[0] : null;
+  } catch (e) { paidPeriods.value = []; minPaidPeriod.value = null; }
   try {
     const res = await axios.get(`${apiBase}/customer/${val}`, getToken());
     const cust = res?.data?.data || {};

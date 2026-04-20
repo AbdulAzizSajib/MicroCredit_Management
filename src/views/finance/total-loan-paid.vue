@@ -2,16 +2,16 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto space-y-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h1 class="text-2xl font-bold text-indigo-700">Total Loan Paid</h1>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('loan.totalPaid') }}</h1>
         <div class="flex items-center gap-2">
           <a-range-picker v-model:value="dateRange" value-format="YYYY-MM-DD" format="DD-MMM-YYYY"
             @change="handleDateChange" />
-          <a-button @click="$router.back()">Back</a-button>
+          <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
         </div>
       </div>
 
       <div class="text-right mb-3 flex justify-end items-center gap-2">
-        <label class="font-semibold text-gray-700">Total Loan Paid</label>
+        <label class="font-semibold text-gray-700">{{ $t('loan.totalPaid') }}</label>
         <input type="text" class="w-36 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
           :value="formatAmount(totalLoanPaid)" readonly />
       </div>
@@ -24,20 +24,20 @@
         <thead>
           <tr class="bg-primary text-white">
             <th class="border border-white px-4 py-2">#</th>
-            <th class="border border-white px-4 py-2">Entry Date</th>
-            <th class="border border-white px-4 py-2">Member Code</th>
-            <th class="border border-white px-4 py-2">Customer Name</th>
-            <th class="border border-white px-4 py-2">Bangla Name</th>
-            <th class="border border-white px-4 py-2 text-right">Loan Amount</th>
-            <th class="border border-white px-4 py-2 text-right">Interest Amount</th>
-            <th class="border border-white px-4 py-2 text-right">Total Payment</th>
-            <th class="border border-white px-4 py-2 text-right">Total Loan Paid</th>
+            <th class="border border-white px-4 py-2">{{ $t('loan.entryDate') }}</th>
+            <th class="border border-white px-4 py-2">{{ $t('loan.memberCode') }}</th>
+            <th class="border border-white px-4 py-2">{{ $t('loan.customerName') }}</th>
+            <th class="border border-white px-4 py-2">{{ $t('loan.banglaName') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.interestAmount') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalPayment') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalLoanPaid') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="rows.length === 0">
             <td colspan="9" class="text-center py-4 text-gray-500">
-              No data available.
+              {{ $t('common.noData') }}
             </td>
           </tr>
           <tr v-for="(item, index) in rows" :key="`${item.MemberCode}-${index}`">
@@ -55,7 +55,7 @@
       </table>
 
       <a-pagination v-if="total > perPage" v-model:current="page" :page-size="perPage" :total="total"
-        :show-size-changer="false" :show-total="(t) => `Total ${t} items`" @change="handlePageChange" />
+        :show-size-changer="false" :show-total="(t) => `${$t('common.total')} ${t}`" @change="handlePageChange" />
     </div>
   </MainLayout>
 </template>
@@ -67,7 +67,9 @@ import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const loading = ref(false);
@@ -115,7 +117,7 @@ const fetchData = async () => {
     totalLoanPaid.value = rows.value.reduce((sum, item) => sum + getTotalLoanPaid(item), 0);
   } catch (error) {
     console.error(error);
-    showNotification("error", "Failed to fetch total loan paid.");
+    showNotification("error", t("loan.fetchErrorPaid"));
   } finally {
     loading.value = false;
   }

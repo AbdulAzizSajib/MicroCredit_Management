@@ -122,7 +122,18 @@
     "noDetails": "No loan details found.",
     "loadingDetails": "Loading details...",
     "view": "VIEW",
-    "saveChanges": "Save changes"
+    "saveChanges": "Save changes",
+    "memberCode": "Member Code",
+    "customerName": "Customer Name",
+    "banglaName": "Bangla Name",
+    "totalPayment": "Total Payment",
+    "totalLoanPayable": "Total Loan Payable",
+    "totalLoanPaid": "Total Loan Paid",
+    "totalLoanDue": "Total Loan Due",
+    "fetchErrorPayable": "Failed to fetch total loan payable.",
+    "fetchErrorPaid": "Failed to fetch total loan paid.",
+    "fetchErrorDue": "Failed to fetch total loan due.",
+    "fetchErrorInterest": "Failed to fetch interest amount."
   },
   "menu": {
     "dashboard": "Dashboard",

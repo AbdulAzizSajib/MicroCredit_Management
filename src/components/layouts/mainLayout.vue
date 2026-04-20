@@ -1,9 +1,16 @@
 <template>
   <a-layout has-sider class="finance-sidebar">
+    <!-- Mobile overlay backdrop -->
+    <div
+      v-if="isMobile && !collapsed"
+      class="sidebar-overlay"
+      @click="collapsed = true"
+    />
+
     <!-- Sidebar -->
     <a-layout-sider
       ref="siderRef"
-      :collapsed="collapsed"
+      :collapsed="isMobile ? false : collapsed"
       :width="sidebarWidth"
       collapsed-width="70"
       breakpoint="lg"
@@ -13,14 +20,15 @@
         overflowY: 'auto',
         height: '100vh',
         position: 'fixed',
-        left: 0,
+        left: isMobile && collapsed ? `-${sidebarWidth}px` : '0',
         top: 0,
-        zIndex: 999,
+        zIndex: 1000,
+        transition: 'left 0.3s ease',
       }"
     >
       <div class="logo px-5 pt-1 pb-0 my-2.5 flex justify-center items-center">
         <router-link :to="{ name: 'overview' }" class="!text-white">
-          <AppLogo :size="collapsed ? 40 : 70" :dark="true" :showText="!collapsed" />
+          <AppLogo :size="collapsed && !isMobile ? 40 : 70" :dark="true" :showText="!collapsed || isMobile" />
         </router-link>
       </div>
       <a-menu
@@ -34,15 +42,15 @@
       />
     </a-layout-sider>
 
-    <a-layout :style="{ marginLeft: collapsed ? '80px' : `${sidebarWidth}px` }">
+    <a-layout :style="{ marginLeft: isMobile ? '0' : (collapsed ? '80px' : `${sidebarWidth}px`), transition: 'margin-left 0.3s ease' }">
       <!-- Header -->
-      <Header :collapsed="collapsed" @update:collapsed="collapsed = $event" />
+      <Header :collapsed="collapsed" :isMobile="isMobile" @update:collapsed="collapsed = $event" />
       <!-- Content -->
       <a-layout-content>
         <div
           :style="{
             margin: '0 16px',
-            padding: $route?.name === 'home' ? '16px 0' : '16px 32px',
+            padding: $route?.name === 'home' ? '16px 0' : (isMobile ? '12px 16px' : '16px 32px'),
             background: $route?.name === 'home' ? 'transparent' : '#fff',
             borderRadius: $route?.name === 'home' ? '0' : '30px',
             boxShadow: $route?.name === 'home' ? 'none' : '2px 2px 2px #d5d5d5',
@@ -73,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, h, onMounted, watch, reactive, computed, nextTick } from "vue";
+import { ref, h, onMounted, onUnmounted, watch, reactive, computed, nextTick } from "vue";
 import {
   UserOutlined,
   FileTextOutlined,
@@ -88,9 +96,35 @@ import AppLogo from "@/components/AppLogo.vue";
 const { t } = useI18n();
 
 const collapsed = ref(false);
+const isMobile = ref(false);
 const siderRef = ref(null);
 const route = useRoute();
 const router = useRouter();
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 992;
+  if (isMobile.value) {
+    collapsed.value = true;
+  }
+};
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", checkMobile);
+});
+
+// Close sidebar on route change (mobile)
+watch(() => route.path, () => {
+  if (isMobile.value) {
+    collapsed.value = true;
+  }
+});
 
 const userPermissions = JSON.parse(localStorage.getItem("user_permissions") || "[]");
 const hasPermission = (name) => userPermissions.includes(name);
@@ -116,11 +150,6 @@ function updateDateTime() {
   time.value = now.toLocaleString("en-US", timeOptions);
   date.value = now.toLocaleString("en-US", dateOptions);
 }
-
-onMounted(() => {
-  updateDateTime();
-  setInterval(updateDateTime, 60000);
-});
 
 window.addEventListener("keydown", (event) => {
   if (event?.key === "F3") {
@@ -528,5 +557,15 @@ watch(
 
 .finance-sidebar .ant-menu .ant-menu-submenu .ant-menu-item {
   @apply !pl-10;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
 }
 </style>

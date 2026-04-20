@@ -78,7 +78,7 @@
         </div>
 
         <!-- Loan Summary Cards -->
-        <div class="glass-card glass-amber" data-aos="fade-up" data-aos-delay="500">
+        <div class="glass-card glass-amber cursor-pointer" @click="goToPage('/dashboard/interest-amount')" data-aos="fade-up" data-aos-delay="500">
           <div class="flex items-center gap-4">
             <div class="bg-amber-200/40 rounded-xl p-3">
               <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
@@ -92,7 +92,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-indigo" data-aos="fade-up" data-aos-delay="600">
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/dashboard/total-loan-payable')" data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
               <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
@@ -106,7 +106,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green" data-aos="fade-up" data-aos-delay="700">
+        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-loan-paid')" data-aos="fade-up" data-aos-delay="700">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-multiple" class="text-green-600 text-3xl" />
@@ -120,7 +120,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose" data-aos="fade-up" data-aos-delay="800">
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-loan-due')" data-aos="fade-up" data-aos-delay="800">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-clock" class="text-rose-600 text-3xl" />
@@ -292,16 +292,16 @@ const summaryData = ref(null);
 const collectionData = ref(null);
 const loading = ref(false);
 
-const getCurrentMonthDateRange = () => {
+const getDateRange = () => {
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const lastDayOfMonth = String(new Date(year, now.getMonth() + 1, 0).getDate()).padStart(2, "0");
 
-  return [`${year}-${month}-01`, `${year}-${month}-${lastDayOfMonth}`];
+  return [`2024-06-01`, `${year}-${month}-${lastDayOfMonth}`];
 };
 
-const dateRange = ref(getCurrentMonthDateRange());
+const dateRange = ref(getDateRange());
 
 const router = useRouter();
 

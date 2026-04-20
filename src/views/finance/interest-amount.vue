@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto space-y-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('loan.loanAmount') }}</h1>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('loan.interestAmount') }}</h1>
         <div class="flex items-center gap-2">
           <a-range-picker v-model:value="dateRange" value-format="YYYY-MM-DD" format="DD-MMM-YYYY"
             @change="handleDateChange" />
@@ -11,9 +11,9 @@
       </div>
 
       <div class="text-right mb-3 flex justify-end items-center gap-2">
-        <label class="font-semibold text-gray-700">{{ $t('loan.loanAmount') }}</label>
+        <label class="font-semibold text-gray-700">{{ $t('loan.interestAmount') }}</label>
         <input type="text" class="w-36 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
-          :value="formatAmount(totalLoanPayable)" readonly />
+          :value="formatAmount(totalInterest)" readonly />
       </div>
 
       <div v-if="loading" class="text-center py-10">
@@ -31,12 +31,11 @@
             <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
             <th class="border border-white px-4 py-2 text-right">{{ $t('loan.interestAmount') }}</th>
             <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalPayment') }}</th>
-            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalLoanPayable') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="rows.length === 0">
-            <td colspan="9" class="text-center py-4 text-gray-500">
+            <td colspan="8" class="text-center py-4 text-gray-500">
               {{ $t('common.noData') }}
             </td>
           </tr>
@@ -49,7 +48,6 @@
             <td class="px-4 border text-right">{{ formatAmount(Number(item.LoanAmount || 0)) }}</td>
             <td class="px-4 border text-right">{{ formatAmount(Number(item.InterestAmount || 0)) }}</td>
             <td class="px-4 border text-right">{{ formatAmount(Number(item.TotalPayment || 0)) }}</td>
-            <td class="px-4 border text-right">{{ formatAmount(getTotalLoanPayable(item)) }}</td>
           </tr>
         </tbody>
       </table>
@@ -77,7 +75,7 @@ const rows = ref([]);
 const page = ref(1);
 const perPage = ref(10);
 const total = ref(0);
-const totalLoanPayable = ref(0);
+const totalInterest = ref(0);
 
 const toYmd = (date) => {
   const y = date.getFullYear();
@@ -106,18 +104,16 @@ const buildQuery = () => {
   return params.toString();
 };
 
-const getTotalLoanPayable = (item) => Number(item?.LoanAmount || 0) + Number(item?.InterestAmount || 0);
-
 const fetchData = async () => {
   loading.value = true;
   try {
     const res = await axios.get(`${apiBase}/member-wise-loan?${buildQuery()}`, getToken());
     rows.value = res?.data?.data || [];
     total.value = res?.data?.pagination?.total || 0;
-    totalLoanPayable.value = rows.value.reduce((sum, item) => sum + getTotalLoanPayable(item), 0);
+    totalInterest.value = rows.value.reduce((sum, item) => sum + Number(item?.InterestAmount || 0), 0);
   } catch (error) {
     console.error(error);
-    showNotification("error", t("loan.fetchErrorPayable"));
+    showNotification("error", t("loan.fetchErrorInterest"));
   } finally {
     loading.value = false;
   }
