@@ -78,7 +78,8 @@
         </div>
 
         <!-- Loan Summary Cards -->
-        <div class="glass-card glass-amber cursor-pointer" @click="goToPage('/dashboard/interest-amount')" data-aos="fade-up" data-aos-delay="500">
+        <div class="glass-card glass-amber cursor-pointer" @click="goToPage('/dashboard/interest-amount')"
+          data-aos="fade-up" data-aos-delay="500">
           <div class="flex items-center gap-4">
             <div class="bg-amber-200/40 rounded-xl p-3">
               <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
@@ -92,7 +93,8 @@
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/dashboard/total-loan-payable')" data-aos="fade-up" data-aos-delay="600">
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/dashboard/total-loan-payable')"
+          data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
               <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
@@ -106,7 +108,8 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-loan-paid')" data-aos="fade-up" data-aos-delay="700">
+        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-loan-paid')"
+          data-aos="fade-up" data-aos-delay="700">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-multiple" class="text-green-600 text-3xl" />
@@ -120,7 +123,8 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-loan-due')" data-aos="fade-up" data-aos-delay="800">
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-loan-due')"
+          data-aos="fade-up" data-aos-delay="800">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-clock" class="text-rose-600 text-3xl" />
@@ -222,6 +226,36 @@
             </div>
           </div>
         </div>
+
+      </div>
+
+      <!-- Voucher Pending Cards (Accountant Dashboard) -->
+      <div v-if="!isCustomerDashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/transaction/member-savings')" data-aos="fade-up" data-aos-delay="650">
+          <div class="flex items-center gap-5">
+            <div class="bg-blue-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:ticket-confirmation-outline" class="text-blue-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">Total Savings For Voucher</div>
+              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
+              <div class="text-sm font-bold text-blue-500 mt-0.5">৳ {{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/transaction/member-loan')" data-aos="fade-up" data-aos-delay="700">
+          <div class="flex items-center gap-5">
+            <div class="bg-indigo-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:file-document-multiple-outline" class="text-indigo-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Total Loan For Voucher</div>
+              <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ loanPendingCount?.ForLoanApprovalCount || 0 }}</div>
+              <div class="text-sm font-bold text-indigo-500 mt-0.5">৳ {{ formatAmount(Number(loanPendingCount?.ForLoanApprovalAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-if="!loading && !summaryData && !collectionData" class="text-center py-12 text-gray-500">{{
@@ -288,6 +322,8 @@ const route = useRoute();
 const isCustomerDashboard = computed(() => route.path === "/finance-dashboard");
 
 const summaryData = ref(null);
+const pendingCount = ref(null);
+const loanPendingCount = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
@@ -362,10 +398,30 @@ const formatAmount = (amount) => {
   }).format(amount);
 };
 
+const fetchPendingCount = async () => {
+  try {
+    const res = await axios.get(`${apiBase}/member-collection-voucher/pending-count`, getToken());
+    pendingCount.value = res.data || null;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchLoanPendingCount = async () => {
+  try {
+    const res = await axios.get(`${apiBase}/pay-loan-voucher/pending-count`, getToken());
+    loanPendingCount.value = res.data || null;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 onMounted(() => {
   if (isCustomerDashboard.value) {
     fetchCollectionSummary();
   }
   fetchSummary();
+  fetchPendingCount();
+  fetchLoanPendingCount();
 });
 </script>

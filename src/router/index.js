@@ -114,10 +114,13 @@ import TotalLoanPaid from "@/views/finance/total-loan-paid.vue";
 import TotalLoanDue from "@/views/finance/total-loan-due.vue";
 import TotalEarning from "@/views/finance/total-earning.vue";
 import InterestAmount from "@/views/finance/interest-amount.vue";
+import LoanForVoucher from "@/views/finance/loan-for-voucher.vue";
+import SavingForVoucher from "@/views/finance/saving-for-voucher.vue";
 
 //member savings
 import MemberSavings from "@/views/finance/reports/member-savings.vue";
 import MemberSavingsAdd from "@/views/finance/reports/member-savings-add.vue";
+import MemberLoan from "@/views/finance/reports/member-loan.vue";
 
 //Purchase Voucher
 import PurchaseVoucher from "@/views/finance/reports/purchase-voucher.vue";
@@ -631,6 +634,11 @@ const routes = [
     component: MemberSavings,
   },
   {
+    path: "/transaction/member-loan",
+    name: "member-loan",
+    component: MemberLoan,
+  },
+  {
     path: "/dashboard/total-members",
     name: "total-members",
     component: TotalMembers,
@@ -678,6 +686,18 @@ const routes = [
     name: "interest-amount",
     component: InterestAmount,
     meta: { permission: "Customer Dashboard" },
+  },
+  {
+    path: "/dashboard/loan-for-voucher",
+    name: "loan-for-voucher",
+    component: LoanForVoucher,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
+    path: "/dashboard/saving-for-voucher",
+    name: "saving-for-voucher",
+    component: SavingForVoucher,
+    meta: { permission: "Accountant Dashboard" },
   },
   {
     path: "/transaction/purchase-voucher",

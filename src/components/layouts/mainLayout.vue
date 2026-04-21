@@ -351,6 +351,11 @@ const allMenuItems = computed(() => [
         label: t("menu.memberSavings"),
         onClick: navigateTo("/transaction/member-savings"),
       },
+      {
+        key: "/transaction/member-loan",
+        label: t("menu.memberLoan"),
+        onClick: navigateTo("/transaction/member-loan"),
+      },
       // {
       //   key: "/transaction/purchase-voucher",
       //   label: "purchase voucher",

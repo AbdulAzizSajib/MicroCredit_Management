@@ -151,21 +151,7 @@
       </div>
     </div>
 
-    <!-- Floating Action Elements -->
-    <div class="fixed bottom-8 right-8 z-20">
-      <div class="relative group">
-        <div
-          class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center cursor-pointer hover:shadow-indigo-500/50 transition-all duration-300 hover:scale-110"
-        >
-          <Icon class="w-8 h-8 text-white" icon="mdi:message-text" />
-        </div>
-        <div
-          class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center"
-        >
-          <span class="text-white text-xs font-bold">3</span>
-        </div>
-      </div>
-    </div>
+  
   </div>
 </template>
 

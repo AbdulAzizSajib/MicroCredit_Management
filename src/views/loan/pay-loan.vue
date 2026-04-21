@@ -1,7 +1,6 @@
 <template>
   <MainLayout>
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-      <h1 class="text-2xl font-bold text-gray-800" data-aos="fade-right">{{ $t('loan.paymentList') }}</h1>
+    <div class="flex flex-wrap justify-end items-center gap-3">
       <div class="flex items-center gap-2">
         <a-range-picker
           v-model:value="dateRange"
@@ -9,59 +8,57 @@
           format="DD-MMM-YYYY"
           @change="handleDateChange"
         />
+      </div>
+      <div>
         <button
-          class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700"
+          class="bg-primary text-white px-4 py-2 rounded"
           @click="isCreateModalVisible = true"
         >
           {{ $t('loan.newLoanAdd') }}
         </button>
       </div>
     </div>
+    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
+      {{ $t('loan.paymentList') }}
+    </h1>
 
-    <div class="overflow-x-auto bg-white rounded-lg shadow" data-aos="fade-up" data-aos-delay="150">
-      <table class="w-full border-collapse">
-        <thead>
-          <tr class="bg-gray-100 border-b-2 border-gray-300">
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanId') }}</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanType') }}</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.employee') }}</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.employeeName') }}</th>
-            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.loanAmount') }}</th>
-            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('loan.installment') }}</th>
-            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">{{ $t('common.action') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(loan, index) in loanData"
-            :key="loan.id || loan.LoanId"
-            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-            class="border-b border-gray-200 hover:bg-blue-50 transition-colors"
-          >
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.LoanId }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.type?.LoanTypeDetails }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.EmpCode }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ loan?.AMDetails }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.LoanAmount }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ loan?.NofInstallment }}</td>
-            <td class="px-6 py-4 text-center">
-              <div class="flex justify-center items-center gap-1">
-                <a-tooltip :title="$t('loan.loanDetails')">
-                  <button type="button" class="action-btn action-btn-info" @click="viewLoan(loan?.LoanId)">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                </a-tooltip>
-                <a-tooltip :title="$t('loan.payment')">
-                  <button type="button" class="action-btn action-btn-primary" @click="makePayment(loan)">
-                    <i class="bi bi-credit-card"></i>
-                  </button>
-                </a-tooltip>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
+      <thead>
+        <tr class="bg-primary text-white">
+          <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('loan.loanType') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('loan.employee') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('loan.employeeName') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.action') }}</th>
+        </tr>
+      </thead>
+      <tbody class="capitalize">
+        <tr v-for="(loan, index) in loanData" :key="loan.id || loan.LoanId">
+          <td class="px-4 border">{{ loan?.LoanId }}</td>
+          <td class="px-4 border">{{ loan?.type?.LoanTypeDetails }}</td>
+          <td class="px-4 border">{{ loan?.EmpCode }}</td>
+          <td class="px-4 border">{{ loan?.AMDetails }}</td>
+          <td class="px-4 border text-right">{{ loan?.LoanAmount }}</td>
+          <td class="px-4 border text-right">{{ loan?.NofInstallment }}</td>
+          <td class="px-4 border text-center">
+            <div class="flex justify-center items-center gap-1">
+              <a-tooltip :title="$t('loan.loanDetails')">
+                <button type="button" class="action-btn action-btn-info" @click="viewLoan(loan?.LoanId)">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </a-tooltip>
+              <a-tooltip :title="$t('loan.payment')">
+                <button type="button" class="action-btn action-btn-primary" @click="makePayment(loan)">
+                  <i class="bi bi-credit-card"></i>
+                </button>
+              </a-tooltip>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <a-modal
       v-model:open="isCreateModalVisible"
