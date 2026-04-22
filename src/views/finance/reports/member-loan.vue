@@ -145,7 +145,7 @@
     >
       <div class="space-y-2">
         <a-form>
-          <div class="p-6 bg-gray-50 rounded">
+          <div class="p-2 bg-gray-50 rounded">
             <div class="flex flex-wrap gap-3">
               <div class="w-[280px] hidden">
                 <label class="block text-sm font-medium text-gray-700">Period</label>
@@ -229,7 +229,7 @@
             </div>
           </div>
 
-          <div class="p-2 bg-gray-50">
+          <div class="bg-gray-50">
             <div
               class="flex flex-wrap gap-3 mb-3 p-3 border border-indigo-200 rounded"
               v-if="modalForm.JVType === 'NCC'"
@@ -248,12 +248,12 @@
               </div>
             </div>
           </div>
-          <div class="mt-4 flex justify-start gap-2">
+          <div class="mt-2 flex justify-start gap-2">
             <a-button type="primary" @click="addVoucherEntry">{{ $t('common.add') }}</a-button>
             <a-button type="primary" @click="saveLoanVoucher">{{ $t('common.save') }}</a-button>
           </div>
-          <div class="shadow rounded-lg my-4 p-4 border border-gray-300">
-            <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('voucher.voucher') }}</h1>
+          <div class="shadow rounded-lg my-2 p-2 border border-gray-300">
+            <h1 class="text-2xl font-bold text-primary mb-2">{{ $t('voucher.voucher') }}</h1>
 
             <div class="overflow-y-auto" style="max-height: 300px;">
             <table class="w-full text-left">
@@ -277,8 +277,8 @@
                   <td class="px-4 border">{{ item.AccountCode }}</td>
                   <td class="px-4 border">{{ item.AccountDetails }}</td>
                   <td class="px-4 border">{{ item.BillNo }}</td>
-                  <td class="px-4 border text-right">{{ 0.0 }}</td>
                   <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
+                  <td class="px-4 border text-right">{{ 0.0 }}</td>
                 </tr>
 
                 <tr v-for="item in modalForm.Details" :key="'pending-' + item.BillNo" class="bg-yellow-50 hover:bg-yellow-100 border-l-4 border-l-yellow-400">
@@ -288,16 +288,16 @@
                     {{ item.BillNo }}
                     <span class="text-xs text-yellow-600">(pending)</span>
                   </td>
-                  <td class="px-4 border text-right">{{ 0.0 }}</td>
                   <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
+                  <td class="px-4 border text-right">{{ 0.0 }}</td>
                 </tr>
 
                 <tr v-if="debitVoucherEntry" key="debit-entry" class="bg-gray-100 hover:bg-gray-200">
                   <td class="px-4 border">{{ debitVoucherEntry.AccountCode }}</td>
                   <td class="px-4 border">{{ debitVoucherEntry.AccountDetails }}</td>
                   <td class="px-4 border">-</td>
-                  <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
+                  <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                 </tr>
               </tbody>
 
@@ -363,7 +363,7 @@ const modalForm = ref({
   SiteCode: "01",
   Period: dayjs().format("YYYYMM"),
   JVType: "",
-  JVCat: "R",
+  JVCat: "P",
   JVDate: dayjs(),
   TransDate: dayjs(),
   Posted: 0,
@@ -621,9 +621,10 @@ const saveLoanVoucher = async () => {
       SiteCode: modalForm.value.SiteCode || "01",
       Period: Number(dayjs(jvDate).format("YYYYMM")),
       JVType: modalForm.value.JVType || "CSH",
-      JVCat: modalForm.value.JVCat || "R",
+      JVCat: modalForm.value.JVCat || "P",
       JVDate: jvDate,
-      AMCode: debitVoucherEntry.value?.AccountCode || "", 
+      AMCode: debitVoucherEntry.value?.AccountCode || "",
+      Narration: commonNarration.value,
       LoanIDs: checkedInvoice.value.map((id) => Number(id)),
     };
 

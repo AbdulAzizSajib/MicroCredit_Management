@@ -204,7 +204,7 @@
     >
       <div class="space-y-2">
         <a-form>
-          <div class="p-6 bg-gray-50 rounded">
+          <div class="px-4 pt-2 bg-gray-50 rounded">
             <div class="flex flex-wrap gap-3">
               <div class="w-[280px] hidden">
                 <label class="block text-sm font-medium text-gray-700"
@@ -357,7 +357,7 @@
             </div>
           </div>
 
-          <div class="p-2 bg-gray-50">
+          <div class="p-2 pt-0 bg-gray-50">
             <div
               class="flex flex-wrap gap-3 mb-3 p-3 border border-indigo-200 rounded"
               v-if="modalForm.JVType === 'NCC'"
@@ -400,8 +400,8 @@
             <a-button type="primary" @click="addVoucherEntry">{{ $t('common.add') }}</a-button>
             <a-button type="primary" @click="saveSaleVoucher">{{ $t('common.save') }}</a-button>
           </div>
-          <div class="shadow rounded-lg my-4 p-4 border border-gray-300">
-            <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('voucher.voucher') }}</h1>
+          <div class="shadow rounded-lg my-2 p-2 border border-gray-300">
+            <h1 class="text-2xl font-bold text-primary mb-2">{{ $t('voucher.voucher') }}</h1>
 
             <div class="overflow-y-auto" style="max-height: 300px;">
             <table class="w-full text-left">
@@ -482,27 +482,25 @@
                 </tr>
               </tbody>
 
-              <!-- Totals row - only show after user clicks Add inside modal -->
-              <tr
-                class="bg-gray-50 border-t-2 border-gray-400"
-                v-if="creditVoucherEntries.length > 0"
-              >
-                <td colspan="3"></td>
-                <td class="px-4 border">
-                  <div
-                    class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold"
-                  >
-                    {{ calculateTotalDebit() }}
-                  </div>
-                </td>
-                <td class="px-4 border">
-                  <div
-                    class="w-full h-8 bg-teal-500 text-white text-center flex justify-center items-center rounded font-bold"
-                  >
-                    {{ calculateTotalCredit() }}
-                  </div>
-                </td>
-              </tr>
+              <tfoot class="sticky bottom-0 z-10" v-if="creditVoucherEntries.length > 0">
+                <tr class="bg-gray-50 border-t-2 border-gray-400">
+                  <td colspan="3"></td>
+                  <td class="px-4 border">
+                    <div
+                      class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold"
+                    >
+                      {{ calculateTotalDebit() }}
+                    </div>
+                  </td>
+                  <td class="px-4 border">
+                    <div
+                      class="w-full h-8 bg-teal-500 text-white text-center flex justify-center items-center rounded font-bold"
+                    >
+                      {{ calculateTotalCredit() }}
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
             </div>
           </div>
@@ -933,6 +931,7 @@ const saveSaleVoucher = async () => {
       JVCat: modalForm.value.JVCat || "R",
       JVDate: jvDate,
       AMCode: debitVoucherEntry.value?.AccountCode || "",
+      Narration: commonNarration.value,
       CollectionEntries: collectionEntries,
       CollectionIDs: checkedInvoice.value.map((id) => Number(id)),
     };

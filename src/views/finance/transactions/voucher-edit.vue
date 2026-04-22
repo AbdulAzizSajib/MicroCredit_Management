@@ -1241,7 +1241,9 @@ const fetchCategories = async (jvType) => {
     categories.value = [];
     return;
   }
-  form.value.category = "";
+  if (!isEditingExistingVoucher.value) {
+    form.value.category = "";
+  }
   try {
     const { data } = await axios.get(
       `${apiBase}/voucher-type/category?JVType=${jvType || " "}`,
@@ -1249,8 +1251,8 @@ const fetchCategories = async (jvType) => {
     );
     if (Array.isArray(data) && data.length > 0) {
       categories.value = data;
-      // Auto-select first category if not JVR
-      if (jvType !== "JVR") {
+      // Auto-select first category only for new vouchers (not when editing)
+      if (jvType !== "JVR" && !isEditingExistingVoucher.value) {
         form.value.category = data[0].Short;
       }
     }
