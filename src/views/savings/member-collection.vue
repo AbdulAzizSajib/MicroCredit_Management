@@ -297,7 +297,7 @@ const toYmd = (date) => {
 };
 const now = new Date();
 const dateRange = ref([
-  "2024-06-01",
+  "2024-07-01",
   toYmd(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
 ]);
 

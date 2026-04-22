@@ -2,8 +2,8 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">Loan Members</h1>
-        <a-button @click="$router.back()">Back</a-button>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('finance.loanMembersTitle') }}</h1>
+        <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 
       <div class="">
@@ -15,17 +15,17 @@
           <thead>
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
-              <th class="border border-white px-4 py-2">AM Code</th>
-              <th class="border border-white px-4 py-2">AM Details</th>
-              <th class="border border-white px-4 py-2">Member Code</th>
-              <th class="border border-white px-4 py-2">AC Type</th>
-              <th class="border border-white px-4 py-2">User Id</th>
+              <th class="border border-white px-4 py-2">{{ $t('finance.amCode') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('finance.amDetails') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('finance.memberCode') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('finance.acType') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('finance.userId') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="members.length === 0">
               <td colspan="6" class="text-center py-4 text-gray-500">
-                No data available.
+                {{ $t('common.noData') }}
               </td>
             </tr>
             <tr v-for="(item, index) in members" :key="item.AMCode">

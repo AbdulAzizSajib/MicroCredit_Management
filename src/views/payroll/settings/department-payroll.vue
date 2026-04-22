@@ -18,18 +18,18 @@
     </div>
 
     <h1 class="text-2xl font-bold text-primary mb-4">
-      Department ({{ total }})
+      {{ $t('payroll.department') }} ({{ total }})
     </h1>
 
     <!-- Table -->
     <table class="w-full border border-collapse text-left">
       <thead>
       <tr class="bg-primary text-white">
-        <th class="border border-white px-4 py-2 text-center">Department Code</th>
-        <th class="border border-white px-4 py-2 text-center"> Department Name</th>
-        <th class="border border-white px-4 py-2 text-center"> Company Name</th>
-        <th class="border border-white px-4 py-2 text-center"> Status</th>
-        <th class="border border-white px-4 py-2 text-center">Actions</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('payroll.departmentCode') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('payroll.departmentName') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('common.companyName') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
       </tr>
       </thead>
       <tbody class="capitalize">

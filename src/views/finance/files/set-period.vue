@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-primary mb-4">Change Current Day</h1>
+    <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('finance.setPeriodChange') }}</h1>
 
     <div class="flex gap-4">
       <!-- Year Dropdown -->

@@ -334,7 +334,7 @@ const getDateRange = () => {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const lastDayOfMonth = String(new Date(year, now.getMonth() + 1, 0).getDate()).padStart(2, "0");
 
-  return [`2024-06-01`, `${year}-${month}-${lastDayOfMonth}`];
+  return [`2024-07-01`, `${year}-${month}-${lastDayOfMonth}`];
 };
 
 const dateRange = ref(getDateRange());

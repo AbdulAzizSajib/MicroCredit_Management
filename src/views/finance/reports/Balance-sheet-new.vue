@@ -6,7 +6,7 @@
         class="border-b border-black mb-6 pb-4 flex justify-between items-center"
       >
         <div>
-          <h1 class="text-2xl font-bold text-center">Balance Sheet</h1>
+          <h1 class="text-2xl font-bold text-center">{{ $t('finance.balanceSheet') }}</h1>
         </div>
         <div class="flex items-end justify-center gap-3">
           <div class="">
@@ -42,7 +42,7 @@
           <div class="w-1/2 border-r border-black">
             <!-- Column Header -->
             <div class="px-4 py-2">
-              <h2 class="font-bold underline">Assets</h2>
+              <h2 class="font-bold underline">{{ $t('finance.assets') }}</h2>
             </div>
 
             <!-- Fixed Assets Section -->
@@ -124,7 +124,7 @@
           <div class="w-1/2">
             <!-- Column Header -->
             <div class="px-4 py-2">
-              <h2 class="font-bold underline">Liabilities & Equities</h2>
+              <h2 class="font-bold underline">{{ $t('finance.liabilitiesEquities') }}</h2>
             </div>
 
             <!-- Liabilities Section -->

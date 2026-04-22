@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <div class="mb-4">
         <a-input
-          placeholder="Search here..."
+          :placeholder="$t('common.searchHere')"
           v-model:value="search"
           @input="handleSearch"
           class="w-64"
@@ -12,47 +12,28 @@
       <div class="mb-4">
         <router-link :to="{ name: 'voucher-add' }">
           <button class="bg-primary text-white px-4 py-2 rounded">
-            Add Voucher
+            {{ $t('voucher.addVoucher') }}
           </button>
         </router-link>
       </div>
     </div>
-    <div class="grid grid-cols-8 gap-4 mb-4 items-end">
-      <h1 class="text-2xl font-bold text-primary mb-4">
-        Voucher List ({{ total }})
+    <div class="flex flex-wrap gap-4 mb-4 items-end">
+      <h1 class="text-2xl font-bold text-primary">
+        {{ $t('voucher.voucherList') }} ({{ total }})
       </h1>
-      <div class="w-full">
-        <label for="period" class="w-36 font-bold">Form Date:</label>
-        <input
-          type="date"
-          v-model="from_date"
-          :max="to_date"
-          class="w-full border p-1 border-black rounded-md"
-          :class="{ 'border-red-500': dateError }"
+      <div>
+        <a-range-picker
+          v-model:value="dateRange"
+          value-format="YYYY-MM-DD"
+          format="DD-MMM-YYYY"
         />
       </div>
-
-      <div class="w-full">
-        <label for="period" class="w-36 font-bold">To Date:</label>
-        <input
-          type="date"
-          v-model="to_date"
-          :min="from_date"
-          class="w-full border p-1 border-black rounded-md"
-          :class="{ 'border-red-500': dateError }"
-        />
-        <p v-if="dateError" class="text-red-500 text-xs mt-1">
-          To Date must be greater than or equal to From Date
-        </p>
-      </div>
-
       <div>
         <a-button
           type="primary"
           @click="fetchAllData"
           :loading="loading"
-          :disabled="dateError"
-          >Filter</a-button
+          >{{ $t('voucher.filter') }}</a-button
         >
       </div>
     </div>
@@ -61,16 +42,16 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">Voucher No</th>
-          <th class="border border-white px-4 py-2">Voucher Category</th>
-          <th class="border border-white px-4 py-2">Narration</th>
-          <th class="border border-white px-4 py-2">Period</th>
+          <th class="border border-white px-4 py-2">{{ $t('voucher.voucherNo') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('voucher.voucherCategoryLabel') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('voucher.narration') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.period') }}</th>
 
-          <th class="border border-white px-4 py-2">Voucher Date</th>
+          <th class="border border-white px-4 py-2">{{ $t('voucher.voucherDate') }}</th>
 
-          <th class="border border-white px-4 py-2 text-center">Debit</th>
-          <th class="border border-white px-4 py-2 text-center">Credit</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('voucher.debit') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('voucher.credit') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
@@ -158,7 +139,7 @@
       :page-size="per_page"
       :total="total"
       :show-size-changer="false"
-      :show-total="(total) => `Total ${total} items`"
+      :show-total="(total) => $t('common.totalItems', { total })"
       @change="handlePageChange"
       v-if="total > per_page"
     />
@@ -194,8 +175,8 @@ const fetchAllData = async () => {
     const res = await axios.get(
       `${apiBase}/journal-master?page=${page.value}&per_page=${
         per_page.value
-      }&search=${search.value}&from_date=${from_date.value || " "}&to_date=${
-        to_date.value || " "
+      }&search=${search.value}&from_date=${dateRange.value?.[0] || " "}&to_date=${
+        dateRange.value?.[1] || " "
       }`,
       getToken()
     );
@@ -267,9 +248,7 @@ const confirmDelete = (voucher) => {
   });
 };
 
-const from_date = ref(dayjs().subtract(7, "day").format("YYYY-MM-DD"));
-const to_date = ref(dayjs().format("YYYY-MM-DD"));
-const dateError = ref(false);
+const dateRange = ref(["2024-07-01", dayjs().format("YYYY-MM-DD")]);
 
 onMounted(async () => {
   await fetchAllData();

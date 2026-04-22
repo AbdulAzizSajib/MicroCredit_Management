@@ -2,7 +2,7 @@
   <MainLayout>
 
     <!-- title -->
-    <h1 class="text-2xl font-bold text-primary mb-4 text-center">Cheque Print Format</h1>
+    <h1 class="text-2xl font-bold text-primary mb-4 text-center">{{ $t('finance.chequePrintFormat') }}</h1>
     <div class="">
       <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
         <!-- Header -->

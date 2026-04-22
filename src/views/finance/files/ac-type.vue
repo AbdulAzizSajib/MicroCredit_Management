@@ -24,7 +24,7 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary mb-4 flex items-center gap-4">
-      AC Type ({{ total }})
+      {{ $t('finance.acType') }} ({{ total }})
 
       <Icon v-if="isShowLoading" class="size-7" icon="line-md:loading-loop" />
     </h1>
@@ -33,11 +33,11 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">GroupCode</th>
-          <th class="border border-white px-4 py-2">Group Details</th>
-          <th class="border border-white px-4 py-2">Group Code Sub</th>
-          <th class="border border-white px-4 py-2 text-right">AC Type</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.groupCode') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.groupDetails') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.groupCodeSub') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('finance.acType') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

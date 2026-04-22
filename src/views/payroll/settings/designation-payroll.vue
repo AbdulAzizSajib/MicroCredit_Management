@@ -17,17 +17,17 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary mb-4">
-      Designation ({{ total }})
+      {{ $t('payroll.designation') }} ({{ total }})
     </h1>
 
     <!-- Table -->
     <table class="w-full border border-collapse text-left">
       <thead>
       <tr class="bg-primary text-white">
-        <th class="border border-white px-4 py-2 text-right w-44">Designation Code</th>
-        <th class="border border-white px-4 py-2">Designation Name</th>
-        <th class="border border-white px-4 py-2 text-center"> Status</th>
-        <th class="border border-white px-4 py-2 text-center">Actions</th>
+        <th class="border border-white px-4 py-2 text-right w-44">{{ $t('payroll.designationCode') }}</th>
+        <th class="border border-white px-4 py-2">{{ $t('payroll.designationName') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
+        <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
       </tr>
       </thead>
       <tbody class="capitalize">

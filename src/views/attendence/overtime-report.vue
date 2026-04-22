@@ -3,7 +3,7 @@
     <div class="min-h-screen pt-8">
       <!-- Header -->
       <div class="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-4 rounded-t-lg shadow-lg">
-        <h1 class="text-xl font-semibold">Employee Attendance Report</h1>
+        <h1 class="text-xl font-semibold">{{ $t('attendance.employeeAttendanceReport') }}</h1>
       </div>
 
       <!-- Filter Section -->

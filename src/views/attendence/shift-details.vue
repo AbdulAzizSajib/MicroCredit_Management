@@ -3,7 +3,7 @@
     <div class="min-h-screen mt-5">
       <!-- Header -->
       <div class="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-4 rounded-t-lg shadow-lg">
-        <h1 class="text-xl font-semibold">Shift Details</h1>
+        <h1 class="text-xl font-semibold">{{ $t('attendance.shiftDetails') }}</h1>
       </div>
 
       <!-- Filter Section -->
@@ -38,20 +38,20 @@
             <thead>
               <tr class="bg-gradient-to-r from-violet-600 to-purple-500 text-white">
                 <th class="px-4 py-3 rounded-s text-left text-base font-semibold border-r border-slate-600">#</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Location</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.location') }}</th>
                 <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Shift1</th>
                 <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Shift2</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">ShiftSerial</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">InTime</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Duration</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">MinOvertime</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">MaxOverTime</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">OverTimeDeduction</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Before</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">After</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">LateTime</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">AbsentTime</th>
-                <th class="px-4 py-3 rounded-e text-left text-base font-semibold">Action</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.shiftSerial') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.inTime') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.duration') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.minOvertime') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.maxOvertime') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.overtimeDeduction') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.before') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.after') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.lateTime') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.absentTime') }}</th>
+                <th class="px-4 py-3 rounded-e text-left text-base font-semibold">{{ $t('common.action') }}</th>
               </tr>
             </thead>
 

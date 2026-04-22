@@ -3,7 +3,7 @@
     <div class="min-h-screen pt-8">
       <!-- Header -->
       <div class="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-4 rounded-t-lg shadow-lg">
-        <h1 class="text-xl font-semibold">Monthly Attendance Summary</h1>
+        <h1 class="text-xl font-semibold">{{ $t('attendance.monthlyAttendanceSummary') }}</h1>
       </div>
 
       <!-- Filter Section -->
@@ -152,22 +152,22 @@
             <!-- Table Header -->
             <thead>
               <tr class="bg-gradient-to-r from-violet-600 to-purple-500 text-white">
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Location</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Department</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Employee Code</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Employee Name</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Designation</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Card Number</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Leave</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Off Day</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Holiday</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Absent</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Late</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Present</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Total</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Actual Hour</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Working Hour</th>
-                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">Overtime</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.location') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.department') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('payroll.employeeCode') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.employeeName') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.designation') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.cardNumber') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.leave') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.offDay') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.holiday') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.absent') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.late') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.present') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.total') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.actualHour') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.workingHour') }}</th>
+                <th class="px-3 py-3 text-left text-xs font-semibold border-r border-slate-600">{{ $t('attendance.overtime') }}</th>
               </tr>
             </thead>
 

@@ -29,11 +29,11 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">Employee Code</th>
-          <th class="border border-white px-4 py-2">Name</th>
-          <th class="border border-white px-4 py-2">Designation</th>
-          <th class="border border-white px-4 py-2">Department</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('payroll.employeeCode') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.name') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('payroll.designation') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('payroll.department') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

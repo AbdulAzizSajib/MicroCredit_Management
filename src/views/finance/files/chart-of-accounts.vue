@@ -251,10 +251,10 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-blue-200">
-                  <th class="py-2 px-4">Category</th>
-                  <th class="py-2 px-4 text-end">Start ID</th>
-                  <th class="py-2 px-4 text-end">End ID</th>
-                  <th class="py-2 px-4 text-end">Action</th>
+                  <th class="py-2 px-4">{{ $t('common.category') }}</th>
+                  <th class="py-2 px-4 text-end">{{ $t('common.startId') }}</th>
+                  <th class="py-2 px-4 text-end">{{ $t('common.endId') }}</th>
+                  <th class="py-2 px-4 text-end">{{ $t('common.action') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -328,8 +328,8 @@
         <table class="min-w-full table-auto border-collapse">
           <thead class="sticky top-0 z-10">
             <tr class="bg-gray-100 border-b">
-              <th class="py-2 px-4 text-left">Account Details</th>
-              <th class="py-2 px-4 text-left">Account Code</th>
+              <th class="py-2 px-4 text-left">{{ $t('finance.accountDetails') }}</th>
+              <th class="py-2 px-4 text-left">{{ $t('finance.accountCode') }}</th>
             </tr>
           </thead>
           <tbody>

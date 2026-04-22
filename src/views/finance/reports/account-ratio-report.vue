@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="flex items-center">
-      <h1 class="text-2xl font-bold text-primary">Account Ratio Report</h1>
+      <h1 class="text-2xl font-bold text-primary">{{ $t('finance.accountRatioReport') }}</h1>
       <div class="p-8 flex items-end space-x-6">
         <div>
           <label for="startDate">From Date</label>

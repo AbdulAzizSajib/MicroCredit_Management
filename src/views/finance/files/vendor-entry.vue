@@ -23,7 +23,7 @@
         </button>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">Vendor Entry</h1>
+    <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">{{ $t('finance.vendorEntry') }}</h1>
     <!-- Table -->
     <a-skeleton v-if="loading" />
 
@@ -38,8 +38,8 @@
             <th class="border border-white px-4 py-2">AccountName</th>
             <th class="border border-white text-end px-4 py-2">AccountNo</th>
 
-            <th class="border border-white px-4 py-2">Email</th>
-            <th class="border border-white px-4 py-2 text-center">Actions</th>
+            <th class="border border-white px-4 py-2">{{ $t('common.email') }}</th>
+            <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
           </tr>
         </thead>
         <tbody class="capitalize">

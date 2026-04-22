@@ -2,12 +2,12 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">Total Earning</h1>
-        <a-button @click="$router.back()">Back</a-button>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('finance.totalEarningTitle') }}</h1>
+        <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 
       <div class="text-right mb-3 flex justify-end items-center gap-2">
-        <label class="font-semibold text-gray-700">Total Earning</label>
+        <label class="font-semibold text-gray-700">{{ $t('finance.totalEarningTitle') }}</label>
         <input
           type="text"
           class="w-32 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
@@ -25,14 +25,14 @@
           <thead>
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
-              <th class="border border-white px-4 py-2">Loan ID</th>
-              <th class="border border-white px-4 py-2 text-right">Earning</th>
+              <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
+              <th class="border border-white px-4 py-2 text-right">{{ $t('finance.earning') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="rows.length === 0">
               <td colspan="3" class="text-center py-4 text-gray-500">
-                No data available.
+                {{ $t('common.noData') }}
               </td>
             </tr>
             <tr v-for="(item, index) in rows" :key="item.LoanID">

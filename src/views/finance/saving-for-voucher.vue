@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto space-y-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h1 class="text-2xl font-bold text-primary" data-aos="fade-right">Total Savings For Voucher</h1>
+        <h1 class="text-2xl font-bold text-primary" data-aos="fade-right">{{ $t('finance.savingForVoucherTitle') }}</h1>
         <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 

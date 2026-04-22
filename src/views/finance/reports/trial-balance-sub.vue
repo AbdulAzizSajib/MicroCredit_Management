@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="flex items-center">
-      <h1 class="text-2xl font-bold text-primary">Trial Balance Sub</h1>
+      <h1 class="text-2xl font-bold text-primary">{{ $t('finance.trialBalanceSub') }}</h1>
 
       <div class="grid filter-grid m-auto grid-cols-12 py-4 px-3 gap-2 mb-2">
         <div class="col-span-4">
@@ -82,7 +82,7 @@
         <!-- header area start -->
         <div class="flex justify-between mb-4 items-center space-x-10">
           <div class="text-left mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Particulars</h1>
+            <h1 class="text-2xl font-bold text-gray-800">{{ $t('common.particulars') }}</h1>
           </div>
           <div>
             <table class="w-[310px] table-auto border-collapse">

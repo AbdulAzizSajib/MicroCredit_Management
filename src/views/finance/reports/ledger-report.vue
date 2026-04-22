@@ -7,7 +7,7 @@
         <div class="grid grid-cols-12 gap-4 filter-field">
           <!-- Title Section -->
           <div class="col-span-12 lg:col-span-2">
-            <h1 class="text-2xl font-bold text-primary">Ledger Book</h1>
+            <h1 class="text-2xl font-bold text-primary">{{ $t('finance.ledgerBook') }}</h1>
           </div>
 
           <!-- Form Section -->

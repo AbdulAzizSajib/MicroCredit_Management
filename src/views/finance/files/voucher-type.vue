@@ -30,7 +30,7 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">
-      Voucher Type ({{ total }})
+      {{ $t('finance.voucherType') }} ({{ total }})
       <Icon v-if="isShowLoading" class="size-7" icon="line-md:loading-loop" />
     </h1>
 
@@ -38,12 +38,12 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">Company Code</th>
-          <th class="border border-white px-4 py-2">AM Code</th>
-          <th class="border border-white px-4 py-2">JV Details</th>
-          <th class="border border-white px-4 py-2">JV Type</th>
-          <th class="border border-white px-4 py-2">Category</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.companyCode') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.amCode') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.jvDetails') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.jvType') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.category') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

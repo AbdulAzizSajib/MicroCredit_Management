@@ -3,7 +3,7 @@
     <div class="min-h-screen mt-5">
       <!-- Header -->
       <div class="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-4 rounded-t-lg shadow-lg">
-        <h1 class="text-xl font-semibold">Employee Hourly Rate</h1>
+        <h1 class="text-xl font-semibold">{{ $t('attendance.employeeHourlyRate') }}</h1>
       </div>
 
 
@@ -24,11 +24,11 @@
             <thead>
               <tr class="bg-gradient-to-r from-violet-600 to-purple-500 text-white">
                 <th class="px-4 py-3 rounded-s text-left text-base font-semibold border-r border-slate-600">#</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Location</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">EmpCode</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Date</th>
-                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">Rate</th>
-                <th class="px-4 py-3 text-left rounded-e text-base font-semibold">Action</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.location') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.empCode') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('common.date') }}</th>
+                <th class="px-4 py-3 text-left text-base font-semibold border-r border-slate-600">{{ $t('attendance.rate') }}</th>
+                <th class="px-4 py-3 text-left rounded-e text-base font-semibold">{{ $t('common.action') }}</th>
               </tr>
             </thead>
 

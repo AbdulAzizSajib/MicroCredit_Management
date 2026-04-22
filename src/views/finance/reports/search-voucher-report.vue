@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <!-- title -->
-    <h1 class="text-lg font-bold text-primary mb-3">Search Voucher</h1>
+    <h1 class="text-lg font-bold text-primary mb-3">{{ $t('finance.searchVoucher') }}</h1>
     <!-- Filters -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <!-- Date From Field -->

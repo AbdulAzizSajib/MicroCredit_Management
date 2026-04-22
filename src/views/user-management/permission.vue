@@ -8,13 +8,13 @@
       </button>
     </div>
 
-    <h1 class="text-2xl font-bold text-primary mb-4">Permission List</h1>
+    <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('userMgmt.permissionList') }}</h1>
 
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">Name</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.name') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

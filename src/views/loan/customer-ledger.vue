@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="bg-white rounded-xl p-6 space-y-6 max-w-6xl mx-auto">
-      <h1 class="text-2xl font-bold text-primary">Customer Ledger</h1>
+      <h1 class="text-2xl font-bold text-primary">{{ $t('loanExt.customerLedger') }}</h1>
 
       <div class="grid grid-cols-4 gap-4 items-center">
         <label class="text-sm font-medium text-gray-700">Employee Code</label>
@@ -84,7 +84,7 @@
 
         <!-- Loan Info -->
         <div v-if="responseData.loans?.length">
-          <h2 class="text-lg font-bold text-gray-700 mb-3">Loan Information</h2>
+          <h2 class="text-lg font-bold text-gray-700 mb-3">{{ $t('loanExt.loanInformation') }}</h2>
           <div v-for="loan in responseData.loans" :key="loan.LoanId" class="border rounded-lg p-4 mb-4 bg-gray-50">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
               <div class="flex justify-between border-b pb-1">
@@ -141,16 +141,16 @@
 
         <!-- Payment History -->
         <div v-if="responseData.payments?.length">
-          <h2 class="text-lg font-bold text-gray-700 mb-3">Payment History</h2>
+          <h2 class="text-lg font-bold text-gray-700 mb-3">{{ $t('loan.paymentHistory') }}</h2>
           <table class="w-full border border-collapse text-left text-sm">
             <thead>
               <tr class="bg-primary text-white">
                 <th class="border border-white px-4 py-2 text-center w-10">#</th>
-                <th class="border border-white px-4 py-2">Loan ID</th>
-                <th class="border border-white px-4 py-2">Payment Date</th>
-                <th class="border border-white px-4 py-2 text-right">Amount</th>
-                <th class="border border-white px-4 py-2">Entry By</th>
-                <th class="border border-white px-4 py-2">Entry Date</th>
+                <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
+                <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
+                <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
+                <th class="border border-white px-4 py-2">{{ $t('loan.entryBy') }}</th>
+                <th class="border border-white px-4 py-2">{{ $t('loan.entryDate') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -181,15 +181,15 @@
 
         <!-- Details / Ledger -->
         <div v-if="responseData.details?.length">
-          <h2 class="text-lg font-bold text-gray-700 mb-3">Ledger Details</h2>
+          <h2 class="text-lg font-bold text-gray-700 mb-3">{{ $t('loanExt.ledgerDetails') }}</h2>
           <table class="w-full border border-collapse text-left text-sm">
             <thead>
               <tr class="bg-primary text-white">
-                <th class="border border-white px-4 py-2">Member Code</th>
-                <th class="border border-white px-4 py-2">Date</th>
-                <th class="border border-white px-4 py-2 text-right">Saving</th>
-                <th class="border border-white px-4 py-2 text-right">Loan</th>
-                <th class="border border-white px-4 py-2 text-right">Installment</th>
+                <th class="border border-white px-4 py-2">{{ $t('finance.memberCode') }}</th>
+                <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
+                <th class="border border-white px-4 py-2 text-right">{{ $t('loanExt.saving') }}</th>
+                <th class="border border-white px-4 py-2 text-right">{{ $t('loanExt.loan') }}</th>
+                <th class="border border-white px-4 py-2 text-right">{{ $t('loanExt.installment') }}</th>
               </tr>
             </thead>
             <tbody>

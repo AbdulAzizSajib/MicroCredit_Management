@@ -398,7 +398,11 @@
           </div>
           <div class="mt-4 flex justify-start gap-2">
             <a-button type="primary" @click="addVoucherEntry">{{ $t('common.add') }}</a-button>
-            <a-button type="primary" @click="saveSaleVoucher">{{ $t('common.save') }}</a-button>
+            <a-button
+              type="primary"
+              @click="saveSaleVoucher"
+              :disabled="!debitVoucherEntry || creditVoucherEntries.length === 0"
+            >{{ $t('common.save') }}</a-button>
           </div>
           <div class="shadow rounded-lg my-2 p-2 border border-gray-300">
             <h1 class="text-2xl font-bold text-primary mb-2">{{ $t('voucher.voucher') }}</h1>

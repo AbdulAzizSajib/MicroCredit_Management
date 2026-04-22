@@ -24,7 +24,7 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">
-      Cash Flow ({{ total }})
+      {{ $t('finance.cashFlow') }} ({{ total }})
       <Icon v-if="isShowLoading" class="size-7" icon="line-md:loading-loop" />
     </h1>
 
@@ -32,9 +32,9 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">Cash Flow ID</th>
-          <th class="border border-white px-4 py-2">Details</th>
-          <th class="border border-white px-4 py-2 text-center w-8">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.cashFlowId') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.details') }}</th>
+          <th class="border border-white px-4 py-2 text-center w-8">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

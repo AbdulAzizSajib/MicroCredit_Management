@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">Bill Receive</h1>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">{{ $t('finance.billReceive') }}</h1>
 
     <div class="bg-white shadow-md rounded-xl p-6 overflow-x-auto">
       <div class="flex items-center gap-x-1 whitespace-nowrap">
@@ -43,20 +43,20 @@
     <table class="w-full border border-collapse text-left mt-5">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">SL</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.sl') }}</th>
           <th class="border border-white px-4 py-2">ACI Bill Dt.</th>
-          <th class="border border-white px-4 py-2">Business</th>
-          <th class="border border-white px-4 py-2">Suppiler ID</th>
-          <th class="border border-white px-4 py-2">Suppiler Name</th>
-          <th class="border border-white px-4 py-2">GL ID</th>
-          <th class="border border-white px-4 py-2">Bill No</th>
-          <th class="border border-white px-4 py-2">Bill Date</th>
-          <th class="border border-white px-4 py-2">Amount</th>
-          <th class="border border-white px-4 py-2">VAT</th>
-          <th class="border border-white px-4 py-2">Discount</th>
-          <th class="border border-white px-4 py-2">Bill Amount</th>
-          <th class="border border-white px-4 py-2">Select</th>
-          <th class="border border-white px-4 py-2">Remarks</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.business') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.supplierId') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.supplierName') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.glId') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.billNo') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.billDate') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.amount') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.vat') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.discount') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.billAmount') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.select') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

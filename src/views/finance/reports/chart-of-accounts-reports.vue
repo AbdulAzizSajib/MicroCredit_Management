@@ -25,7 +25,7 @@
         <div class="flex justify-between mb-4 items-center space-x-10">
           <div class="text-left mb-6">
             <!-- title -->
-            <h1 class="text-2xl font-bold text-gray-800">Chart of Accounts</h1>
+            <h1 class="text-2xl font-bold text-gray-800">{{ $t('finance.chartOfAccounts') }}</h1>
             <p class="text-xl text-gray-700 font-semibold">
               P-ERP Food and Snacks
             </p>

@@ -29,7 +29,7 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">
-      Voucher Category ({{ total }})
+      {{ $t('finance.voucherCategory') }} ({{ total }})
       <Icon v-if="isShowLoading" class="size-7" icon="line-md:loading-loop" />
     </h1>
 
@@ -37,10 +37,10 @@
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">JV Type</th>
-          <th class="border border-white px-4 py-2">Category</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.jvType') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.category') }}</th>
           <th class="border border-white px-4 py-2">Short</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

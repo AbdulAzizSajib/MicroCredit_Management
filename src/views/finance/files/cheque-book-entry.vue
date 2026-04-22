@@ -24,7 +24,7 @@
       </div>
     </div>
     <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">
-      Cheque Book ({{ total }})
+      {{ $t('menu.chequeBook') }} ({{ total }})
       <Icon v-if="isShowLoading" class="size-7" icon="line-md:loading-loop" />
     </h1>
 
@@ -33,13 +33,13 @@
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2 text-center w-8"></th>
-          <th class="border border-white px-4 py-2">Cheque Book No</th>
-          <th class="border border-white px-4 py-2 text-center">No of Books</th>
-          <th class="border border-white px-4 py-2 text-center">Serial from</th>
-          <th class="border border-white px-4 py-2 text-center">Serial to</th>
-          <th class="border border-white px-4 py-2 text-center">Status</th>
-          <th class="border border-white px-4 py-2 text-center">Entry Date</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2">{{ $t('finance.chequeBookNo') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('finance.noOfBooks') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('finance.serialFrom') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('finance.serialTo') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('finance.entryDate') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

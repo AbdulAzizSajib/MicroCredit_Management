@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="flex items-center">
-      <h1 class="text-2xl font-bold text-primary">Trial Balance</h1>
+      <h1 class="text-2xl font-bold text-primary">{{ $t('finance.trialBalance') }}</h1>
 
       <div class="grid filter-grid m-auto grid-cols-12 py-4 px-3 gap-2 mb-2">
         <div class="col-span-4">

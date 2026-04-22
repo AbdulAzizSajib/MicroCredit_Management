@@ -4,7 +4,7 @@
       <div class="">
         <!-- Header -->
         <div class="mb-8">
-          <h1 class="text-4xl font-bold text-slate-800 mb-2">Shift Management</h1>
+          <h1 class="text-4xl font-bold text-slate-800 mb-2">{{ $t('attendance.shiftManagement') }}</h1>
           <p class="text-slate-600">Manage and track employee shift schedules</p>
         </div>
 

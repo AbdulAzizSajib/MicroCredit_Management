@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <!-- title -->
-    <h1 class="text-2xl font-bold text-primary mb-4">Insert Voucher</h1>
+    <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('finance.insertVoucher') }}</h1>
 
     <div class="">
       <a-form>

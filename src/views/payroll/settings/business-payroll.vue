@@ -30,17 +30,17 @@
         </button>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4">Business ({{ total }})</h1>
+    <h1 class="text-2xl font-bold text-primary mb-4">{{ $t('finance.business') }} ({{ total }})</h1>
 
     <!-- Table -->
     <table class="w-full border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2 text-center w-44">Business Code</th>
-          <th class="border border-white px-4 py-2 text-center">Business Name</th>
-          <th class="border border-white px-4 py-2 text-center">Company Name</th>
-          <th class="border border-white px-4 py-2 text-center">Company Code</th>
-          <th class="border border-white px-4 py-2 text-center">Actions</th>
+          <th class="border border-white px-4 py-2 text-center w-44">{{ $t('payroll.businessCode') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('payroll.businessName') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.companyName') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.companyCode') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">

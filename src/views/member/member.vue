@@ -1,6 +1,6 @@
 <template>
   <MemberLayout>
-    <h1>Payroll Home</h1>
+    <h1>{{ $t('payroll.payrollHome') }}</h1>
   </MemberLayout>
 </template>
 <script setup>
