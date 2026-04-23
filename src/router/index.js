@@ -129,9 +129,11 @@ import BalanceSheetNew from "@/views/finance/reports/Balance-sheet-new.vue";
 import BalanceSheetPetra from "@/views/finance/reports/Balance-sheet-petra.vue";
 import CashFlow from "@/views/finance/files/cash-flow.vue";
 import PayLoan from "@/views/loan/pay-loan.vue";
+import LoanListAccountant from "@/views/loan/loan-list-accountant.vue";
 import CustomerLedger from "@/views/loan/customer-ledger.vue";
 import MemberCollection from "@/views/savings/member-collection.vue";
 import SavingsCustomer from "@/views/savings/customer.vue";
+import LoanMember from "@/views/savings/loan-member.vue";
 import FilesCustomer from "@/views/finance/files/customer.vue";
 
 const routes = [
@@ -268,6 +270,12 @@ const routes = [
     meta: { permission: "Loan" },
   },
   {
+    path: "/loan/loan-list",
+    name: "loan-list-accountant",
+    component: LoanListAccountant,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
     path: "/loan/customer-ledger",
     name: "customer-ledger",
     component: CustomerLedger,
@@ -283,6 +291,12 @@ const routes = [
     path: "/savings/customer",
     name: "savings-customer",
     component: SavingsCustomer,
+    meta: { permission: "Saving" },
+  },
+  {
+    path: "/savings/loan-member",
+    name: "loan-member",
+    component: LoanMember,
     meta: { permission: "Saving" },
   },
   {
@@ -355,7 +369,7 @@ const routes = [
     path: "/dashboard/should-pay",
     name: "should-pay",
     component: ShouldPay,
-    meta: { permission: "Customer Dashboard" },
+    meta: { permission: ["Customer Dashboard", "Accountant Dashboard"] },
   },
   {
     path: "/dashboard/total-saving-details",

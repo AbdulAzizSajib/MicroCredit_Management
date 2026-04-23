@@ -139,6 +139,9 @@
   "loan": {
     "title": "ঋণ",
     "paymentList": "ঋণ পরিশোধ তালিকা",
+    "loanList": "ঋণ তালিকা",
+    "addCollection": "সংগ্রহ যোগ করুন",
+    "selectLoan": "ঋণ নির্বাচন করুন",
     "newLoanAdd": "নতুন ঋণ যোগ",
     "payLoanForm": "ঋণ পরিশোধ ফর্ম",
     "loanType": "ঋণের ধরন",
@@ -242,6 +245,7 @@
     "totalLoanVoucher": "মোট ঋণ ভাউচার",
     "totalLoanMembers": "মোট ঋণ সদস্য",
     "totalLoanPosted": "মোট পোস্টকৃত ঋণ",
+    "remainingCollection": "অবশিষ্ট আদায়",
     "loanMembers": "ঋণগ্রহীতা সদস্য",
     "totalSaving": "মোট পোস্টকৃত সঞ্চয়",
     "totalLoan": "মোট ঋণ",

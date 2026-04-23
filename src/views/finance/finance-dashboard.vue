@@ -255,6 +255,32 @@
             </div>
           </div>
         </div>
+
+        <!-- 9. Total Savings Payable -->
+        <div class="glass-card glass-fuchsia cursor-pointer" @click="goToSavingsPayable">
+          <div class="flex items-center gap-5">
+            <div class="bg-fuchsia-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:cash-check" class="text-fuchsia-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-fuchsia-400 uppercase tracking-wider">{{ $t('dashboard.totalShouldPay') }}</div>
+              <div class="text-4xl font-extrabold text-fuchsia-700 mt-1">{{ formatAmount(Number(collectionData?.totalShouldPay || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Remaining Collection -->
+        <div class="glass-card glass-orange">
+          <div class="flex items-center gap-5">
+            <div class="bg-orange-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:cash-clock" class="text-orange-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-orange-400 uppercase tracking-wider">{{ $t('dashboard.remainingCollection') }}</div>
+              <div class="text-4xl font-extrabold text-orange-700 mt-1">{{ formatAmount(remainingCollection) }}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-if="!loading && !summaryData && !collectionData" class="text-center py-12 text-gray-500">{{
@@ -311,6 +337,14 @@
 .glass-teal {
   background: linear-gradient(135deg, rgba(204, 251, 241, 0.7), rgba(153, 246, 228, 0.5));
 }
+
+.glass-fuchsia {
+  background: linear-gradient(135deg, rgba(250, 232, 255, 0.7), rgba(245, 208, 254, 0.5));
+}
+
+.glass-orange {
+  background: linear-gradient(135deg, rgba(255, 237, 213, 0.7), rgba(254, 215, 170, 0.5));
+}
 </style>
 
 <script setup>
@@ -334,6 +368,12 @@ const loanPendingCount = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
+
+const remainingCollection = computed(() => {
+  const payable = Number(collectionData.value?.totalShouldPay || 0);
+  const posted = Number(summaryData.value?.totalSaving || 0);
+  return payable - posted;
+});
 
 const getDateRange = () => {
   const now = new Date();
@@ -368,6 +408,14 @@ const goToSavingsMembers = () => {
   const [from, to] = getDateRange();
   router.push({
     path: "/dashboard/total-members",
+    query: { from_date: from, to_date: to },
+  });
+};
+
+const goToSavingsPayable = () => {
+  const [from, to] = getDateRange();
+  router.push({
+    path: "/dashboard/should-pay",
     query: { from_date: from, to_date: to },
   });
 };
@@ -432,9 +480,7 @@ const fetchLoanPendingCount = async () => {
 };
 
 onMounted(() => {
-  if (isCustomerDashboard.value) {
-    fetchCollectionSummary();
-  }
+  fetchCollectionSummary();
   fetchSummary();
   fetchPendingCount();
   fetchLoanPendingCount();

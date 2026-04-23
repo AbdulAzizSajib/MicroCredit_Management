@@ -89,7 +89,7 @@
             />
           </th>
           <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('loan.loanDate') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
           <!-- ACCOUNT CODE -->
           <th class="border border-white px-4 py-2">Account Code</th>
           <th class="border border-white px-4 py-2">{{ $t('customer.customerCode') }}</th>
@@ -113,7 +113,7 @@
                 @change="updateTotalForIndividual"
               />
             </td>
-            <td class="px-4 border">{{ data.InvoiceNo }}</td>
+            <td class="px-4 border">{{ data.LoanID }}</td>
             <td class="px-4 border">{{ data?.InvoiceDate }}</td>
             <td class="px-4 border">{{ data?.AMCode }}</td>
             <td class="px-4 border">{{ data?.CustomerCode }}</td>
@@ -266,13 +266,14 @@
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountCode') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountDetails') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.billNo') }}</th>
+                  <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
                   <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.debit') }}</th>
                   <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.credit') }}</th>
                 </tr>
               </thead>
               <tbody class="capitalize">
                 <tr v-if="!creditVoucherEntries.length && !modalForm.Details.length">
-                  <td colspan="5" class="text-center py-4 text-gray-500">
+                  <td colspan="6" class="text-center py-4 text-gray-500">
                     No voucher data available. Click 'Add' above to populate.
                   </td>
                 </tr>
@@ -281,6 +282,7 @@
                   <td class="px-4 border">{{ item.AccountCode }}</td>
                   <td class="px-4 border">{{ item.AccountDetails }}</td>
                   <td class="px-4 border">{{ item.BillNo }}</td>
+                  <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
                   <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
                 </tr>
@@ -292,6 +294,7 @@
                     {{ item.BillNo }}
                     <span class="text-xs text-yellow-600">(pending)</span>
                   </td>
+                  <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
                   <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
                 </tr>
@@ -300,13 +303,14 @@
                   <td class="px-4 border">{{ debitVoucherEntry.AccountCode }}</td>
                   <td class="px-4 border">{{ debitVoucherEntry.AccountDetails }}</td>
                   <td class="px-4 border">-</td>
+                  <td class="px-4 border">-</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
                   <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                 </tr>
               </tbody>
 
               <tr class="bg-gray-50 border-t-2 border-gray-400" v-if="creditVoucherEntries.length > 0">
-                <td colspan="3"></td>
+                <td colspan="4"></td>
                 <td class="px-4 border">
                   <div class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold">
                     {{ calculateTotalDebit() }}
@@ -393,20 +397,21 @@ const fetchAllData = async () => {
       : "";
 
     const res = await axios.get(
-      `${apiBase}/pay-loan-voucher/get-loan-details?CustomerCode=${formData.value.customer}&from=${fromDate}&to=${toDate}`,
+      `${apiBase}/pay-loan-payment-voucher/get-payment-details?CustomerCode=${formData.value.customer}&from=${fromDate}&to=${toDate}`,
       getToken()
     );
     if (!res?.data || res.data.length === 0) {
       showNotification("info", "No loan data found for the selected criteria.");
     }
     currentPage.value = 1;
-    allData.value = (res?.data || []).map((item) => ({
+    allData.value = (res?.data || []).map((item, idx) => ({
       ...item,
-      InvoiceNo: item.LoanId || item.ID,
-      InvoiceDate: item.LoanDate ? dayjs(item.LoanDate).format("YYYY-MM-DD") : (item.Date ? dayjs(item.Date).format("YYYY-MM-DD") : ""),
+      InvoiceNo: `${item.LoanID}-${idx}`,
+      LoanID: item.LoanID,
+      InvoiceDate: item.PaymentDate ? dayjs(item.PaymentDate).format("YYYY-MM-DD") : "",
       CustomerCode: item.MemberCode || item.CustomerCode,
       CustomerName: item.CustomerName || "",
-      NET: item.LoanAmount || item.Amount,
+      NET: item.Payment || 0,
     }));
     totalSelectedNet.value = allData.value.reduce(
       (sum, item) => sum + (Number(item.NET) || 0),
@@ -538,10 +543,21 @@ const handleAddSale = () => {
       BillDate: invoiceDateDayjs,
       TransType: "s",
       Person: invoice?.CustomerName || "",
+      Period: invoice?.InvoiceDate ? dayjs(invoice.InvoiceDate).format("YYYYMM") : "",
     };
   });
 
   modalForm.value.Details = initialCreditEntries;
+
+  const uniquePeriods = [
+    ...new Set(
+      initialCreditEntries.map((e) => e.Period).filter(Boolean)
+    ),
+  ];
+  if (uniquePeriods.length && !commonNarration.value?.trim()) {
+    commonNarration.value = uniquePeriods.join(", ");
+  }
+
   isModalOpen.value = true;
 };
 
@@ -621,6 +637,10 @@ const saveLoanVoucher = async () => {
     const jvDate = modalForm.value.JVDate
       ? dayjs(modalForm.value.JVDate).format("YYYY-MM-DD")
       : dayjs().format("YYYY-MM-DD");
+    const selectedItems = checkedInvoice.value
+      .map((invNo) => allData.value.find((d) => d.InvoiceNo === invNo))
+      .filter(Boolean);
+
     const payload = {
       SiteCode: modalForm.value.SiteCode || "01",
       Period: Number(dayjs(jvDate).format("YYYYMM")),
@@ -629,11 +649,18 @@ const saveLoanVoucher = async () => {
       JVDate: jvDate,
       AMCode: debitVoucherEntry.value?.AccountCode || "",
       Narration: commonNarration.value,
-      LoanIDs: checkedInvoice.value.map((id) => Number(id)),
+      LoanEntries: selectedItems.map((item) => ({
+        LoanID: Number(item.LoanID),
+        AMCode: item.AMCode || item.LoanAMCode || "",
+        PaymentDate: item.PaymentDate || "",
+      })),
+      LoanIDs: selectedItems
+        .map((item) => Number(item.LoanID))
+        .filter((id) => !Number.isNaN(id)),
     };
 
     await axios.post(
-      `${apiBase}/pay-loan-voucher/store`,
+      `${apiBase}/pay-loan-payment-voucher/store`,
       payload,
       getToken()
     );

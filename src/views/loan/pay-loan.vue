@@ -2,19 +2,20 @@
   <MainLayout>
     <div class="flex flex-wrap justify-end items-center gap-3">
       <div class="flex items-center gap-2">
+        <a-input v-model:value="searchQuery" :placeholder="$t('common.searchHere')" allow-clear style="width: 240px"
+          @change="handleSearchChange" />
         <a-range-picker
           v-model:value="dateRange"
           value-format="YYYY-MM-DD"
           format="DD-MMM-YYYY"
           @change="handleDateChange"
         />
-      </div>
-      <div>
+      
         <button
           class="bg-primary text-white px-4 py-2 rounded"
-          @click="isCreateModalVisible = true"
+          @click="openAddCollection"
         >
-          {{ $t('loan.newLoanAdd') }}
+          {{ $t('loan.addCollection') }}
         </button>
       </div>
     </div>
@@ -29,28 +30,28 @@
           <th class="border border-white px-4 py-2">{{ $t('loan.loanType') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('loan.employee') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('loan.employeeName') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.payment') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.action') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
-        <tr v-for="(loan, index) in loanData" :key="loan.id || loan.LoanId">
-          <td class="px-4 border">{{ loan?.LoanId }}</td>
-          <td class="px-4 border">{{ loan?.type?.LoanTypeDetails }}</td>
-          <td class="px-4 border">{{ loan?.EmpCode }}</td>
-          <td class="px-4 border">{{ loan?.AMDetails }}</td>
-          <td class="px-4 border text-right">{{ loan?.LoanAmount }}</td>
-          <td class="px-4 border text-right">{{ loan?.NofInstallment }}</td>
+        <tr v-for="(payment, index) in loanData" :key="`${payment.LoanID}-${payment.PaymentDate}-${index}`">
+          <td class="px-4 border">{{ payment?.loan?.LoanId }}</td>
+          <td class="px-4 border">{{ payment?.loan?.type?.LoanTypeDetails }}</td>
+          <td class="px-4 border">{{ payment?.EmpCode }}</td>
+          <td class="px-4 border">{{ payment?.loan?.account?.AMDetails }}</td>
+          <td class="px-4 border text-right">{{ formatAmount(Number(payment?.Payment || 0)) }}</td>
+          <td class="px-4 border">{{ formatDate(payment?.PaymentDate) }}</td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
               <a-tooltip :title="$t('loan.loanDetails')">
-                <button type="button" class="action-btn action-btn-info" @click="viewLoan(loan?.LoanId)">
+                <button type="button" class="action-btn action-btn-info" @click="viewLoan(payment?.loan?.LoanId)">
                   <i class="bi bi-eye"></i>
                 </button>
               </a-tooltip>
               <a-tooltip :title="$t('loan.payment')">
-                <button type="button" class="action-btn action-btn-primary" @click="makePayment(loan)">
+                <button type="button" class="action-btn action-btn-primary" @click="makePayment(payment?.loan)">
                   <i class="bi bi-credit-card"></i>
                 </button>
               </a-tooltip>
@@ -300,8 +301,6 @@
                 <tr class="bg-gray-100 border-b border-gray-300">
                   <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.paymentDate') }}</th>
                   <th class="px-3 py-2 text-right font-semibold text-gray-700">{{ $t('common.amount') }}</th>
-                  <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.entryBy') }}</th>
-                  <th class="px-3 py-2 text-left font-semibold text-gray-700">{{ $t('loan.entryDate') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -312,20 +311,16 @@
                 >
                   <td class="px-3 py-2">{{ formatDate(item.PaymentDate) }}</td>
                   <td class="px-3 py-2 text-right">{{ formatAmount(Number(item.Payment || 0)) }}</td>
-                  <td class="px-3 py-2">{{ item.EntryBy }}</td>
-                  <td class="px-3 py-2">{{ formatDate(item.EntryDate) }}</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr class="bg-gray-50 border-t-2 border-gray-300">
                   <td class="px-3 py-2 font-bold text-gray-700">{{ $t('loan.totalPaid') }}</td>
                   <td class="px-3 py-2 text-right font-bold text-green-600">{{ formatAmount(viewTotalPayment) }}</td>
-                  <td colspan="2" class="px-3 py-2"></td>
                 </tr>
                 <tr class="bg-gray-50">
                   <td class="px-3 py-2 font-bold text-gray-700">{{ $t('loan.remaining') }}</td>
-                  <td class="px-3 py-2 text-right font-bold text-red-500">{{ formatAmount(Number(viewLoanData.LoanAmount || 0) - viewTotalPayment) }}</td>
-                  <td colspan="2" class="px-3 py-2"></td>
+                  <td class="px-3 py-2 text-right font-bold text-red-500">{{ formatAmount(Number(viewLoanData.InterestAmount || 0) - viewTotalPayment) }}</td>
                 </tr>
               </tfoot>
             </table>
@@ -358,10 +353,34 @@
       width="500px"
     >
       <form @submit.prevent="submitPayment" v-if="selectedLoan">
-        <div class="mb-4 p-3 bg-blue-50 rounded-lg border text-sm">
+        <div v-if="selectedLoanDetails" class="mb-4 p-3 bg-blue-50 rounded-lg border text-sm space-y-1">
           <div class="flex justify-between">
-            <span class="font-semibold text-gray-600">{{ $t('loan.installment') }}:</span>
-            <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoan.Installment || 0)) }} x {{ selectedLoan.NofInstallment }}</span>
+            <span class="font-semibold text-gray-600">Actual Loan:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.LoanAmount || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.noOfInstallment') }}:</span>
+            <span class="font-bold text-blue-700">{{ selectedLoanDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.installment') }} No:</span>
+            <span class="font-bold text-blue-700">{{ selectedLoanDetails.payments?.length || 0 }} / {{ selectedLoanDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Running {{ $t('loan.installment') }} No:</span>
+            <span class="font-bold text-green-700">{{ (selectedLoanDetails.payments?.length || 0) + 1 }} / {{ selectedLoanDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.installmentAmount') }}:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.Installment || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.totalLoanPayable') }}:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.InterestAmount || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.remaining') }}:</span>
+            <span class="font-bold text-red-600">{{ formatAmount(Number(selectedLoanDetails.loan?.InterestAmount || 0) - Number(selectedLoanDetails.total_payment || 0)) }}</span>
           </div>
         </div>
         <div class="space-y-5 mb-6">
@@ -384,21 +403,6 @@
               v-model:value="paymentFormData.PaymentDate"
             />
           </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.entryBy') }}</label>
-            <a-input class="w-full" placeholder="Entry By" v-model:value="paymentFormData.EntryBy" />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.entryDate') }}</label>
-            <a-date-picker
-              class="w-full"
-              placeholder="Entry Date"
-              value-format="YYYY-MM-DD"
-              v-model:value="paymentFormData.EntryDate"
-            />
-          </div>
         </div>
 
         <div class="flex items-center gap-3">
@@ -419,6 +423,108 @@
       </form>
     </a-modal>
 
+    <a-modal
+      v-model:open="isAddCollectionVisible"
+      :title="$t('loan.addCollection')"
+      @cancel="isAddCollectionVisible = false"
+      :footer="null"
+      width="500px"
+    >
+      <form @submit.prevent="submitAddCollection">
+        <div class="space-y-5 mb-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.selectLoan') }} <span class="text-red-500">*</span></label>
+            <a-select
+              show-search
+              class="w-full"
+              :placeholder="$t('loan.selectLoan')"
+              v-model:value="addCollectionFormData.LoanId"
+              :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
+              :options="loanOptions"
+              @change="onLoanSelectForCollection"
+            />
+          </div>
+
+          <div v-if="selectedLoanDetails" class="p-3 bg-blue-50 rounded-lg border text-sm space-y-1">
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">Actual Loan:</span>
+              <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.LoanAmount || 0)) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.interestAmount') }}:</span>
+              <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.InterestAmount || 0) - Number(selectedLoanDetails.loan?.LoanAmount || 0)) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.noOfInstallment') }}:</span>
+              <span class="font-bold text-blue-700">{{ selectedLoanDetails.loan?.NofInstallment }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.installment') }} No:</span>
+              <span class="font-bold text-blue-700">{{ selectedLoanDetails.payments?.length || 0 }} / {{ selectedLoanDetails.loan?.NofInstallment }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">Running {{ $t('loan.installment') }} No:</span>
+              <span class="font-bold text-green-700">{{ (selectedLoanDetails.payments?.length || 0) + 1 }} / {{ selectedLoanDetails.loan?.NofInstallment }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.installmentAmount') }}:</span>
+              <span class="font-bold text-blue-700">
+                {{ formatAmount(Number(selectedLoanDetails.loan?.LoanAmount || 0) / Number(selectedLoanDetails.loan?.NofInstallment || 1)) }}
+                +
+                {{ formatAmount((Number(selectedLoanDetails.loan?.InterestAmount || 0) - Number(selectedLoanDetails.loan?.LoanAmount || 0)) / Number(selectedLoanDetails.loan?.NofInstallment || 1)) }}
+                =
+                {{ formatAmount(Number(selectedLoanDetails.loan?.Installment || 0)) }}
+              </span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.totalLoanPayable') }}:</span>
+              <span class="font-bold text-blue-700">{{ formatAmount(Number(selectedLoanDetails.loan?.InterestAmount || 0)) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">{{ $t('loan.remaining') }}:</span>
+              <span class="font-bold text-red-600">{{ formatAmount(Number(selectedLoanDetails.loan?.InterestAmount || 0) - Number(selectedLoanDetails.total_payment || 0)) }}</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.payment') }} <span class="text-red-500">*</span></label>
+            <a-input
+              class="w-full"
+              placeholder="Enter Payment Amount"
+              v-model:value="addCollectionFormData.Payment"
+              type="number"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.paymentDate') }}</label>
+            <a-date-picker
+              class="w-full"
+              placeholder="Payment Date"
+              value-format="YYYY-MM-DD"
+              v-model:value="addCollectionFormData.PaymentDate"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            @click="isAddCollectionVisible = false"
+            class="px-6 py-2 rounded font-semibold bg-gray-500 text-white hover:bg-gray-600 transition-colors"
+          >
+            {{ $t('common.close') }}
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
+          >
+            {{ $t('common.submit') }}
+          </button>
+        </div>
+      </form>
+    </a-modal>
+
     <a-pagination
       class="mt-4"
       v-model:current="page"
@@ -429,6 +535,7 @@
       @change="
         (pageNo) => {
           page = pageNo;
+          getLoadData();
         }
       "
       v-if="total > per_page"
@@ -457,21 +564,128 @@ const dateRange = ref([
   toYmd(now),
 ]);
 
+const searchQuery = ref("");
+let searchTimer = null;
+
 const handleDateChange = () => {
+  page.value = 1;
   getLoadData();
+};
+
+const handleSearchChange = () => {
+  if (searchTimer) clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    page.value = 1;
+    getLoadData();
+  }, 400);
 };
 
 const isCreateModalVisible = ref(false);
 const isViewModalVisible = ref(false);
 const isPaymentModalVisible = ref(false);
+const isAddCollectionVisible = ref(false);
 const selectedLoan = ref(null);
 
 const paymentFormData = ref({
   Payment: "",
   PaymentDate: dayjs().format("YYYY-MM-DD"),
-  EntryBy: "admin",
+  EntryBy: "cashier",
   EntryDate: dayjs().format("YYYY-MM-DD"),
 });
+
+const addCollectionFormData = ref({
+  LoanId: null,
+  Payment: "",
+  PaymentDate: dayjs().format("YYYY-MM-DD"),
+  EntryBy: "cashier",
+  EntryDate: dayjs().format("YYYY-MM-DD"),
+});
+
+const loanOptions = ref([]);
+const selectedLoanDetails = ref(null);
+
+const fetchLoanOptions = async () => {
+  try {
+    const params = new URLSearchParams({ search: "", per_page: 1000 });
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan?${params.toString()}`,
+      getToken(),
+    );
+    if (res.data?.data) {
+      loanOptions.value = res.data.data.map((l) => ({
+        value: l.LoanId,
+        label: `${l.LoanId} - ${l.EmpCode} - ${l.AMDetails || ""}`,
+        installment: l.Installment,
+      }));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const openAddCollection = () => {
+  addCollectionFormData.value = {
+    LoanId: null,
+    Payment: "",
+    PaymentDate: dayjs().format("YYYY-MM-DD"),
+    EntryBy: "cashier",
+    EntryDate: dayjs().format("YYYY-MM-DD"),
+  };
+  selectedLoanDetails.value = null;
+  if (loanOptions.value.length === 0) fetchLoanOptions();
+  isAddCollectionVisible.value = true;
+};
+
+const onLoanSelectForCollection = async (loanId) => {
+  const loan = loanOptions.value.find((l) => l.value === loanId);
+  if (loan?.installment) {
+    addCollectionFormData.value.Payment = Number(loan.installment);
+  }
+  try {
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan-payment/show?loanId=${loanId}`,
+      getToken(),
+    );
+    if (res.data?.success) {
+      selectedLoanDetails.value = res.data.data || null;
+    }
+  } catch (error) {
+    console.log(error);
+    selectedLoanDetails.value = null;
+  }
+};
+
+const submitAddCollection = async () => {
+  try {
+    if (!addCollectionFormData.value.LoanId) {
+      showNotification("error", "Please select a loan.");
+      return;
+    }
+    if (!Number(addCollectionFormData.value.Payment)) {
+      showNotification("error", "Please enter a valid payment amount.");
+      return;
+    }
+    const payload = {
+      Payment: Number(addCollectionFormData.value.Payment || 0),
+      PaymentDate: addCollectionFormData.value.PaymentDate,
+      EntryBy: "cashier",
+      EntryDate: dayjs().format("YYYY-MM-DD"),
+    };
+    const res = await axios.post(
+      `${apiBase}/settings/pay-loan-payment?loanId=${addCollectionFormData.value.LoanId}`,
+      payload,
+      getToken(),
+    );
+    if (res.data?.success) {
+      showNotification("success", "Collection added successfully!");
+      isAddCollectionVisible.value = false;
+      getLoadData();
+    }
+  } catch (error) {
+    console.log(error);
+    showNotification("error", "Failed to add collection.");
+  }
+};
 
 const page = ref(1);
 const per_page = ref(10);
@@ -598,15 +812,20 @@ const loanData = ref([]);
 const getLoadData = async () => {
   try {
     loadDataloading.value = true;
-    const params = new URLSearchParams({ search: "", per_page: 10 });
+    const params = new URLSearchParams({
+      search: searchQuery.value || "",
+      per_page: per_page.value,
+      page: page.value,
+    });
     if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
     if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
     const res = await axios.get(
-      `${apiBase}/settings/pay-loan?${params.toString()}`,
+      `${apiBase}/settings/pay-loan-payment?${params.toString()}`,
       getToken(),
     );
-    if (res.data) {
-      loanData.value = res.data.data;
+    if (res.data?.success) {
+      loanData.value = Array.isArray(res.data.data?.data) ? res.data.data.data : [];
+      total.value = Number(res.data.data?.total || 0);
     }
   } catch (error) {
     console.log(error);
@@ -771,31 +990,28 @@ const viewPayments = ref([]);
 const viewTotalPayment = ref(0);
 const isLoadingDetails = ref(false);
 
-const viewLoan = async (id) => {
-  try {
-    isLoadingDetails.value = true;
-    viewLoanData.value = null;
-    viewPayments.value = [];
-    viewTotalPayment.value = 0;
-    const res = await axios.get(
-      `${apiBase}/settings/pay-loan-payment?loanId=${id}`,
-      getToken(),
-    );
-    if (res.data?.success) {
-      viewLoanData.value = res.data.data.loan || null;
-      viewPayments.value = Array.isArray(res.data.data.payments) ? res.data.data.payments : [];
-      viewTotalPayment.value = Number(res.data.data.total_payment || 0);
-      isViewModalVisible.value = true;
-    }
-  } catch (error) {
-    viewLoanData.value = null;
-    viewPayments.value = [];
-    viewTotalPayment.value = 0;
-    console.log(error);
-    showNotification("error", "Failed to fetch loan details.");
-  } finally {
-    isLoadingDetails.value = false;
+const viewLoan = (id) => {
+  const matched = loanData.value.filter(
+    (p) => String(p.LoanID) === String(id) || String(p.loan?.LoanId) === String(id),
+  );
+  if (matched.length === 0) {
+    showNotification("error", "Loan not found.");
+    return;
   }
+  viewLoanData.value = matched[0].loan || null;
+  viewPayments.value = matched.map((p) => ({
+    LoanID: p.LoanID,
+    EmpCode: p.EmpCode,
+    Payment: p.Payment,
+    PaymentDate: p.PaymentDate,
+    EntryBy: p.EntryBy,
+    EntryDate: p.EntryDate,
+  }));
+  viewTotalPayment.value = viewPayments.value.reduce(
+    (sum, p) => sum + Number(p.Payment || 0),
+    0,
+  );
+  isViewModalVisible.value = true;
 };
 
 const formatPeriod = (period) => {
@@ -812,15 +1028,28 @@ const formatDate = (date) => {
   return parsed.isValid() ? parsed.format("YYYY-MM-DD") : date;
 };
 
-const makePayment = (loan) => {
+const makePayment = async (loan) => {
   selectedLoan.value = loan;
   paymentFormData.value = {
     Payment: Number(loan.Installment || 0),
     PaymentDate: dayjs().format("YYYY-MM-DD"),
-    EntryBy: "admin",
+    EntryBy: "cashier",
     EntryDate: dayjs().format("YYYY-MM-DD"),
   };
+  selectedLoanDetails.value = null;
   isPaymentModalVisible.value = true;
+  try {
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan-payment/show?loanId=${loan.LoanId}`,
+      getToken(),
+    );
+    if (res.data?.success) {
+      selectedLoanDetails.value = res.data.data || null;
+    }
+  } catch (error) {
+    console.log(error);
+    selectedLoanDetails.value = null;
+  }
 };
 
 const submitPayment = async () => {
@@ -833,11 +1062,8 @@ const submitPayment = async () => {
     const payload = {
       Payment: Number(paymentFormData.value.Payment || 0),
       PaymentDate: paymentFormData.value.PaymentDate,
-      EntryBy: paymentFormData.value.EntryBy || "admin",
-      EntryDate:
-        paymentFormData.value.EntryDate ||
-        paymentFormData.value.PaymentDate ||
-        dayjs().format("YYYY-MM-DD"),
+      EntryBy: "cashier",
+      EntryDate: dayjs().format("YYYY-MM-DD"),
     };
 
     const res = await axios.post(
@@ -852,11 +1078,11 @@ const submitPayment = async () => {
       paymentFormData.value = {
         Payment: "",
         PaymentDate: dayjs().format("YYYY-MM-DD"),
-        EntryBy: "admin",
+        EntryBy: "cashier",
         EntryDate: dayjs().format("YYYY-MM-DD"),
       };
-      getLoadData();
-      await viewLoan(selectedLoan.value.LoanId);
+      await getLoadData();
+      viewLoan(selectedLoan.value.LoanId);
     }
   } catch (error) {
     console.log(error);

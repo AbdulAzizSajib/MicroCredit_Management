@@ -192,10 +192,21 @@ const allMenuItems = computed(() => [
     permission: "Accountant Dashboard",
   },
   {
-    key: "/savings/customer",
+    key: "member",
     label: t("menu.customer"),
     icon: () => h(UserOutlined),
-    onClick: navigateTo("/savings/customer"),
+    children: [
+      {
+        key: "/savings/customer",
+        label: t("menu.savings"),
+        onClick: navigateTo("/savings/customer"),
+      },
+      {
+        key: "/savings/loan-member",
+        label: t("menu.loan"),
+        onClick: navigateTo("/savings/loan-member"),
+      },
+    ],
     permission: "Saving",
   },
   {
@@ -215,6 +226,19 @@ const allMenuItems = computed(() => [
       },
     ],
     permission: "Saving",
+  },
+  {
+    key: "loan-accountant",
+    label: t("menu.loan"),
+    icon: () => h(InboxOutlined),
+    children: [
+      {
+        key: "/loan/loan-list",
+        label: t("menu.payLoan"),
+        onClick: navigateTo("/loan/loan-list"),
+      },
+    ],
+    permission: "Accountant Dashboard",
   },
 
   {
@@ -480,6 +504,7 @@ const allMenuItems = computed(() => [
 const items = computed(() => {
   return allMenuItems.value.filter((item) => {
     if (!item.permission) return true;
+    if (Array.isArray(item.permission)) return item.permission.some((p) => hasPermission(p));
     return hasPermission(item.permission);
   });
 });
