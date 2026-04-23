@@ -237,8 +237,13 @@
   "dashboard": {
     "title": "ড্যাশবোর্ড",
     "totalMembers": "মোট সদস্য",
+    "totalSavingsMembers": "মোট সঞ্চয় সদস্য",
+    "totalSavingsVoucher": "মোট সঞ্চয় ভাউচার",
+    "totalLoanVoucher": "মোট ঋণ ভাউচার",
+    "totalLoanMembers": "মোট ঋণ সদস্য",
+    "totalLoanPosted": "মোট পোস্টকৃত ঋণ",
     "loanMembers": "ঋণগ্রহীতা সদস্য",
-    "totalSaving": "মোট সঞ্চয় পরিশোধ",
+    "totalSaving": "মোট পোস্টকৃত সঞ্চয়",
     "totalLoan": "মোট ঋণ",
     "totalEarning": "মোট আয়",
     "totalShouldPay": "মোট সঞ্চয় আদায়যোগ্য",
@@ -259,6 +264,9 @@
   "language": {
     "english": "English",
     "bangla": "বাংলা"
+  },
+  "overview": {
+    "appTitle": "মাইক্রো ক্রেডিট ম্যানেজমেন্ট"
   },
   "userMgmt": {
     "userList": "ব্যবহারকারী তালিকা",

@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('finance.loanMembersTitle') }}</h1>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('dashboard.totalLoanMembers') }}</h1>
         <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 

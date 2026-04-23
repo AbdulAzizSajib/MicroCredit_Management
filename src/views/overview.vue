@@ -50,7 +50,7 @@
             <h2
               class="text-4xl font-bold tracking-wider uppercase bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent"
             >
-              Micro Credit Management
+              {{ $t('overview.appTitle') }}
             </h2>
           </div>
 
@@ -84,7 +84,7 @@
         <p class="text-lg lg:text-xl text-gray-600 mt-2">
           {{ $t('login.welcome') }}
           <span class="font-bold uppercase text-indigo-600"
-            >Micro Credit Management</span
+            >{{ $t('overview.appTitle') }}</span
           >
         </p>
         <div
@@ -143,7 +143,7 @@
               <h2
                 class="text-center font-semibold text-sm text-gray-800 group-hover:text-gray-900 transition-colors duration-300 leading-snug"
               >
-                {{ item.title }}
+                {{ $t(item.titleKey) }}
               </h2>
             </div>
           </div>
@@ -187,7 +187,7 @@ const hasPermission = (permission) => {
 
 const card = [
   {
-    title: "Cashier Dashboard",
+    titleKey: "menu.customerDashboard",
     icon: customerIcon,
     route: "finance-dashboard",
     bg: "#ffe2e5",
@@ -195,7 +195,7 @@ const card = [
     permission: "Customer Dashboard",
   },
   {
-    title: "Accountant Dashboard",
+    titleKey: "menu.accountantDashboard",
     icon: performanceIcon,
     route: "accountant-dashboard",
     bg: "#fff4de",

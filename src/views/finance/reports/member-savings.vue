@@ -414,6 +414,7 @@
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountCode') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountDetails') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.billNo') }}</th>
+                  <th class="border border-white px-4 py-2">{{ $t('common.invoiceDate') }}</th>
                   <th class="border border-white px-4 py-2 text-right">
                     {{ $t('voucher.debit') }}
                   </th>
@@ -428,7 +429,7 @@
                     !creditVoucherEntries.length && !modalForm.Details.length
                   "
                 >
-                  <td colspan="5" class="text-center py-4 text-gray-500">
+                  <td colspan="6" class="text-center py-4 text-gray-500">
                     {{ $t('voucher.noVoucherData') }}
                   </td>
                 </tr>
@@ -442,6 +443,9 @@
                   <td class="px-4 border">{{ item.AccountCode }}</td>
                   <td class="px-4 border">{{ item.AccountDetails }}</td>
                   <td class="px-4 border">{{ item.BillNo }}</td>
+                  <td class="px-4 border">
+                    {{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}
+                  </td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
                   <td class="px-4 border text-right">
                     {{ (parseFloat(item.Credit) || 0).toFixed(2) }}
@@ -459,6 +463,9 @@
                   <td class="px-4 border">
                     {{ item.BillNo }}
                     <span class="text-xs text-yellow-600">({{ $t('voucher.pending') }})</span>
+                  </td>
+                  <td class="px-4 border">
+                    {{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}
                   </td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
                   <td class="px-4 border text-right">
@@ -479,6 +486,7 @@
                     {{ debitVoucherEntry.AccountDetails }}
                   </td>
                   <td class="px-4 border">-</td>
+                  <td class="px-4 border">-</td>
                   <td class="px-4 border text-right">
                     {{ calculateTotalCredit() }}
                   </td>
@@ -488,7 +496,7 @@
 
               <tfoot class="sticky bottom-0 z-10" v-if="creditVoucherEntries.length > 0">
                 <tr class="bg-gray-50 border-t-2 border-gray-400">
-                  <td colspan="3"></td>
+                  <td colspan="4"></td>
                   <td class="px-4 border">
                     <div
                       class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold"
@@ -783,11 +791,22 @@ const handleAddSale = () => {
       BillDate: invoiceDateDayjs,
       TransType: "s",
       Person: invoice?.CustomerName || "",
+      Period: invoice?.Date ? dayjs(invoice.Date).format("YYYYMM") : "",
     };
   });
 
   // Store them temporarily in Details - they will show as "pending" in the table
   modalForm.value.Details = initialCreditEntries;
+
+  // Auto-fill narration with unique periods from selected entries (e.g. "202409, 202410")
+  const uniquePeriods = [
+    ...new Set(
+      initialCreditEntries.map((e) => e.Period).filter(Boolean)
+    ),
+  ];
+  if (uniquePeriods.length && !commonNarration.value?.trim()) {
+    commonNarration.value = uniquePeriods.join(", ");
+  }
 
   isModalOpen.value = true;
 };
@@ -828,6 +847,7 @@ const addVoucherEntry = () => {
     BillDate: detail.BillDate,
     TransType: detail.TransType,
     Person: detail.Person,
+    Period: detail.Period || "",
     Narration: commonNarration.value,
     ChequeNo:
       modalForm.value.JVType === "NCC" ? chequeDetails.value.ChequeNo : null,

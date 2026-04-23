@@ -2,12 +2,12 @@
   <MainLayout>
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('finance.totalLoanTitle') }}</h1>
+        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('dashboard.totalLoanPosted') }}</h1>
         <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
       </div>
 
       <div class="text-right mb-3 flex justify-end items-center gap-2">
-        <label class="font-semibold text-gray-700">{{ $t('finance.totalLoanTitle') }}</label>
+        <label class="font-semibold text-gray-700">{{ $t('dashboard.totalLoanPosted') }}</label>
         <input type="text" class="w-32 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
           :value="totalLoan" readonly />
       </div>

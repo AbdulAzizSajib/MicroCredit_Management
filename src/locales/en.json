@@ -237,8 +237,13 @@
   "dashboard": {
     "title": "Dashboard",
     "totalMembers": "Total Members",
+    "totalSavingsMembers": "Total Savings Members",
+    "totalSavingsVoucher": "Total Savings Voucher",
+    "totalLoanVoucher": "Total Loan Voucher",
+    "totalLoanMembers": "Total Loan Members",
+    "totalLoanPosted": "Total Loan Posted",
     "loanMembers": "Loan Members",
-    "totalSaving": "Total Savings Paid",
+    "totalSaving": "Total Savings Posted",
     "totalLoan": "Total Loan",
     "totalEarning": "Total Earning",
     "totalShouldPay": "Total Savings Payable",
@@ -259,6 +264,9 @@
   "language": {
     "english": "English",
     "bangla": "Bangla"
+  },
+  "overview": {
+    "appTitle": "Micro Credit Management"
   },
   "userMgmt": {
     "userList": "User List",

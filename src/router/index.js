@@ -734,11 +734,12 @@ const router = createRouter({
 });
 
 // Path-to-permission mapping for routes without meta.permission
+// Array = any one of those permissions allows access
 const pathPermissionMap = {
   "/transaction": "Transaction",
   "/reports": "Reports",
   "/files": "Files",
-  "/dashboard/total-members": "Customer Dashboard",
+  "/dashboard/total-members": ["Customer Dashboard", "Accountant Dashboard"],
   "/dashboard/loan-members": "Accountant Dashboard",
   "/dashboard/total-saving": "Accountant Dashboard",
   "/dashboard/total-loan": "Accountant Dashboard",
@@ -766,7 +767,10 @@ router.beforeEach((to, from, next) => {
     const permissions = JSON.parse(
       localStorage.getItem("user_permissions") || "[]",
     );
-    if (!permissions.includes(requiredPermission)) {
+    const allowed = Array.isArray(requiredPermission)
+      ? requiredPermission.some((p) => permissions.includes(p))
+      : permissions.includes(requiredPermission);
+    if (!allowed) {
       return next("/overview");
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <div class="space-y-8 max-w-7xl mx-auto">
+    <div class="space-y-8 md:px-20 py-10">
       <div class="flex flex-wrap justify-between items-center gap-3">
         <h1 class="text-3xl font-bold text-primary" data-aos="fade-right">{{ isCustomerDashboard ?
           $t('menu.customerDashboard') : $t('menu.accountantDashboard') }}</h1>
@@ -139,37 +139,37 @@
       </div>
 
       <!-- Accountant Dashboard Cards -->
-      <div v-if="!isCustomerDashboard && summaryData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="glass-card glass-purple cursor-pointer" @click="$router.push('/dashboard/total-members')"
-          data-aos="fade-up" data-aos-delay="100">
+      <div v-if="!isCustomerDashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 1. Total Savings Members -->
+        <div class="glass-card glass-purple cursor-pointer" @click="goToSavingsMembers">
           <div class="flex items-center gap-5">
             <div class="bg-purple-200/40 rounded-2xl p-4">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-purple-400 uppercase tracking-wider">{{
-                $t('dashboard.totalMembers') }}</div>
-              <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ summaryData.allMemberCount }}</div>
+                $t('dashboard.totalSavingsMembers') }}</div>
+              <div class="text-4xl font-extrabold text-purple-700 mt-1">{{ summaryData?.allMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/dashboard/loan-members')"
-          data-aos="fade-up" data-aos-delay="200">
+        <!-- 2. Total Savings Voucher -->
+        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/transaction/member-savings')">
           <div class="flex items-center gap-5">
-            <div class="bg-indigo-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
+            <div class="bg-blue-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:ticket-confirmation-outline" class="text-blue-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.loanMembers')
-              }}</div>
-              <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ summaryData.loanMemberCount }}</div>
+              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalSavingsVoucher') }}</div>
+              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
+              <div class="text-sm font-bold text-blue-500 mt-0.5">৳ {{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')"
-          data-aos="fade-up" data-aos-delay="300">
+        <!-- 3. Total Savings Paid -->
+        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')">
           <div class="flex items-center gap-5">
             <div class="bg-green-200/40 rounded-2xl p-4">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
@@ -177,43 +177,14 @@
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving')
               }}</div>
-              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData.totalSaving ||
+              <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData?.totalSaving ||
                 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/dashboard/total-loan')"
-          data-aos="fade-up" data-aos-delay="400">
-          <div class="flex items-center gap-5">
-            <div class="bg-blue-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:bank-outline" class="text-blue-600 text-5xl" />
-            </div>
-            <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalLoan') }}
-              </div>
-              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(summaryData.totalLoan ||
-                0)) }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')"
-          data-aos="fade-up" data-aos-delay="500">
-          <div class="flex items-center gap-5">
-            <div class="bg-amber-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
-            </div>
-            <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning')
-              }}</div>
-              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData.totalEarning
-                || 0)) }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card glass-rose" data-aos="fade-up" data-aos-delay="600">
+        <!-- 4. Remaining Balance -->
+        <div class="glass-card glass-rose">
           <div class="flex items-center gap-5">
             <div class="bg-rose-200/40 rounded-2xl p-4">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />
@@ -221,38 +192,66 @@
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{
                 $t('dashboard.remainingBalance') }}</div>
-              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData.remaingBalance
+              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData?.remaingBalance
                 || 0)) }}</div>
             </div>
           </div>
         </div>
 
-      </div>
-
-      <!-- Voucher Pending Cards (Accountant Dashboard) -->
-      <div v-if="!isCustomerDashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/transaction/member-savings')" data-aos="fade-up" data-aos-delay="650">
+        <!-- 5. Total Loan Members -->
+        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/dashboard/loan-members')">
           <div class="flex items-center gap-5">
-            <div class="bg-blue-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:ticket-confirmation-outline" class="text-blue-600 text-5xl" />
+            <div class="bg-indigo-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">Total Savings For Voucher</div>
-              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
-              <div class="text-sm font-bold text-blue-500 mt-0.5">৳ {{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
+              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanMembers')
+              }}</div>
+              <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ summaryData?.loanMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="$router.push('/transaction/member-loan')" data-aos="fade-up" data-aos-delay="700">
+        <!-- 6. Total Loan Voucher -->
+        <div class="glass-card glass-cyan cursor-pointer" @click="$router.push('/transaction/member-loan')">
           <div class="flex items-center gap-5">
-            <div class="bg-indigo-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:file-document-multiple-outline" class="text-indigo-600 text-5xl" />
+            <div class="bg-cyan-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:file-document-multiple-outline" class="text-cyan-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Total Loan For Voucher</div>
-              <div class="text-4xl font-extrabold text-indigo-700 mt-1">{{ loanPendingCount?.ForLoanApprovalCount || 0 }}</div>
-              <div class="text-sm font-bold text-indigo-500 mt-0.5">৳ {{ formatAmount(Number(loanPendingCount?.ForLoanApprovalAmount || 0)) }}</div>
+              <div class="text-sm font-semibold text-cyan-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanVoucher') }}</div>
+              <div class="text-4xl font-extrabold text-cyan-700 mt-1">{{ loanPendingCount?.ForLoanApprovalCount || 0 }}</div>
+              <div class="text-sm font-bold text-cyan-500 mt-0.5">৳ {{ formatAmount(Number(loanPendingCount?.ForLoanApprovalAmount || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Total Loan Posted -->
+        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+          <div class="flex items-center gap-5">
+            <div class="bg-teal-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:bank-outline" class="text-teal-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPosted') }}
+              </div>
+              <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(summaryData?.totalLoan ||
+                0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Total Earning -->
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')">
+          <div class="flex items-center gap-5">
+            <div class="bg-amber-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning')
+              }}</div>
+              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData?.totalEarning
+                || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -303,6 +302,14 @@
 
 .glass-rose {
   background: linear-gradient(135deg, rgba(255, 228, 230, 0.7), rgba(254, 205, 211, 0.5));
+}
+
+.glass-cyan {
+  background: linear-gradient(135deg, rgba(207, 250, 254, 0.7), rgba(165, 243, 252, 0.5));
+}
+
+.glass-teal {
+  background: linear-gradient(135deg, rgba(204, 251, 241, 0.7), rgba(153, 246, 228, 0.5));
 }
 </style>
 
@@ -355,6 +362,14 @@ const goToPage = (path) => {
     query.to_date = dateRange.value[1];
   }
   router.push({ path, query });
+};
+
+const goToSavingsMembers = () => {
+  const [from, to] = getDateRange();
+  router.push({
+    path: "/dashboard/total-members",
+    query: { from_date: from, to_date: to },
+  });
 };
 
 const fetchSummary = async () => {
