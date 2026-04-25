@@ -89,6 +89,7 @@
             />
           </th>
           <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
+          <th class="border border-white px-4 py-2">Payment ID</th>
           <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
           <!-- ACCOUNT CODE -->
           <th class="border border-white px-4 py-2">Account Code</th>
@@ -99,7 +100,7 @@
       </thead>
       <tbody class="capitalize">
         <tr v-if="allData.length === 0">
-          <td colspan="6" class="text-center py-4 text-gray-500">
+          <td colspan="7" class="text-center py-4 text-gray-500">
             {{ $t('common.noData') }}
           </td>
         </tr>
@@ -114,6 +115,7 @@
               />
             </td>
             <td class="px-4 border">{{ data.LoanID }}</td>
+            <td class="px-4 border">{{ data?.PayLoanPaymentID }}</td>
             <td class="px-4 border">{{ data?.InvoiceDate }}</td>
             <td class="px-4 border">{{ data?.AMCode }}</td>
             <td class="px-4 border">{{ data?.CustomerCode }}</td>
@@ -266,6 +268,7 @@
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountCode') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.accountDetails') }}</th>
                   <th class="border border-white px-4 py-2">{{ $t('voucher.billNo') }}</th>
+                  <th class="border border-white px-4 py-2">Payment ID</th>
                   <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
                   <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.debit') }}</th>
                   <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.credit') }}</th>
@@ -273,7 +276,7 @@
               </thead>
               <tbody class="capitalize">
                 <tr v-if="!creditVoucherEntries.length && !modalForm.Details.length">
-                  <td colspan="6" class="text-center py-4 text-gray-500">
+                  <td colspan="7" class="text-center py-4 text-gray-500">
                     No voucher data available. Click 'Add' above to populate.
                   </td>
                 </tr>
@@ -282,9 +285,10 @@
                   <td class="px-4 border">{{ item.AccountCode }}</td>
                   <td class="px-4 border">{{ item.AccountDetails }}</td>
                   <td class="px-4 border">{{ item.BillNo }}</td>
+                  <td class="px-4 border">{{ item.PayLoanPaymentID }}</td>
                   <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
-                  <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
+                  <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                 </tr>
 
                 <tr v-for="item in modalForm.Details" :key="'pending-' + item.BillNo" class="bg-yellow-50 hover:bg-yellow-100 border-l-4 border-l-yellow-400">
@@ -294,9 +298,10 @@
                     {{ item.BillNo }}
                     <span class="text-xs text-yellow-600">(pending)</span>
                   </td>
+                  <td class="px-4 border">{{ item.PayLoanPaymentID }}</td>
                   <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
-                  <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                   <td class="px-4 border text-right">{{ 0.0 }}</td>
+                  <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
                 </tr>
 
                 <tr v-if="debitVoucherEntry" key="debit-entry" class="bg-gray-100 hover:bg-gray-200">
@@ -304,20 +309,21 @@
                   <td class="px-4 border">{{ debitVoucherEntry.AccountDetails }}</td>
                   <td class="px-4 border">-</td>
                   <td class="px-4 border">-</td>
-                  <td class="px-4 border text-right">{{ 0.0 }}</td>
+                  <td class="px-4 border">-</td>
                   <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
+                  <td class="px-4 border text-right">{{ 0.0 }}</td>
                 </tr>
               </tbody>
 
               <tr class="bg-gray-50 border-t-2 border-gray-400" v-if="creditVoucherEntries.length > 0">
-                <td colspan="4"></td>
+                <td colspan="5"></td>
                 <td class="px-4 border">
-                  <div class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold">
+                  <div class="w-full h-8 bg-teal-500 text-white text-center flex justify-center items-center rounded font-bold">
                     {{ calculateTotalDebit() }}
                   </div>
                 </td>
                 <td class="px-4 border">
-                  <div class="w-full h-8 bg-teal-500 text-white text-center flex justify-center items-center rounded font-bold">
+                  <div class="w-full h-8 bg-blue-700 text-white text-center flex justify-center items-center rounded font-bold">
                     {{ calculateTotalCredit() }}
                   </div>
                 </td>
@@ -371,7 +377,7 @@ const modalForm = ref({
   SiteCode: "01",
   Period: dayjs().format("YYYYMM"),
   JVType: "",
-  JVCat: "P",
+  JVCat: "R",
   JVDate: dayjs(),
   TransDate: dayjs(),
   Posted: 0,
@@ -408,6 +414,7 @@ const fetchAllData = async () => {
       ...item,
       InvoiceNo: `${item.LoanID}-${idx}`,
       LoanID: item.LoanID,
+      PayLoanPaymentID: item.PayLoanPaymentID || "",
       InvoiceDate: item.PaymentDate ? dayjs(item.PaymentDate).format("YYYY-MM-DD") : "",
       CustomerCode: item.MemberCode || item.CustomerCode,
       CustomerName: item.CustomerName || "",
@@ -536,7 +543,7 @@ const handleAddSale = () => {
       : null;
 
     return {
-      AccountCode: invoice?.AMCode || "",  // ✅ Fix
+      AccountCode: invoice?.AMCode || "",
       AccountDetails: invoice?.CustomerName || "",
       Credit: parseFloat(invoice?.NET) || 0,
       BillNo: invNo,
@@ -544,6 +551,7 @@ const handleAddSale = () => {
       TransType: "s",
       Person: invoice?.CustomerName || "",
       Period: invoice?.InvoiceDate ? dayjs(invoice.InvoiceDate).format("YYYYMM") : "",
+      PayLoanPaymentID: invoice?.PayLoanPaymentID || "",
     };
   });
 
@@ -589,6 +597,7 @@ const addVoucherEntry = () => {
     TransType: detail.TransType,
     Person: detail.Person,
     Narration: commonNarration.value,
+    PayLoanPaymentID: detail.PayLoanPaymentID || "",
     ChequeNo: modalForm.value.JVType === "NCC" ? chequeDetails.value.ChequeNo : null,
     ChequeName: modalForm.value.JVType === "NCC" ? chequeDetails.value.ChequeName : null,
     ChequePayDate: modalForm.value.JVType === "NCC" ? chequeDetails.value.ChequePayDate : null,
@@ -649,14 +658,14 @@ const saveLoanVoucher = async () => {
       JVDate: jvDate,
       AMCode: debitVoucherEntry.value?.AccountCode || "",
       Narration: commonNarration.value,
-      LoanEntries: selectedItems.map((item) => ({
-        LoanID: Number(item.LoanID),
+      PayLoanPaymentEntries: selectedItems.map((item) => ({
+        PayLoanPaymentID: Number(item.PayLoanPaymentID) || 0,
         AMCode: item.AMCode || item.LoanAMCode || "",
         PaymentDate: item.PaymentDate || "",
       })),
-      LoanIDs: selectedItems
-        .map((item) => Number(item.LoanID))
-        .filter((id) => !Number.isNaN(id)),
+      PayLoanPaymentIDs: selectedItems
+        .map((item) => Number(item.PayLoanPaymentID))
+        .filter((id) => id > 0),
     };
 
     await axios.post(

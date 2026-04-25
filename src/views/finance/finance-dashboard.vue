@@ -227,16 +227,14 @@
         </div>
 
         <!-- 7. Total Loan Posted -->
-        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+        <div class="glass-card glass-teal">
           <div class="flex items-center gap-5">
             <div class="bg-teal-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:bank-outline" class="text-teal-600 text-5xl" />
+              <Icon icon="mdi:bank-transfer" class="text-teal-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPosted') }}
-              </div>
-              <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(summaryData?.totalLoan ||
-                0)) }}</div>
+              <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPostedNew') }}</div>
+              <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(loanPostedData?.total || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -278,6 +276,19 @@
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-orange-400 uppercase tracking-wider">{{ $t('dashboard.remainingCollection') }}</div>
               <div class="text-4xl font-extrabold text-orange-700 mt-1">{{ formatAmount(remainingCollection) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. Total Loan Given -->
+        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+          <div class="flex items-center gap-5">
+            <div class="bg-teal-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:bank-outline" class="text-teal-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPosted') }}</div>
+              <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(summaryData?.totalLoan || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -365,6 +376,7 @@ const isCustomerDashboard = computed(() => route.path === "/finance-dashboard");
 const summaryData = ref(null);
 const pendingCount = ref(null);
 const loanPendingCount = ref(null);
+const loanPostedData = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
