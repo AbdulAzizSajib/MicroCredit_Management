@@ -10,13 +10,12 @@
   }">
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <!-- Mobile hamburger toggle -->
+        <!-- Sidebar toggle (mobile + desktop) -->
         <button
-          v-if="isMobile"
           @click="toggleCollapsed"
           class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
         >
-          <Icon icon="mdi:menu" class="text-xl text-gray-700" />
+          <Icon :icon="collapsed && !isMobile ? 'mdi:menu-open' : 'mdi:menu'" class="text-xl text-gray-700" />
         </button>
 
         <!-- Custom Back Button with Iconify Icon -->

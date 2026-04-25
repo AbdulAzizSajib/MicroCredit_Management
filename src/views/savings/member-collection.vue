@@ -1,58 +1,61 @@
 <template>
   <MainLayout>
-    <div class="flex flex-wrap justify-end items-center gap-3">
-      <div class="flex items-center gap-2">
-        <a-input
-          :placeholder="$t('common.searchHere')"
-          v-model:value="search"
-          @input="handleSearch"
-          class="w-64"
-        />
-        <a-range-picker
-          v-model:value="dateRange"
-          value-format="YYYY-MM-DD"
-          format="DD-MMM-YYYY"
-          @change="handleDateChange"
-        />
-      </div>
-      <div>
-        <button
-          class="bg-primary text-white px-4 py-2 rounded"
-          @click="openCreateModal"
-        >
-          {{ $t('collection.addCollection') }}
-        </button>
+    <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end sm:items-center gap-2 sm:gap-3">
+      <a-input
+        :placeholder="$t('common.searchHere')"
+        v-model:value="search"
+        @input="handleSearch"
+        class="w-full sm:w-64"
+      />
+      <a-range-picker
+        v-model:value="dateRange"
+        value-format="YYYY-MM-DD"
+        format="DD-MMM-YYYY"
+        class="w-full sm:w-auto"
+        @change="handleDateChange"
+      />
+      <button
+        class="bg-primary text-white px-4 py-2 rounded whitespace-nowrap w-full sm:w-auto"
+        @click="openCreateModal"
+      >
+        {{ $t('collection.addCollection') }}
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
+      <h1 class="text-2xl font-bold text-primary">
+        Savings Paid ({{ total }})
+      </h1>
+      <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200">
+        <span class="text-xs uppercase font-semibold text-gray-500">Total Savings Paid</span>
+        <span class="text-lg font-bold text-primary">{{ formatAmount(totalAmount) }}</span>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
-      {{ $t('collection.title') }} ({{ total }})
-    </h1>
 
     <!-- Table -->
-    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
+    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">{{ $t('collection.id') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('collection.customerCode') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('collection.customerName') }}</th>
+          <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('collection.customerName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('customer.customerBanglaName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.period') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
         <tr v-for="(data, index) in allData" :key="index">
-          <td class="px-4 border">{{ data?.ID }}</td>
-          <td class="px-4 border">{{ data?.CustomerCode }}</td>
-          <td class="px-4 border">{{ data?.CustomerName || '-' }}</td>
+          <td class="px-4 border sticky left-0 bg-white z-10">
+            {{ data?.CustomerName || '-' }}
+            <span v-if="data?.CustomerCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ data?.CustomerCode }}</span>
+          </td>
           <td class="px-4 border">{{ data?.CustomerBanglaName || '-' }}</td>
           <td class="px-4 border">{{ formatPeriod(data?.Period) }}</td>
           <td class="px-4 border text-right">{{ formatAmount(Number(data?.Amount || 0)) }}</td>
-          <td class="px-4 border">{{ data?.Remarks }}</td>
           <td class="px-4 border">{{ formatDate(data?.Date) }}</td>
+          <td class="px-4 border">{{ data?.Remarks }}</td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1" v-if="data?.IsVoucher === 'N'">
               <a-tooltip :title="$t('common.edit')">
@@ -77,6 +80,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <div
       v-if="loading"
@@ -85,21 +89,10 @@
       <span><a-spin></a-spin></span>
     </div>
 
-    <a-pagination
-      class="mt-4"
-      v-model:current="page"
-      :page-size="per_page"
-      :total="total"
-      :show-size-changer="false"
-      :show-total="(total) => $t('common.totalItems', { total })"
-      @change="
-        (pageNo) => {
-          page = pageNo;
-          fetchAllData();
-        }
-      "
-      v-if="total > per_page"
-    />
+    <div ref="loadMoreSentinel" class="h-6"></div>
+    <div v-if="!loading && allData.length >= total && total > 0" class="text-center text-gray-400 text-sm py-3">
+      {{ $t('common.totalItems', { total }) }}
+    </div>
 
     <!-- Create Modal -->
     <a-modal
@@ -275,19 +268,45 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
+import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import axios from "axios";
 import { getToken, showNotification } from "@/utilities/common";
 import dayjs from "dayjs";
 
+const route = useRoute();
+const showTotalBadge = ref(!!route.query.showTotal);
+
 const page = ref(1);
-const per_page = ref(10);
+const per_page = ref(20);
 const total = ref(0);
 const search = ref("");
 const allData = ref([]);
 const loading = ref(false);
+const loadMoreSentinel = ref(null);
+let scrollObserver = null;
+
+const totalAmount = ref(Number(route.query.total) || 0);
+
+const fetchTotalAmount = async () => {
+  try {
+    const from = dateRange.value?.[0] || "";
+    const to = dateRange.value?.[1] || "";
+    const res = await axios.get(
+      `${apiBase}/collection-summary?from_date=${from}&to_date=${to}`,
+      getToken()
+    );
+    if (res?.data?.success && res.data.data?.length) {
+      totalAmount.value = Number(res.data.data[0]?.TotalSaving || 0);
+    } else {
+      totalAmount.value = 0;
+    }
+  } catch (e) {
+    totalAmount.value = 0;
+  }
+};
 
 const toYmd = (date) => {
   const y = date.getFullYear();
@@ -297,13 +316,15 @@ const toYmd = (date) => {
 };
 const now = new Date();
 const dateRange = ref([
-  "2024-07-01",
-  toYmd(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
+  route.query.from_date || "2024-07-01",
+  route.query.to_date || toYmd(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
 ]);
 
 const handleDateChange = () => {
   page.value = 1;
+  allData.value = [];
   fetchAllData();
+  if (showTotalBadge.value) fetchTotalAmount();
 };
 
 const isCreateModalVisible = ref(false);
@@ -393,6 +414,7 @@ const onCustomerChange = async (val, mode) => {
 
 const handleSearch = () => {
   page.value = 1;
+  allData.value = [];
   fetchAllData();
 };
 
@@ -418,7 +440,8 @@ const formatAmount = (amount) => {
 };
 
 // List
-const fetchAllData = async () => {
+const fetchAllData = async ({ append = false } = {}) => {
+  if (loading.value) return;
   loading.value = true;
   try {
     const res = await axios.get(
@@ -426,11 +449,12 @@ const fetchAllData = async () => {
       getToken()
     );
     loading.value = false;
-    allData.value = res?.data?.data?.data || [];
+    const rows = res?.data?.data?.data || [];
+    allData.value = append ? [...allData.value, ...rows] : rows;
     total.value = res?.data?.data?.total || 0;
   } catch (err) {
     loading.value = false;
-    allData.value = [];
+    if (!append) allData.value = [];
     total.value = 0;
     console.error("Failed to fetch collections:", err);
   }
@@ -542,7 +566,29 @@ const deleteCollection = async (id) => {
   }
 };
 
+const loadMore = () => {
+  if (loading.value) return;
+  if (allData.value.length >= total.value) return;
+  page.value += 1;
+  fetchAllData({ append: true });
+};
+
 onMounted(async () => {
   await fetchAllData();
+  if (showTotalBadge.value && !totalAmount.value) fetchTotalAmount();
+  scrollObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting) loadMore();
+    },
+    { root: null, rootMargin: "200px", threshold: 0 }
+  );
+  if (loadMoreSentinel.value) scrollObserver.observe(loadMoreSentinel.value);
+});
+
+onBeforeUnmount(() => {
+  if (scrollObserver) {
+    scrollObserver.disconnect();
+    scrollObserver = null;
+  }
 });
 </script>

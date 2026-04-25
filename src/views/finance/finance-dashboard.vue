@@ -18,7 +18,7 @@
       <!-- Collection Summary (Customer Dashboard) -->
       <!-- Collection Summary (Customer Dashboard) -->
       <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/dashboard/total-members')"
+        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/savings/customer')"
           data-aos="fade-up" data-aos-delay="100">
           <div class="flex items-center gap-4">
             <div class="bg-purple-200/40 rounded-xl p-3">
@@ -26,13 +26,13 @@
             </div>
             <div class="flex-1 text-right">
               <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider">{{
-                $t('dashboard.totalMembers') }}</div>
+                $t('dashboard.totalSavingsMembers') }}</div>
               <div class="text-2xl font-bold text-purple-700 mt-0.5">{{ collectionData.TotalMemeber }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/dashboard/should-pay')" data-aos="fade-up"
+        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/savings/customer')" data-aos="fade-up"
           data-aos-delay="200">
           <div class="flex items-center gap-4">
             <div class="bg-blue-200/40 rounded-xl p-3">
@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-saving-details')"
+        <div class="glass-card glass-green cursor-pointer" @click="goToPageWithTotal('/savings/member-collection', collectionData.TotalSaving, 'savingsPaid')"
           data-aos="fade-up" data-aos-delay="300">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-due-details')"
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPageWithTotal('/savings/customer', collectionData.TotalDue, 'savingsDue')"
           data-aos="fade-up" data-aos-delay="400">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
@@ -78,22 +78,20 @@
         </div>
 
         <!-- Loan Summary Cards -->
-        <div class="glass-card glass-amber cursor-pointer" @click="goToPage('/dashboard/interest-amount')"
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member')"
           data-aos="fade-up" data-aos-delay="500">
           <div class="flex items-center gap-4">
-            <div class="bg-amber-200/40 rounded-xl p-3">
-              <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
+            <div class="bg-indigo-200/40 rounded-xl p-3">
+              <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.interestAmount') }}
-              </div>
-              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount
-                || 0)) }}</div>
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanMembers') }}</div>
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ collectionData.TotalLoanMembers || collectionData.LoanMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/dashboard/total-loan-payable')"
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member')"
           data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
@@ -108,7 +106,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPage('/dashboard/total-loan-paid')"
+        <div class="glass-card glass-green cursor-pointer" @click="goToPageWithTotal('/loan/pay-loan', collectionData.TotalPayment, 'loanPaid')"
           data-aos="fade-up" data-aos-delay="700">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
@@ -123,7 +121,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPage('/dashboard/total-loan-due')"
+        <div class="glass-card glass-rose cursor-pointer" @click="goToPageWithTotal('/savings/loan-member', collectionData.TotalDueAmount, 'loanDue')"
           data-aos="fade-up" data-aos-delay="800">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
@@ -133,6 +131,19 @@
               <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">{{ $t('loan.remaining') }}</div>
               <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDueAmount
                 || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glass-amber cursor-pointer" @click="goToPage('/dashboard/interest-amount')"
+          data-aos="fade-up" data-aos-delay="900">
+          <div class="flex items-center gap-4">
+            <div class="bg-amber-200/40 rounded-xl p-3">
+              <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.interestAmount') }}</div>
+              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -409,6 +420,17 @@ const buildDateQuery = () => {
 
 const goToPage = (path) => {
   const query = {};
+  if (dateRange.value?.length === 2 && dateRange.value[0] && dateRange.value[1]) {
+    query.from_date = dateRange.value[0];
+    query.to_date = dateRange.value[1];
+  }
+  router.push({ path, query });
+};
+
+const goToPageWithTotal = (path, total, kind) => {
+  const query = { showTotal: 1 };
+  if (total != null) query.total = total;
+  if (kind) query.kind = kind;
   if (dateRange.value?.length === 2 && dateRange.value[0] && dateRange.value[1]) {
     query.from_date = dateRange.value[0];
     query.to_date = dateRange.value[1];

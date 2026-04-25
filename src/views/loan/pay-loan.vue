@@ -1,48 +1,61 @@
 <template>
   <MainLayout>
-    <div class="flex flex-wrap justify-end items-center gap-3">
-      <div class="flex items-center gap-2">
-        <a-input v-model:value="searchQuery" :placeholder="$t('common.searchHere')" allow-clear style="width: 240px"
-          @change="handleSearchChange" />
-        <a-range-picker
-          v-model:value="dateRange"
-          value-format="YYYY-MM-DD"
-          format="DD-MMM-YYYY"
-          @change="handleDateChange"
-        />
-      
-        <button
-          class="bg-primary text-white px-4 py-2 rounded"
-          @click="openAddCollection"
-        >
-          {{ $t('loan.addCollection') }}
-        </button>
+    <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end sm:items-center gap-2 sm:gap-3">
+      <a-input
+        v-model:value="searchQuery"
+        :placeholder="$t('common.searchHere')"
+        allow-clear
+        class="w-full sm:w-60"
+        @change="handleSearchChange"
+      />
+      <a-range-picker
+        v-model:value="dateRange"
+        value-format="YYYY-MM-DD"
+        format="DD-MMM-YYYY"
+        class="w-full sm:w-auto"
+        @change="handleDateChange"
+      />
+      <button
+        class="bg-primary text-white px-4 py-2 rounded whitespace-nowrap w-full sm:w-auto"
+        @click="openAddCollection"
+      >
+        {{ $t('loan.addCollection') }}
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
+      <h1 class="text-2xl font-bold text-primary">
+        Loan Paid ({{ loanData.length }})
+      </h1>
+      <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-50 border border-green-200">
+        <span class="text-xs uppercase font-semibold text-gray-500">Total Loan Paid</span>
+        <span class="text-lg font-bold text-green-700">{{ formatAmount(Number(totalAmount)) }}</span>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
-      {{ $t('loan.paymentList') }}
-    </h1>
 
-    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
+    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
+          <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('customer.customerName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('loan.loanType') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('loan.employee') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('loan.employeeName') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.payment') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('loan.paymentDate') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
+          <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.action') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
         <tr v-for="(payment, index) in loanData" :key="`${payment.LoanID}-${payment.PaymentDate}-${index}`">
-          <td class="px-4 border">{{ payment?.loan?.LoanId }}</td>
+          <td class="px-4 border sticky left-0 bg-white z-10">
+            {{ payment?.loan?.account?.AMDetails || payment?.CustomerName }}
+            <span v-if="payment?.loan?.account?.MemberCode || payment?.MemberCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ payment?.loan?.account?.MemberCode || payment?.MemberCode }}</span>
+          </td>
           <td class="px-4 border">{{ payment?.loan?.type?.LoanTypeDetails }}</td>
-          <td class="px-4 border">{{ payment?.EmpCode }}</td>
-          <td class="px-4 border">{{ payment?.loan?.account?.AMDetails }}</td>
+          <td class="px-4 border text-right">{{ payment?.InstallmentAmount != null ? Number(payment.InstallmentAmount).toFixed(2) : (payment?.loan?.InstallmentAmount != null ? Number(payment.loan.InstallmentAmount).toFixed(2) : '') }}</td>
           <td class="px-4 border text-right">{{ formatAmount(Number(payment?.Payment || 0)) }}</td>
           <td class="px-4 border">{{ formatDate(payment?.PaymentDate) }}</td>
+          <td class="px-4 border">{{ payment?.Remarks || payment?.loan?.Remarks }}</td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
               <a-tooltip :title="$t('loan.loanDetails')">
@@ -60,6 +73,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <a-modal
       v-model:open="isCreateModalVisible"
@@ -545,11 +559,16 @@
 
 <script setup>
 import { onMounted, ref, watch, nextTick } from "vue";
+import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { getToken, showNotification } from "@/utilities/common";
 import axios from "axios";
 import { apiBase } from "@/config";
 import dayjs from "dayjs";
+
+const route = useRoute();
+const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "loanPaid");
+const totalAmount = ref(Number(route.query.total) || 0);
 
 const toYmd = (date) => {
   const y = date.getFullYear();

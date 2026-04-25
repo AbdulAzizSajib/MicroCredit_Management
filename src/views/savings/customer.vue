@@ -1,50 +1,51 @@
 <template>
   <MainLayout>
-    <div class="flex justify-between">
-      <div class="mb-4">
-        <a-input :placeholder="$t('common.searchHere')" v-model:value="search" @input="handleSearch" class="w-64" />
-      </div>
-      <div class="mb-4">
-        <button class="bg-primary text-white px-4 py-2 rounded" @click="openCreateModal">
-          {{ $t('customer.addCustomer') }}
-        </button>
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+      <a-input :placeholder="$t('common.searchHere')" v-model:value="search" @input="handleSearch" class="w-full sm:w-64" />
+      <button class="bg-primary text-white px-4 py-2 rounded whitespace-nowrap w-full sm:w-auto" @click="openCreateModal">
+        {{ $t('customer.addCustomer') }}
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
+      <h1 class="text-2xl font-bold text-primary">
+        Savings Members ({{ total }})
+      </h1>
+      <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200">
+        <span class="text-xs uppercase font-semibold text-gray-500">Total Savings Due</span>
+        <span class="text-lg font-bold text-rose-700">{{ formatAmount(totalAmount) }}</span>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
-      {{ $t('customer.title') }} ({{ total }})
-    </h1>
 
     <!-- Table -->
-    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
+    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
-          <th class="border border-white px-4 py-2">{{ $t('customer.customerCode') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('customer.customerName') }}</th>
+          <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('customer.customerName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('customer.customerBanglaName') }}</th>
-          <th class="border border-white px-4 py-2">{{ $t('common.address') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.mobile') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.email') }}</th>
-          <th class="border border-white px-4 py-2 text-center">{{ $t('customer.collectionType') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.savingAmount') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
+          <th class="border border-white px-4 py-2 text-right">Total Savings Payable</th>
+          <th class="border border-white px-4 py-2 text-right">Paid Amount</th>
+          <th class="border border-white px-4 py-2 text-right">Due Amount</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
       </thead>
       <tbody class="capitalize">
         <tr v-for="(data, index) in allData" :key="index">
-          <td class="px-4 border">{{ data?.CustomerCode }}</td>
-          <td class="px-4 border">{{ data?.CustomerName }}</td>
+          <td class="px-4 border sticky left-0 bg-white z-10">
+            {{ data?.CustomerName }}
+            <span class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ data?.CustomerCode }}</span>
+          </td>
           <td class="px-4 border">{{ data?.CustomerBanglaName }}</td>
-          <td class="px-4 border">{{ data?.Add1 }}</td>
           <td class="px-4 border">{{ data?.Mobile }}</td>
           <td class="px-4 border lowercase">{{ data?.Email }}</td>
-          <td class="px-4 border text-center">
-            <span class="px-2 py-0.5 rounded text-xs font-semibold"
-              :class="data?.CollectionType === 'W' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'">
-              {{ data?.CollectionType === 'W' ? $t('common.weekly') : $t('common.monthly') }}
-            </span>
-          </td>
           <td class="px-4 border text-right">{{ Number(data?.SavingAmount || 0).toFixed(2) }}</td>
+          <td class="px-4 border text-right">{{ data?.TotalSavingsPayable != null ? Number(data.TotalSavingsPayable).toFixed(2) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.TotalGivenAmount != null ? Number(data.TotalGivenAmount).toFixed(2) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.DueAmount != null ? Number(data.DueAmount).toFixed(2) : '' }}</td>
           <td class="px-4 border text-center">
             <span class="px-2 py-0.5 rounded text-xs font-semibold"
               :class="data?.Active === 'Y' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
@@ -81,18 +82,16 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <div v-if="loading" class="mt-2 text-center text-gray-500 flex justify-center items-center gap-2">
       <span><a-spin></a-spin></span>
     </div>
 
-    <a-pagination class="mt-4" v-model:current="page" :page-size="per_page" :total="total" :show-size-changer="false"
-      :show-total="(total) => $t('common.totalItems', { total })" @change="
-        (pageNo) => {
-          page = pageNo;
-          fetchAllData();
-        }
-      " v-if="total > per_page" />
+    <div ref="loadMoreSentinel" class="h-6"></div>
+    <div v-if="!loading && allData.length >= total && total > 0" class="text-center text-gray-400 text-sm py-3">
+      {{ $t('common.totalItems', { total }) }}
+    </div>
 
     <!-- Create Modal -->
     <a-modal v-model:open="isCreateModalVisible" :title="$t('customer.addCustomer')" @cancel="isCreateModalVisible = false"
@@ -361,18 +360,27 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
+import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import axios from "axios";
 import { getToken, showNotification } from "@/utilities/common";
 
+const route = useRoute();
+const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "savingsDue");
+const totalAmount = ref(Number(route.query.total) || 0);
+
 const page = ref(1);
-const per_page = ref(10);
+const per_page = ref(20);
 const total = ref(0);
 const search = ref("");
 const allData = ref([]);
 const loading = ref(false);
+const loadMoreSentinel = ref(null);
+let scrollObserver = null;
+
+const formatAmount = (amount) => new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
 
 const isCreateModalVisible = ref(false);
 const isEditModalVisible = ref(false);
@@ -456,11 +464,13 @@ const editFormData = ref(cloneDefault());
 
 const handleSearch = () => {
   page.value = 1;
+  allData.value = [];
   fetchAllData();
 };
 
 // List
-const fetchAllData = async () => {
+const fetchAllData = async ({ append = false } = {}) => {
+  if (loading.value) return;
   loading.value = true;
   try {
     const res = await axios.get(
@@ -468,11 +478,12 @@ const fetchAllData = async () => {
       getToken()
     );
     loading.value = false;
-    allData.value = res?.data?.data?.data || [];
+    const rows = res?.data?.data?.data || [];
+    allData.value = append ? [...allData.value, ...rows] : rows;
     total.value = res?.data?.data?.total || 0;
   } catch (err) {
     loading.value = false;
-    allData.value = [];
+    if (!append) allData.value = [];
     total.value = 0;
     console.error("Failed to fetch customers:", err);
   }
@@ -623,7 +634,28 @@ const deleteCustomer = async (customerCode) => {
   }
 };
 
+const loadMore = () => {
+  if (loading.value) return;
+  if (allData.value.length >= total.value) return;
+  page.value += 1;
+  fetchAllData({ append: true });
+};
+
 onMounted(async () => {
   await fetchAllData();
+  scrollObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting) loadMore();
+    },
+    { root: null, rootMargin: "200px", threshold: 0 }
+  );
+  if (loadMoreSentinel.value) scrollObserver.observe(loadMoreSentinel.value);
+});
+
+onBeforeUnmount(() => {
+  if (scrollObserver) {
+    scrollObserver.disconnect();
+    scrollObserver = null;
+  }
 });
 </script>
