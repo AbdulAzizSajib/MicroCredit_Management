@@ -8,7 +8,7 @@
     </div>
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
-        Savings Members ({{ total }})
+        {{ $t('customer.savingsMembers') }} ({{ total }})
       </h1>
       <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200">
         <span class="text-xs uppercase font-semibold text-gray-500">Total Savings Due</span>
@@ -26,9 +26,9 @@
           <th class="border border-white px-4 py-2">{{ $t('common.mobile') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.email') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
-          <th class="border border-white px-4 py-2 text-right">Total Savings Payable</th>
-          <th class="border border-white px-4 py-2 text-right">Paid Amount</th>
-          <th class="border border-white px-4 py-2 text-right">Due Amount</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.totalSavingsPayable') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.paidAmount') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.dueAmount') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.actions') }}</th>
         </tr>
@@ -42,10 +42,10 @@
           <td class="px-4 border">{{ data?.CustomerBanglaName }}</td>
           <td class="px-4 border">{{ data?.Mobile }}</td>
           <td class="px-4 border lowercase">{{ data?.Email }}</td>
-          <td class="px-4 border text-right">{{ Number(data?.SavingAmount || 0).toFixed(2) }}</td>
-          <td class="px-4 border text-right">{{ data?.TotalSavingsPayable != null ? Number(data.TotalSavingsPayable).toFixed(2) : '' }}</td>
-          <td class="px-4 border text-right">{{ data?.TotalGivenAmount != null ? Number(data.TotalGivenAmount).toFixed(2) : '' }}</td>
-          <td class="px-4 border text-right">{{ data?.DueAmount != null ? Number(data.DueAmount).toFixed(2) : '' }}</td>
+          <td class="px-4 border text-right">{{ formatAmount(Number(data?.SavingAmount || 0)) }}</td>
+          <td class="px-4 border text-right">{{ data?.TotalSavingsPayable != null ? formatAmount(Number(data.TotalSavingsPayable)) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.PaidAmount != null ? formatAmount(Number(data.PaidAmount)) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.DueAmount != null ? formatAmount(Number(data.DueAmount)) : '' }}</td>
           <td class="px-4 border text-center">
             <span class="px-2 py-0.5 rounded text-xs font-semibold"
               :class="data?.Active === 'Y' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
@@ -478,9 +478,9 @@ const fetchAllData = async ({ append = false } = {}) => {
       getToken()
     );
     loading.value = false;
-    const rows = res?.data?.data?.data || [];
+    const rows = res?.data?.data || [];
     allData.value = append ? [...allData.value, ...rows] : rows;
-    total.value = res?.data?.data?.total || 0;
+    total.value = append ? allData.value.length : rows.length;
   } catch (err) {
     loading.value = false;
     if (!append) allData.value = [];
@@ -496,7 +496,7 @@ const generateNextCustomerCode = async () => {
       `${apiBase}/customer?search=&limit=100000&page=1`,
       getToken()
     );
-    const list = res?.data?.data?.data || [];
+    const list = res?.data?.data || [];
 
     let prefix = "C";
     let width = 3;

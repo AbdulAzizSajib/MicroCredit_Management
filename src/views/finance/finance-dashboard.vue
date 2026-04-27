@@ -26,7 +26,7 @@
             </div>
             <div class="flex-1 text-right">
               <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider">{{
-                $t('dashboard.totalSavingsMembers') }}</div>
+                $t('dashboard.cashierSavingsMembers') }}</div>
               <div class="text-2xl font-bold text-purple-700 mt-0.5">{{ collectionData.TotalMemeber }}</div>
             </div>
           </div>
@@ -54,7 +54,7 @@
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving')
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.cashierSavingsPaid')
               }}</div>
               <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalSaving ||
                 0)) }}</div>
@@ -85,8 +85,8 @@
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanMembers') }}</div>
-              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ collectionData.TotalLoanMembers || collectionData.LoanMemberCount || 0 }}</div>
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('dashboard.cashierLoanMembers') }}</div>
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ collectionData.TotalLoanMemeber || collectionData.TotalLoanMembers || collectionData.LoanMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@
               <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('loan.loanAmount') }}
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">{{ $t('loan.totalLoanPayable') }}
               </div>
               <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.LoanAmount ||
                 0)) }}</div>
@@ -173,38 +173,36 @@
             </div>
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-blue-400 uppercase tracking-wider">{{ $t('dashboard.totalSavingsVoucher') }}</div>
-              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
-              <div class="text-sm font-bold text-blue-500 mt-0.5">৳ {{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
+              <div class="text-4xl font-extrabold text-blue-700 mt-1">{{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
+              <div class="text-sm font-bold text-blue-500 mt-0.5">{{ $t('common.total') }}: {{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
             </div>
           </div>
         </div>
 
         <!-- 3. Total Savings Paid -->
-        <div class="glass-card glass-green cursor-pointer" @click="$router.push('/dashboard/total-saving')">
+        <div class="glass-card glass-green cursor-pointer" @click="goToSavingsMembers()">
           <div class="flex items-center gap-5">
             <div class="bg-green-200/40 rounded-2xl p-4">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSaving')
-              }}</div>
+              <div class="text-sm font-semibold text-green-400 uppercase tracking-wider">{{ $t('dashboard.totalSavingsPosted') }}</div>
               <div class="text-4xl font-extrabold text-green-700 mt-1">{{ formatAmount(Number(summaryData?.totalSaving ||
                 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <!-- 4. Remaining Balance -->
-        <div class="glass-card glass-rose">
+        <!-- 4. Total Balance Due -->
+        <div class="glass-card glass-rose cursor-pointer" @click="goToSavingsMembers()">
           <div class="flex items-center gap-5">
             <div class="bg-rose-200/40 rounded-2xl p-4">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-rose-400 uppercase tracking-wider">{{
-                $t('dashboard.remainingBalance') }}</div>
-              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(Number(summaryData?.remaingBalance
-                || 0)) }}</div>
+                $t('dashboard.totalBalanceDue') }}</div>
+              <div class="text-4xl font-extrabold text-rose-700 mt-1">{{ formatAmount(totalBalanceDue) }}</div>
             </div>
           </div>
         </div>
@@ -231,42 +229,42 @@
             </div>
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-cyan-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanVoucher') }}</div>
-              <div class="text-4xl font-extrabold text-cyan-700 mt-1">{{ loanPendingCount?.ForLoanApprovalCount || 0 }}</div>
-              <div class="text-sm font-bold text-cyan-500 mt-0.5">৳ {{ formatAmount(Number(loanPendingCount?.ForLoanApprovalAmount || 0)) }}</div>
+              <div class="text-4xl font-extrabold text-cyan-700 mt-1">{{ formatAmount(Number(loanPendingCount?.PendingAmount || 0)) }}</div>
+              <div class="text-sm font-bold text-cyan-500 mt-0.5">{{ $t('common.total') }}: {{ loanPendingCount?.PendingCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <!-- 7. Total Loan Posted -->
-        <div class="glass-card glass-teal">
+        <!-- 7. Total Loan Vouchered -->
+        <div class="glass-card glass-violet cursor-pointer" @click="$router.push('/dashboard/loan-members')">
           <div class="flex items-center gap-5">
-            <div class="bg-teal-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:bank-transfer" class="text-teal-600 text-5xl" />
+            <div class="bg-violet-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:file-check-outline" class="text-violet-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPostedNew') }}</div>
-              <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(loanPostedData?.total || 0)) }}</div>
+              <div class="text-sm font-semibold text-violet-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanVouchered') }}</div>
+              <div class="text-4xl font-extrabold text-violet-700 mt-1">{{ formatAmount(Number(loanPostedCount?.PostedAmount || 0)) }}</div>
+              <div class="text-sm font-bold text-violet-500 mt-0.5">{{ $t('common.total') }}: {{ loanPostedCount?.PostedCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <!-- 8. Total Earning -->
-        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')">
+        <!-- 8. Total Loan Due -->
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/loan-members')">
           <div class="flex items-center gap-5">
             <div class="bg-amber-200/40 rounded-2xl p-4">
-              <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
+              <Icon icon="mdi:cash-clock" class="text-amber-600 text-5xl" />
             </div>
             <div class="flex-1 text-right">
-              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning')
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('loan.totalLoanDue')
               }}</div>
-              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData?.totalEarning
-                || 0)) }}</div>
+              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(totalLoanDue) }}</div>
             </div>
           </div>
         </div>
 
         <!-- 9. Total Savings Payable -->
-        <div class="glass-card glass-fuchsia cursor-pointer" @click="goToSavingsPayable">
+        <div class="glass-card glass-fuchsia cursor-pointer" @click="goToSavingsCustomers(collectionData?.totalShouldPay, 'savingsPayable')">
           <div class="flex items-center gap-5">
             <div class="bg-fuchsia-200/40 rounded-2xl p-4">
               <Icon icon="mdi:cash-check" class="text-fuchsia-600 text-5xl" />
@@ -279,7 +277,7 @@
         </div>
 
         <!-- 10. Remaining Collection -->
-        <div class="glass-card glass-orange">
+        <div class="glass-card glass-orange cursor-pointer" @click="goToSavingsCustomers(remainingCollection, 'savingsDue')">
           <div class="flex items-center gap-5">
             <div class="bg-orange-200/40 rounded-2xl p-4">
               <Icon icon="mdi:cash-clock" class="text-orange-600 text-5xl" />
@@ -300,6 +298,32 @@
             <div class="flex-1 text-right">
               <div class="text-sm font-semibold text-teal-400 uppercase tracking-wider">{{ $t('dashboard.totalLoanPosted') }}</div>
               <div class="text-4xl font-extrabold text-teal-700 mt-1">{{ formatAmount(Number(summaryData?.totalLoan || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. Total Earning -->
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/loan-members')">
+          <div class="flex items-center gap-5">
+            <div class="bg-amber-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:trending-up" class="text-amber-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ $t('dashboard.totalEarning') }}</div>
+              <div class="text-4xl font-extrabold text-amber-700 mt-1">{{ formatAmount(Number(summaryData?.totalEarning || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 13. Available Balance -->
+        <div class="glass-card glass-emerald cursor-pointer">
+          <div class="flex items-center gap-5">
+            <div class="bg-emerald-200/40 rounded-2xl p-4">
+              <Icon icon="mdi:bank-check" class="text-emerald-600 text-5xl" />
+            </div>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold text-emerald-400 uppercase tracking-wider">{{ $t('dashboard.availableBalance') }}</div>
+              <div class="text-4xl font-extrabold text-emerald-700 mt-1">{{ formatAmount(availableBalance) }}</div>
             </div>
           </div>
         </div>
@@ -367,6 +391,14 @@
 .glass-orange {
   background: linear-gradient(135deg, rgba(255, 237, 213, 0.7), rgba(254, 215, 170, 0.5));
 }
+
+.glass-violet {
+  background: linear-gradient(135deg, rgba(237, 233, 254, 0.7), rgba(221, 214, 254, 0.5));
+}
+
+.glass-emerald {
+  background: linear-gradient(135deg, rgba(209, 250, 229, 0.7), rgba(167, 243, 208, 0.5));
+}
 </style>
 
 <script setup>
@@ -387,7 +419,7 @@ const isCustomerDashboard = computed(() => route.path === "/finance-dashboard");
 const summaryData = ref(null);
 const pendingCount = ref(null);
 const loanPendingCount = ref(null);
-const loanPostedData = ref(null);
+const loanPostedCount = ref(null);
 
 const collectionData = ref(null);
 const loading = ref(false);
@@ -396,6 +428,25 @@ const remainingCollection = computed(() => {
   const payable = Number(collectionData.value?.totalShouldPay || 0);
   const posted = Number(summaryData.value?.totalSaving || 0);
   return payable - posted;
+});
+
+const totalBalanceDue = computed(() => {
+  const savingsVoucher = Number(pendingCount.value?.ForSavingApprovalAmount || 0);
+  const savingsPosted = Number(summaryData.value?.totalSaving || 0);
+  return savingsVoucher - savingsPosted;
+});
+
+const totalLoanDue = computed(() => {
+  const loanVoucher = Number(loanPendingCount.value?.PendingAmount || 0);
+  const loanPosted = Number(loanPostedCount.value?.PostedAmount || 0);
+  return loanVoucher - loanPosted;
+});
+
+const availableBalance = computed(() => {
+  const savingsPosted = Number(summaryData.value?.totalSaving || 0);
+  const loanGiven = Number(summaryData.value?.totalLoan || 0);
+  const earning = Number(summaryData.value?.totalEarning || 0);
+  return savingsPosted - loanGiven + earning;
 });
 
 const getDateRange = () => {
@@ -441,17 +492,17 @@ const goToPageWithTotal = (path, total, kind) => {
 const goToSavingsMembers = () => {
   const [from, to] = getDateRange();
   router.push({
-    path: "/dashboard/total-members",
+    path: "/dashboard/savings-members",
     query: { from_date: from, to_date: to },
   });
 };
 
-const goToSavingsPayable = () => {
+const goToSavingsCustomers = (total, kind) => {
   const [from, to] = getDateRange();
-  router.push({
-    path: "/dashboard/should-pay",
-    query: { from_date: from, to_date: to },
-  });
+  const query = { from_date: from, to_date: to, showTotal: 1 };
+  if (total != null) query.total = total;
+  if (kind) query.kind = kind;
+  router.push({ path: "/dashboard/savings-customers", query });
 };
 
 const fetchSummary = async () => {
@@ -506,8 +557,17 @@ const fetchPendingCount = async () => {
 
 const fetchLoanPendingCount = async () => {
   try {
-    const res = await axios.get(`${apiBase}/pay-loan-voucher/pending-count`, getToken());
+    const res = await axios.get(`${apiBase}/pay-loan-payment-voucher/pending-count`, getToken());
     loanPendingCount.value = res.data || null;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchLoanPostedCount = async () => {
+  try {
+    const res = await axios.get(`${apiBase}/pay-loan-payment-voucher/posted-count`, getToken());
+    loanPostedCount.value = res.data || null;
   } catch (error) {
     console.log(error);
   }
@@ -518,5 +578,6 @@ onMounted(() => {
   fetchSummary();
   fetchPendingCount();
   fetchLoanPendingCount();
+  fetchLoanPostedCount();
 });
 </script>

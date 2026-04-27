@@ -23,7 +23,7 @@
     </div>
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
-        Savings Paid ({{ total }})
+        {{ $t('collection.savingsPaid') }} ({{ total }})
       </h1>
       <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200">
         <span class="text-xs uppercase font-semibold text-gray-500">Total Savings Paid</span>

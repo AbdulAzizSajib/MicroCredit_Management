@@ -44,6 +44,7 @@ import TaxCertificate from "@/views/payroll/payroll-settings/tax-certificate.vue
 // transactions
 import FinanceDashboard from "@/views/finance/finance-dashboard.vue";
 import ShouldPay from "@/views/finance/should-pay.vue";
+import DashboardCustomers from "@/views/finance/dashboard-customers.vue";
 import TotalSavingDetails from "@/views/finance/total-saving-details.vue";
 import TotalDueDetails from "@/views/finance/total-due-details.vue";
 
@@ -134,6 +135,7 @@ import CustomerLedger from "@/views/loan/customer-ledger.vue";
 import MemberCollection from "@/views/savings/member-collection.vue";
 import SavingsCustomer from "@/views/savings/customer.vue";
 import LoanMember from "@/views/savings/loan-member.vue";
+import DashboardMembers from "@/views/savings/dashboard-members.vue";
 import FilesCustomer from "@/views/finance/files/customer.vue";
 
 const routes = [
@@ -300,6 +302,12 @@ const routes = [
     meta: { permission: "Saving" },
   },
   {
+    path: "/dashboard/savings-members",
+    name: "dashboard-savings-members",
+    component: DashboardMembers,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
     path: "/files/customer",
     name: "files-customer",
     component: FilesCustomer,
@@ -370,6 +378,12 @@ const routes = [
     name: "should-pay",
     component: ShouldPay,
     meta: { permission: ["Customer Dashboard", "Accountant Dashboard"] },
+  },
+  {
+    path: "/dashboard/savings-customers",
+    name: "dashboard-savings-customers",
+    component: DashboardCustomers,
+    meta: { permission: "Accountant Dashboard" },
   },
   {
     path: "/dashboard/total-saving-details",

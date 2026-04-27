@@ -1,63 +1,74 @@
 <template>
   <MainLayout>
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-indigo-700">{{ $t('dashboard.totalLoanMembers') }}</h1>
-        <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
-      </div>
+    <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
+      <h1 class="text-2xl font-bold text-primary">
+        {{ $t('dashboard.loanMembers') }} ({{ data.length }})
+      </h1>
+      <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
+    </div>
 
-      <div class="">
-        <div v-if="loading" class="text-center py-10">
-          <a-spin size="large" />
-        </div>
-
-        <table v-else class="w-full border border-collapse text-left">
-          <thead>
-            <tr class="bg-primary text-white">
-              <th class="border border-white px-4 py-2">#</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.amCode') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.amDetails') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.memberCode') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.acType') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.userId') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="members.length === 0">
-              <td colspan="6" class="text-center py-4 text-gray-500">
-                {{ $t('common.noData') }}
-              </td>
-            </tr>
-            <tr v-for="(item, index) in members" :key="item.AMCode">
-              <td class="px-4 border">{{ index + 1 }}</td>
-              <td class="px-4 border">{{ item.AMCode }}</td>
-              <td class="px-4 border">{{ item.AMDetails }}</td>
-              <td class="px-4 border">{{ item.MemberCode }}</td>
-              <td class="px-4 border">{{ item.ACType1 }}</td>
-              <td class="px-4 border">{{ item.UserId }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+      <table class="w-full min-w-[1100px] border border-collapse text-left">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('customer.customerName') }}</th>
+            <th class="border border-white px-4 py-2">{{ $t('customer.customerBanglaName') }}</th>
+            <th class="border border-white px-4 py-2">{{ $t('common.mobile') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
+            <th class="border border-white px-4 py-2 text-center">{{ $t('loan.installmentNumber') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalLoanVoucherable') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('customer.voucheredAmount') }}</th>
+            <th class="border border-white px-4 py-2 text-right">{{ $t('customer.dueVoucher') }}</th>
+          </tr>
+        </thead>
+        <tbody class="capitalize">
+          <tr v-for="(item, index) in data" :key="index">
+            <td class="px-4 border sticky left-0 bg-white z-10">
+              {{ item?.CustomerName || item?.AMDetails }}
+              <span v-if="item?.MemberCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ item?.MemberCode }}</span>
+            </td>
+            <td class="px-4 border">{{ item?.CustomerBanglaName }}</td>
+            <td class="px-4 border">{{ item?.Mobile }}</td>
+            <td class="px-4 border text-right">{{ item?.Installment != null ? formatAmount(Number(item.Installment)) : '' }}</td>
+            <td class="px-4 border text-center">{{ item?.InstallmentNumber != null ? item.InstallmentNumber : '' }}</td>
+            <td class="px-4 border text-right">{{ item?.LoanAmount != null ? formatAmount(Number(item.LoanAmount)) : '' }}</td>
+            <td class="px-4 border text-right">{{ item?.TotalLoanPayable != null ? formatAmount(Number(item.TotalLoanPayable)) : '' }}</td>
+            <td class="px-4 border text-right">{{ item?.PaidAmount != null ? formatAmount(Number(item.PaidAmount)) : '' }}</td>
+            <td class="px-4 border text-right">{{ item?.DueAmount != null ? formatAmount(Number(item.DueAmount)) : '' }}</td>
+          </tr>
+          <tr v-if="!loading && !data.length">
+            <td colspan="9" class="px-4 py-6 border text-center text-gray-500">{{ $t('common.noData') }}</td>
+          </tr>
+          <tr v-if="loading">
+            <td colspan="9" class="text-center py-8"><a-spin /></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </MainLayout>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
+import axios from "axios";
 
+const data = ref([]);
 const loading = ref(false);
-const members = ref([]);
 
-const fetchMembers = async () => {
+const formatAmount = (amount) =>
+  new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+
+const fetchLoanMembers = async () => {
   loading.value = true;
   try {
     const res = await axios.get(`${apiBase}/dashboard/loan-members`, getToken());
-    members.value = res?.data?.data || [];
+    if (res.data?.success) {
+      data.value = Array.isArray(res.data.data) ? res.data.data : [];
+    }
   } catch (error) {
     console.error(error);
     showNotification("error", "Failed to fetch loan members.");
@@ -66,5 +77,5 @@ const fetchMembers = async () => {
   }
 };
 
-onMounted(fetchMembers);
+onMounted(fetchLoanMembers);
 </script>

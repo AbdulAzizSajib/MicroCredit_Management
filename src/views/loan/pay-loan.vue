@@ -24,7 +24,7 @@
     </div>
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
-        Loan Paid ({{ loanData.length }})
+        {{ $t('loan.loanPaid') }} ({{ loanData.length }})
       </h1>
       <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-50 border border-green-200">
         <span class="text-xs uppercase font-semibold text-gray-500">Total Loan Paid</span>
@@ -39,7 +39,8 @@
           <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('customer.customerName') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('loan.loanType') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('common.amount') }}</th>
+          <th class="border border-white px-4 py-2 text-center">{{ $t('loan.installmentNumber') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.paidAmount') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.remarks') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.action') }}</th>
@@ -52,7 +53,8 @@
             <span v-if="payment?.loan?.account?.MemberCode || payment?.MemberCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ payment?.loan?.account?.MemberCode || payment?.MemberCode }}</span>
           </td>
           <td class="px-4 border">{{ payment?.loan?.type?.LoanTypeDetails }}</td>
-          <td class="px-4 border text-right">{{ payment?.InstallmentAmount != null ? Number(payment.InstallmentAmount).toFixed(2) : (payment?.loan?.InstallmentAmount != null ? Number(payment.loan.InstallmentAmount).toFixed(2) : '') }}</td>
+          <td class="px-4 border text-right">{{ payment?.loan?.Installment != null ? formatAmount(Number(payment.loan.Installment)) : '' }}</td>
+          <td class="px-4 border text-center">{{ payment?.InstallmentLabel || '' }}</td>
           <td class="px-4 border text-right">{{ formatAmount(Number(payment?.Payment || 0)) }}</td>
           <td class="px-4 border">{{ formatDate(payment?.PaymentDate) }}</td>
           <td class="px-4 border">{{ payment?.Remarks || payment?.loan?.Remarks }}</td>

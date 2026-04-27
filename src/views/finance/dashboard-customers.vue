@@ -1,28 +1,22 @@
 <template>
   <MainLayout>
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+      <a-input :placeholder="$t('common.searchHere')" v-model:value="search" @input="handleSearch" class="w-full sm:w-64" />
+      <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
+    </div>
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
-        {{ $t('dashboard.loanMembers') }} ({{ data.length }})
+        {{ $t('customer.savingsMembers') }} ({{ total }})
       </h1>
-      <div class="flex items-center gap-3 flex-wrap">
-        <a-input
-          v-model:value="search"
-          :placeholder="$t('common.searchByName')"
-          allow-clear
-          style="width: 240px"
-          @change="onSearchChange"
-        >
-          <template #prefix><i class="bi bi-search text-gray-400"></i></template>
-        </a-input>
-        <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200">
-          <span class="text-xs uppercase font-semibold text-gray-500">Total Loan Due</span>
-          <span class="text-lg font-bold text-rose-700">{{ formatAmount(Number(totalAmount)) }}</span>
-        </div>
+      <div v-if="showTotalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200">
+        <span class="text-xs uppercase font-semibold text-gray-500">{{ badgeLabel }}</span>
+        <span class="text-lg font-bold text-rose-700">{{ formatAmount(totalAmount) }}</span>
       </div>
     </div>
 
+    <!-- Table -->
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
-    <table class="w-full min-w-[1100px] border border-collapse text-left">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('customer.customerName') }}</th>
@@ -30,9 +24,7 @@
           <th class="border border-white px-4 py-2">{{ $t('common.mobile') }}</th>
           <th class="border border-white px-4 py-2">{{ $t('common.email') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('loan.installment') }}</th>
-          <th class="border border-white px-4 py-2 text-center">{{ $t('loan.installmentNumber') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.loanAmount') }}</th>
-          <th class="border border-white px-4 py-2 text-right">{{ $t('loan.totalLoanPayable') }}</th>
+          <th class="border border-white px-4 py-2 text-right">{{ $t('customer.totalSavingsPayable') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('customer.paidAmount') }}</th>
           <th class="border border-white px-4 py-2 text-right">{{ $t('customer.dueAmount') }}</th>
           <th class="border border-white px-4 py-2 text-center">{{ $t('common.status') }}</th>
@@ -40,51 +32,55 @@
         </tr>
       </thead>
       <tbody class="capitalize">
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(data, index) in allData" :key="index">
           <td class="px-4 border sticky left-0 bg-white z-10">
-            {{ item?.CustomerName || item?.AMDetails }}
-            <span v-if="item?.MemberCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ item?.MemberCode }}</span>
+            {{ data?.CustomerName }}
+            <span class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ data?.CustomerCode }}</span>
           </td>
-          <td class="px-4 border">{{ item?.CustomerBanglaName }}</td>
-          <td class="px-4 border">{{ item?.Mobile }}</td>
-          <td class="px-4 border lowercase">{{ item?.Email }}</td>
-          <td class="px-4 border text-right">{{ item?.Installment != null ? formatAmount(Number(item.Installment)) : '' }}</td>
-          <td class="px-4 border text-center">{{ item?.InstallmentNumber != null ? item.InstallmentNumber : '' }}</td>
-          <td class="px-4 border text-right">{{ item?.LoanAmount != null ? formatAmount(Number(item.LoanAmount)) : '' }}</td>
-          <td class="px-4 border text-right">{{ item?.TotalLoanPayable != null ? formatAmount(Number(item.TotalLoanPayable)) : '' }}</td>
-          <td class="px-4 border text-right">{{ item?.PaidAmount != null ? formatAmount(Number(item.PaidAmount)) : '' }}</td>
-          <td class="px-4 border text-right">{{ item?.DueAmount != null ? formatAmount(Number(item.DueAmount)) : '' }}</td>
+          <td class="px-4 border">{{ data?.CustomerBanglaName }}</td>
+          <td class="px-4 border">{{ data?.Mobile }}</td>
+          <td class="px-4 border lowercase">{{ data?.Email }}</td>
+          <td class="px-4 border text-right">{{ formatAmount(Number(data?.SavingAmount || 0)) }}</td>
+          <td class="px-4 border text-right">{{ data?.TotalSavingsPayable != null ? formatAmount(Number(data.TotalSavingsPayable)) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.PaidAmount != null ? formatAmount(Number(data.PaidAmount)) : '' }}</td>
+          <td class="px-4 border text-right">{{ data?.DueAmount != null ? formatAmount(Number(data.DueAmount)) : '' }}</td>
           <td class="px-4 border text-center">
-            <span v-if="item?.Active" class="px-2 py-0.5 rounded text-xs font-semibold"
-              :class="item?.Active === 'Y' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
-              {{ item?.Active === 'Y' ? $t('common.active') : $t('common.inactive') }}
+            <span class="px-2 py-0.5 rounded text-xs font-semibold"
+              :class="data?.Active === 'Y' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+              {{ data?.Active === 'Y' ? $t('common.active') : $t('common.inactive') }}
             </span>
           </td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
               <a-tooltip :title="$t('common.details')">
-                <button type="button" class="action-btn action-btn-info" @click="openDetailsModal(item)">
+                <button type="button" class="action-btn action-btn-info" @click="openDetailsModal(data)">
                   <i class="bi bi-eye"></i>
                 </button>
               </a-tooltip>
               <a-tooltip :title="$t('customer.collections')">
-                <button type="button" class="action-btn action-btn-primary" @click="openCollectionsModal(item)">
+                <button type="button" class="action-btn action-btn-primary" @click="openCollectionsModal(data)">
                   <i class="bi bi-cash-stack"></i>
                 </button>
               </a-tooltip>
             </div>
           </td>
         </tr>
-        <tr v-if="!loading && !data.length">
-          <td colspan="12" class="px-4 py-6 border text-center text-gray-500">{{ $t('common.noData') }}</td>
-        </tr>
       </tbody>
     </table>
     </div>
 
+    <div v-if="loading" class="mt-2 text-center text-gray-500 flex justify-center items-center gap-2">
+      <span><a-spin></a-spin></span>
+    </div>
+
+    <div ref="loadMoreSentinel" class="h-6"></div>
+    <div v-if="!loading && allData.length >= total && total > 0" class="text-center text-gray-400 text-sm py-3">
+      {{ $t('common.totalItems', { total }) }}
+    </div>
+
     <!-- Collections Modal -->
-    <a-modal v-model:open="isCollectionsModalVisible" :title="$t('customer.collections')"
-      @cancel="isCollectionsModalVisible = false" :footer="null" width="800px">
+    <a-modal v-model:open="isCollectionsModalVisible" :title="$t('customer.collections')" @cancel="isCollectionsModalVisible = false"
+      :footer="null" width="800px">
       <div v-if="collectionsLoading" class="text-center py-8"><a-spin /></div>
       <div v-else>
         <div v-if="collectionsData.length" class="mb-3 grid grid-cols-3 gap-3 p-3 bg-gray-50 rounded">
@@ -123,21 +119,11 @@
       <div v-else-if="customerInfo" class="space-y-5">
         <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.code') }}</span>
-              <div class="font-semibold text-primary">{{ customerInfo.CustomerCode }}</div>
-            </div>
-            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.name') }}</span>
-              <div class="font-semibold">{{ customerInfo.CustomerName }}</div>
-            </div>
-            <div><span class="text-gray-500 text-xs uppercase">{{ $t('customer.customerBanglaName') }}</span>
-              <div class="font-semibold">{{ customerInfo.CustomerBanglaName }}</div>
-            </div>
-            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.mobile') }}</span>
-              <div class="font-semibold">{{ customerInfo.Mobile }}</div>
-            </div>
-            <div class="col-span-2"><span class="text-gray-500 text-xs uppercase">{{ $t('common.address') }}</span>
-              <div class="font-semibold">{{ customerInfo.Add1 }}</div>
-            </div>
+            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.code') }}</span><div class="font-semibold text-primary">{{ customerInfo.CustomerCode }}</div></div>
+            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.name') }}</span><div class="font-semibold">{{ customerInfo.CustomerName }}</div></div>
+            <div><span class="text-gray-500 text-xs uppercase">{{ $t('customer.customerBanglaName') }}</span><div class="font-semibold">{{ customerInfo.CustomerBanglaName }}</div></div>
+            <div><span class="text-gray-500 text-xs uppercase">{{ $t('common.mobile') }}</span><div class="font-semibold">{{ customerInfo.Mobile }}</div></div>
+            <div class="col-span-2"><span class="text-gray-500 text-xs uppercase">{{ $t('common.address') }}</span><div class="font-semibold">{{ customerInfo.Add1 }}</div></div>
           </div>
         </div>
 
@@ -215,23 +201,38 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-let searchTimeout = null;
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import MainLayout from "@/components/layouts/mainLayout.vue";
-import { getToken, showNotification } from "@/utilities/common";
-import axios from "axios";
 import { apiBase } from "@/config";
+import axios from "axios";
+import { getToken, showNotification } from "@/utilities/common";
 
 const route = useRoute();
-const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "loanDue");
-const totalAmount = ref(Number(route.query.total) || 0);
+const { t } = useI18n();
+const showTotalBadge = computed(() => !!route.query.showTotal);
+const totalAmount = computed(() => {
+  if (route.query.kind === "savingsDue") {
+    return allData.value.reduce((sum, r) => sum + Number(r.DueAmount || 0), 0);
+  }
+  return allData.value.reduce((sum, r) => sum + Number(r.TotalSavingsPayable || 0), 0);
+});
+const badgeLabel = computed(() => {
+  if (route.query.kind === "savingsDue") return t("dashboard.totalDue");
+  return t("dashboard.totalShouldPay");
+});
+
+const page = ref(1);
+const per_page = ref(20);
+const total = ref(0);
+const search = ref("");
+const allData = ref([]);
+const loading = ref(false);
+const loadMoreSentinel = ref(null);
+let scrollObserver = null;
 
 const formatAmount = (amount) => new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
-
-const data = ref([]);
-const loading = ref(false);
-const search = ref("");
 
 const isDetailsModalVisible = ref(false);
 const detailsLoading = ref(false);
@@ -257,69 +258,85 @@ const formatPeriod = (period) => {
   return `${months[parseInt(s.slice(4, 6), 10) - 1] || ""} ${s.slice(0, 4)}`;
 };
 
-const fetchLoanMembers = async () => {
-  try {
-    loading.value = true;
-    const token = getToken();
-    const params = { limit: 100, page: 1 };
-    if (search.value) params.search = search.value;
-    const res = await axios.get(`${apiBase}/dashboard/loan-members`, { ...token, params });
-    if (res.data?.success) {
-      data.value = Array.isArray(res.data.data) ? res.data.data : [];
-    }
-  } catch (error) {
-    console.log(error);
-    showNotification("error", "Failed to fetch loan members.");
-  } finally {
-    loading.value = false;
-  }
-};
-
-const onSearchChange = () => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => fetchLoanMembers(), 400);
-};
-
-const openCollectionsModal = async (item) => {
+const openCollectionsModal = async (data) => {
   isCollectionsModalVisible.value = true;
   collectionsLoading.value = true;
   collectionsData.value = [];
   try {
-    const res = await axios.get(
-      `${apiBase}/customer/${item.MemberCode}/collections`,
-      getToken(),
-    );
+    const res = await axios.get(`${apiBase}/customer/${data.CustomerCode}/collections`, getToken());
     collectionsData.value = res?.data?.data || [];
   } catch (error) {
-    console.log(error);
     showNotification("error", "Failed to load collections.");
   } finally {
     collectionsLoading.value = false;
   }
 };
 
-const openDetailsModal = async (item) => {
+const openDetailsModal = async (data) => {
   isDetailsModalVisible.value = true;
   detailsLoading.value = true;
   customerInfo.value = null;
   collections.value = [];
   try {
-    const res = await axios.get(
-      `${apiBase}/customer/${item.MemberCode}/summary_member_collection`,
-      getToken(),
-    );
+    const res = await axios.get(`${apiBase}/customer/${data.CustomerCode}/summary_member_collection`, getToken());
     const d = res?.data?.data || {};
     customerInfo.value = d.CustomerInfo?.[0] || null;
     collections.value = d.Collections || [];
   } catch (error) {
-    console.log(error);
     showNotification("error", "Failed to load details.");
   } finally {
     detailsLoading.value = false;
   }
 };
 
-onMounted(() => {
-  fetchLoanMembers();
+const handleSearch = () => {
+  page.value = 1;
+  allData.value = [];
+  fetchAllData();
+};
+
+const fetchAllData = async ({ append = false } = {}) => {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    const res = await axios.get(
+      `${apiBase}/customer?search=${search.value}&limit=${per_page.value}&page=${page.value}`,
+      getToken()
+    );
+    loading.value = false;
+    const rows = res?.data?.data || [];
+    allData.value = append ? [...allData.value, ...rows] : rows;
+    total.value = append ? allData.value.length : rows.length;
+  } catch (err) {
+    loading.value = false;
+    if (!append) allData.value = [];
+    total.value = 0;
+    console.error("Failed to fetch customers:", err);
+  }
+};
+
+const loadMore = () => {
+  if (loading.value) return;
+  if (allData.value.length >= total.value) return;
+  page.value += 1;
+  fetchAllData({ append: true });
+};
+
+onMounted(async () => {
+  await fetchAllData();
+  scrollObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting) loadMore();
+    },
+    { root: null, rootMargin: "200px", threshold: 0 }
+  );
+  if (loadMoreSentinel.value) scrollObserver.observe(loadMoreSentinel.value);
+});
+
+onBeforeUnmount(() => {
+  if (scrollObserver) {
+    scrollObserver.disconnect();
+    scrollObserver = null;
+  }
 });
 </script>

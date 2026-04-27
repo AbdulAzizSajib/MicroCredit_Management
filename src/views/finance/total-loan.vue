@@ -22,16 +22,17 @@
             <tr class="bg-primary text-white">
               <th class="border border-white px-4 py-2">#</th>
               <th class="border border-white px-4 py-2">{{ $t('finance.amCode') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.amDetails') }}</th>
-              <th class="border border-white px-4 py-2">{{ $t('finance.memberCode') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('common.name') }}</th>
+              <th class="border border-white px-4 py-2">{{ $t('customer.customerBanglaName') }}</th>
               <th class="border border-white px-4 py-2 text-right">{{ $t('finance.totalDebit') }}</th>
               <th class="border border-white px-4 py-2 text-right">{{ $t('finance.totalCredit') }}</th>
               <th class="border border-white px-4 py-2 text-right">{{ $t('common.balance') }}</th>
+              <th class="border border-white px-4 py-2 text-right">{{ $t('dashboard.totalEarning') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="rows.length === 0">
-              <td colspan="7" class="text-center py-4 text-gray-500">
+              <td colspan="8" class="text-center py-4 text-gray-500">
                 {{ $t('common.noData') }}
               </td>
             </tr>
@@ -39,10 +40,11 @@
               <td class="px-4 border">{{ index + 1 }}</td>
               <td class="px-4 border">{{ item.AMCode }}</td>
               <td class="px-4 border">{{ item.AMDetails }}</td>
-              <td class="px-4 border">{{ item.MemberCode }}</td>
+              <td class="px-4 border">{{ item.CustomerBanglaName || item.AMDetailsBn || item.BanglaName || '' }}</td>
               <td class="px-4 border text-right">{{ item.TotalDebit }}</td>
               <td class="px-4 border text-right">{{ item.TotalCredit }}</td>
               <td class="px-4 border text-right">{{ item.Balance }}</td>
+              <td class="px-4 border text-right">{{ item.TotalEarning != null ? item.TotalEarning : '' }}</td>
             </tr>
           </tbody>
         </table>
