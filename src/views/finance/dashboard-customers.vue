@@ -299,7 +299,7 @@ const fetchAllData = async ({ append = false } = {}) => {
   loading.value = true;
   try {
     const res = await axios.get(
-      `${apiBase}/customer?search=${search.value}&limit=${per_page.value}&page=${page.value}`,
+      `${apiBase}/customer/accountant/index?search=${search.value}&limit=${per_page.value}&page=${page.value}`,
       getToken()
     );
     loading.value = false;

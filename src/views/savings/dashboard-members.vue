@@ -13,10 +13,7 @@
         <span class="text-xs font-semibold text-green-500 uppercase tracking-wider">{{ $t('dashboard.totalSavingsVouchered') }}</span>
         <span class="text-xl font-extrabold text-green-700">{{ formatAmount(voucheredTotalSum) }}</span>
       </div>
-      <div v-if="showDueTotal" class="flex items-center gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 shadow-sm">
-        <span class="text-xs font-semibold text-rose-500 uppercase tracking-wider">{{ $t('dashboard.totalBalanceDue') }}</span>
-        <span class="text-xl font-extrabold text-rose-700">{{ formatAmount(dueTotalSum) }}</span>
-      </div>
+ 
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
@@ -57,13 +54,6 @@
       </table>
     </div>
 
-    <a-pagination class="mt-4" v-model:current="page" :page-size="per_page" :total="total" :show-size-changer="false"
-      :show-total="(total) => $t('common.totalItems', { total })" @change="
-        (pageNo) => {
-          page = pageNo;
-          fetchData();
-        }
-      " v-if="total > per_page" />
   </MainLayout>
 </template>
 
@@ -78,8 +68,6 @@ import { getToken, showNotification } from "@/utilities/common";
 const route = useRoute();
 const router = useRouter();
 
-const page = ref(1);
-const per_page = ref(20);
 const total = ref(0);
 const search = ref(route.query.search || "");
 
@@ -98,7 +86,7 @@ const fetchData = async () => {
   loading.value = true;
   try {
     const res = await axios.get(
-      `${apiBase}/customer?search=${search.value}&limit=${per_page.value}&page=${page.value}`,
+      `${apiBase}/customer/accountant/index?search=${search.value}&limit=99999&page=1`,
       getToken()
     );
     const rows = res?.data?.data || [];
@@ -127,7 +115,6 @@ let searchTimer = null;
 const handleSearch = () => {
   if (searchTimer) clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
-    page.value = 1;
     syncQuery();
     fetchData();
   }, 350);
@@ -136,7 +123,7 @@ const handleSearch = () => {
 const fetchAllForTotals = async () => {
   try {
     const res = await axios.get(
-      `${apiBase}/customer?search=&limit=99999&page=1`,
+      `${apiBase}/customer/accountant/index?search=&limit=99999&page=1`,
       getToken()
     );
     const rows = res?.data?.data || [];

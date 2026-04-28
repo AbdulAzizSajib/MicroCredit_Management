@@ -77,6 +77,11 @@
     </table>
     </div>
 
+    <!-- Infinite scroll sentinel -->
+    <div ref="scrollSentinel" class="py-4 text-center">
+      <a-spin v-if="loadingMore" />
+    </div>
+
     <a-modal
       v-model:open="isCreateModalVisible"
       title=""
@@ -541,26 +546,11 @@
       </form>
     </a-modal>
 
-    <a-pagination
-      class="mt-4"
-      v-model:current="page"
-      :page-size="per_page"
-      :total="total"
-      :show-size-changer="false"
-      :show-total="(t) => $t('common.totalItems', { total: t })"
-      @change="
-        (pageNo) => {
-          page = pageNo;
-          getLoadData();
-        }
-      "
-      v-if="total > per_page"
-    />
   </MainLayout>
 </template>
 
 <script setup>
-import { onMounted, ref, watch, nextTick } from "vue";
+import { onMounted, onBeforeUnmount, ref, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { getToken, showNotification } from "@/utilities/common";
@@ -589,16 +579,12 @@ const searchQuery = ref("");
 let searchTimer = null;
 
 const handleDateChange = () => {
-  page.value = 1;
-  getLoadData();
+  getLoadData(false);
 };
 
 const handleSearchChange = () => {
   if (searchTimer) clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    page.value = 1;
-    getLoadData();
-  }, 400);
+  searchTimer = setTimeout(() => getLoadData(false), 400);
 };
 
 const isCreateModalVisible = ref(false);
@@ -708,9 +694,13 @@ const submitAddCollection = async () => {
   }
 };
 
-const page = ref(1);
-const per_page = ref(10);
-const total = ref(10);
+const total = ref(0);
+const currentPage = ref(1);
+const perPage = 20;
+const hasMore = ref(true);
+const loadingMore = ref(false);
+const scrollSentinel = ref(null);
+let observer = null;
 
 const formData = ref({
   LoanType: "",
@@ -830,13 +820,21 @@ watch(
 const loadDataloading = ref(false);
 const loanData = ref([]);
 
-const getLoadData = async () => {
-  try {
+const getLoadData = async (append = false) => {
+  if (append) {
+    if (loadingMore.value || !hasMore.value) return;
+    loadingMore.value = true;
+  } else {
     loadDataloading.value = true;
+    currentPage.value = 1;
+    hasMore.value = true;
+    loanData.value = [];
+  }
+  try {
     const params = new URLSearchParams({
       search: searchQuery.value || "",
-      per_page: per_page.value,
-      page: page.value,
+      per_page: perPage,
+      page: currentPage.value,
     });
     if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
     if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
@@ -845,14 +843,25 @@ const getLoadData = async () => {
       getToken(),
     );
     if (res.data?.success) {
-      loanData.value = Array.isArray(res.data.data?.data) ? res.data.data.data : [];
+      const rows = Array.isArray(res.data.data?.data) ? res.data.data.data : [];
+      loanData.value = append ? [...loanData.value, ...rows] : rows;
       total.value = Number(res.data.data?.total || 0);
+      hasMore.value = rows.length === perPage;
+      if (hasMore.value) currentPage.value++;
     }
   } catch (error) {
     console.log(error);
   } finally {
     loadDataloading.value = false;
+    loadingMore.value = false;
   }
+};
+
+const setupObserver = () => {
+  observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !loadDataloading.value) getLoadData(true);
+  }, { threshold: 0.1 });
+  if (scrollSentinel.value) observer.observe(scrollSentinel.value);
 };
 
 const loadTypeloading = ref(false);
@@ -1180,9 +1189,13 @@ const createLoan = async () => {
 };
 
 onMounted(() => {
-  total.value = loanData.value.length;
-  getLoadData();
+  getLoadData(false);
   getLoadTypeData();
+  setupObserver();
+});
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
 });
 </script>
 

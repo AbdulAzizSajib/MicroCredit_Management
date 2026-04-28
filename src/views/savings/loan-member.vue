@@ -18,6 +18,10 @@
           <span class="text-xs uppercase font-semibold text-gray-500">Total Loan Due</span>
           <span class="text-lg font-bold text-rose-700">{{ formatAmount(Number(totalAmount)) }}</span>
         </div>
+        <div v-if="showLoanPayableBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200">
+          <span class="text-xs uppercase font-semibold text-indigo-500">{{ $t('loan.totalLoanPayable') }}</span>
+          <span class="text-lg font-bold text-indigo-700">{{ formatAmount(loanPayableTotal) }}</span>
+        </div>
       </div>
     </div>
 
@@ -80,6 +84,11 @@
         </tr>
       </tbody>
     </table>
+    </div>
+
+    <!-- Infinite scroll sentinel -->
+    <div ref="scrollSentinel" class="py-4 text-center">
+      <a-spin v-if="loadingMore" />
     </div>
 
     <!-- Collections Modal -->
@@ -215,7 +224,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 let searchTimeout = null;
 import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
@@ -226,12 +235,20 @@ import { apiBase } from "@/config";
 const route = useRoute();
 const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "loanDue");
 const totalAmount = ref(Number(route.query.total) || 0);
+const showLoanPayableBadge = ref(!!route.query.showLoanPayable);
+const loanPayableTotal = ref(0);
 
 const formatAmount = (amount) => new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
 
 const data = ref([]);
 const loading = ref(false);
+const loadingMore = ref(false);
 const search = ref("");
+const currentPage = ref(1);
+const perPage = 20;
+const hasMore = ref(true);
+const scrollSentinel = ref(null);
+let observer = null;
 
 const isDetailsModalVisible = ref(false);
 const detailsLoading = ref(false);
@@ -257,27 +274,46 @@ const formatPeriod = (period) => {
   return `${months[parseInt(s.slice(4, 6), 10) - 1] || ""} ${s.slice(0, 4)}`;
 };
 
-const fetchLoanMembers = async () => {
-  try {
+const fetchLoanMembers = async (append = false) => {
+  if (append) {
+    if (loadingMore.value || !hasMore.value) return;
+    loadingMore.value = true;
+  } else {
     loading.value = true;
+    currentPage.value = 1;
+    hasMore.value = true;
+    data.value = [];
+  }
+  try {
     const token = getToken();
-    const params = { limit: 100, page: 1 };
+    const params = { limit: perPage, page: currentPage.value };
     if (search.value) params.search = search.value;
     const res = await axios.get(`${apiBase}/dashboard/loan-members`, { ...token, params });
     if (res.data?.success) {
-      data.value = Array.isArray(res.data.data) ? res.data.data : [];
+      const rows = Array.isArray(res.data.data) ? res.data.data : [];
+      data.value = append ? [...data.value, ...rows] : rows;
+      hasMore.value = rows.length === perPage;
+      if (hasMore.value) currentPage.value++;
     }
   } catch (error) {
     console.log(error);
     showNotification("error", "Failed to fetch loan members.");
   } finally {
     loading.value = false;
+    loadingMore.value = false;
   }
 };
 
 const onSearchChange = () => {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => fetchLoanMembers(), 400);
+  searchTimeout = setTimeout(() => fetchLoanMembers(false), 400);
+};
+
+const setupObserver = () => {
+  observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !loading.value) fetchLoanMembers(true);
+  }, { threshold: 0.1 });
+  if (scrollSentinel.value) observer.observe(scrollSentinel.value);
 };
 
 const openCollectionsModal = async (item) => {
@@ -319,7 +355,28 @@ const openDetailsModal = async (item) => {
   }
 };
 
+const fetchLoanPayableTotal = async () => {
+  try {
+    const res = await axios.get(`${apiBase}/dashboard/loan-members`, {
+      ...getToken(),
+      params: { limit: 99999, page: 1 },
+    });
+    if (res.data?.success) {
+      const rows = Array.isArray(res.data.data) ? res.data.data : [];
+      loanPayableTotal.value = rows.reduce((sum, item) => sum + (Number(item.TotalLoanPayable) || 0), 0);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 onMounted(() => {
-  fetchLoanMembers();
+  fetchLoanMembers(false);
+  setupObserver();
+  if (showLoanPayableBadge.value) fetchLoanPayableTotal();
+});
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
 });
 </script>

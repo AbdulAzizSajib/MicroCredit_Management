@@ -9,6 +9,10 @@
       <h1 class="text-2xl font-bold text-primary">
         {{ $t('dashboard.loanMembers') }} ({{ filteredData.length }})
       </h1>
+      <div v-if="showLoanVouchered" class="flex items-center gap-2 bg-violet-50 border border-violet-200 rounded-xl px-4 py-2 shadow-sm">
+        <span class="text-xs font-semibold text-violet-500 uppercase tracking-wider">{{ $t('dashboard.totalLoanVouchered') }}</span>
+        <span class="text-xl font-extrabold text-violet-700">{{ formatAmount(loanVoucheredSum) }}</span>
+      </div>
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
@@ -55,14 +59,22 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
 import axios from "axios";
 
+const route = useRoute();
+const showLoanVouchered = computed(() => !!route.query.showLoanVouchered);
+
 const data = ref([]);
 const loading = ref(false);
 const search = ref("");
+
+const loanVoucheredSum = computed(() =>
+  data.value.reduce((sum, item) => sum + (Number(item.PaidAmount) || 0), 0)
+);
 
 const filteredData = computed(() => {
   const q = search.value.trim().toLowerCase();

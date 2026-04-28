@@ -14,6 +14,10 @@
         <span class="text-xs uppercase font-semibold text-gray-500">Total Savings Due</span>
         <span class="text-lg font-bold text-rose-700">{{ formatAmount(totalAmount) }}</span>
       </div>
+      <div v-if="showSavingsPayableBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200">
+        <span class="text-xs uppercase font-semibold text-blue-500">{{ $t('customer.totalSavingsPayable') }}</span>
+        <span class="text-lg font-bold text-blue-700">{{ formatAmount(savingsPayableTotal) }}</span>
+      </div>
     </div>
 
     <!-- Table -->
@@ -370,6 +374,8 @@ import { getToken, showNotification } from "@/utilities/common";
 const route = useRoute();
 const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "savingsDue");
 const totalAmount = ref(Number(route.query.total) || 0);
+const showSavingsPayableBadge = ref(!!route.query.showSavingsPayable);
+const savingsPayableTotal = ref(0);
 
 const page = ref(1);
 const per_page = ref(20);
@@ -641,8 +647,22 @@ const loadMore = () => {
   fetchAllData({ append: true });
 };
 
+const fetchSavingsPayableTotal = async () => {
+  try {
+    const res = await axios.get(
+      `${apiBase}/customer?search=&limit=99999&page=1`,
+      getToken()
+    );
+    const rows = res?.data?.data || [];
+    savingsPayableTotal.value = rows.reduce((sum, item) => sum + (Number(item.TotalSavingsPayable) || 0), 0);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 onMounted(async () => {
   await fetchAllData();
+  if (showSavingsPayableBadge.value) fetchSavingsPayableTotal();
   scrollObserver = new IntersectionObserver(
     (entries) => {
       if (entries[0]?.isIntersecting) loadMore();

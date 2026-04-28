@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/savings/customer')" data-aos="fade-up"
+        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/savings/customer', { showSavingsPayable: 1 })" data-aos="fade-up"
           data-aos-delay="200">
           <div class="flex items-center gap-4">
             <div class="bg-blue-200/40 rounded-xl p-3">
@@ -91,7 +91,7 @@
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member')"
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member', { showLoanPayable: 1 })"
           data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
@@ -236,7 +236,7 @@
         </div>
 
         <!-- 7. Total Loan Vouchered -->
-        <div class="glass-card glass-violet cursor-pointer" @click="$router.push('/dashboard/loan-members')">
+        <div class="glass-card glass-violet cursor-pointer" @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanVouchered: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-violet-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:file-check-outline" class="text-violet-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -461,8 +461,8 @@ const buildDateQuery = () => {
   return "";
 };
 
-const goToPage = (path) => {
-  const query = {};
+const goToPage = (path, extra = {}) => {
+  const query = { ...extra };
   if (dateRange.value?.length === 2 && dateRange.value[0] && dateRange.value[1]) {
     query.from_date = dateRange.value[0];
     query.to_date = dateRange.value[1];
