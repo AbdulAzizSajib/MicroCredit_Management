@@ -274,7 +274,7 @@
     "totalShouldPay": "Total Savings Payable",
     "totalDue": "Total Savings Due",
     "remainingBalance": "Due Balance",
-    "totalBalanceDue": "Total Balance Due",
+    "totalBalanceDue": "Total Savings",
     "fetchError": "Failed to fetch summary."
   },
   "login": {

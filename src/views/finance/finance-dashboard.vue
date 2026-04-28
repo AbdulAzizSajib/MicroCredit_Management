@@ -100,7 +100,7 @@
             <div class="flex-1 text-right min-w-0">
               <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{ $t('loan.totalLoanPayable') }}
               </div>
-              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.LoanAmount ||
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayableLoanAmount ||
                 0)) }}</div>
             </div>
           </div>
@@ -194,7 +194,7 @@
         </div>
 
         <!-- 4. Total Balance Due -->
-        <div class="glass-card glass-rose cursor-pointer" @click="goToSavingsMembers(false, true)">
+        <div class="glass-card glass-rose">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-rose-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -250,7 +250,7 @@
         </div>
 
         <!-- 8. Total Loan Given -->
-        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/loan-members')">
+        <div class="glass-card glass-teal cursor-pointer" @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanGiven: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-teal-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:bank-outline" class="text-teal-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -431,7 +431,7 @@ const remainingCollection = computed(() => {
 const totalBalanceDue = computed(() => {
   const savingsVoucher = Number(pendingCount.value?.ForSavingApprovalAmount || 0);
   const savingsPosted = Number(summaryData.value?.totalSaving || 0);
-  return savingsVoucher - savingsPosted;
+  return savingsVoucher + savingsPosted;
 });
 
 const availableBalance = computed(() => {

@@ -32,8 +32,8 @@
     </div>
 
     <!-- Table -->
-    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
-    <table class="w-full min-w-[900px] border border-collapse text-left">
+    <div class="w-full overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+    <table class="w-full min-w-[1100px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2 sticky left-0 bg-primary z-20">{{ $t('collection.customerName') }}</th>

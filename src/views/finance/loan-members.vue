@@ -13,6 +13,10 @@
         <span class="text-xs font-semibold text-violet-500 uppercase tracking-wider">{{ $t('dashboard.totalLoanVouchered') }}</span>
         <span class="text-xl font-extrabold text-violet-700">{{ formatAmount(loanVoucheredSum) }}</span>
       </div>
+      <div v-if="showLoanGiven" class="flex items-center gap-2 bg-teal-50 border border-teal-200 rounded-xl px-4 py-2 shadow-sm">
+        <span class="text-xs font-semibold text-teal-500 uppercase tracking-wider">{{ $t('dashboard.totalLoanPosted') }}</span>
+        <span class="text-xl font-extrabold text-teal-700">{{ formatAmount(loanAmountSum) }}</span>
+      </div>
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
@@ -42,7 +46,7 @@
             <td class="px-4 border text-center">{{ item?.InstallmentNumber != null ? item.InstallmentNumber : '' }}</td>
             <td class="px-4 border text-right">{{ item?.LoanAmount != null ? formatAmount(Number(item.LoanAmount)) : '' }}</td>
             <td class="px-4 border text-right">{{ item?.TotalLoanPayable != null ? formatAmount(Number(item.TotalLoanPayable)) : '' }}</td>
-            <td class="px-4 border text-right">{{ item?.PaidAmount != null ? formatAmount(Number(item.PaidAmount)) : '' }}</td>
+            <td class="px-4 border text-right">{{ item?.VoucheredAmount != null ? formatAmount(Number(item.VoucheredAmount)) : '' }}</td>
             <td class="px-4 border text-right">{{ item?.DueAmount != null ? formatAmount(Number(item.DueAmount)) : '' }}</td>
           </tr>
           <tr v-if="!loading && !filteredData.length">
@@ -67,13 +71,18 @@ import axios from "axios";
 
 const route = useRoute();
 const showLoanVouchered = computed(() => !!route.query.showLoanVouchered);
+const showLoanGiven = computed(() => !!route.query.showLoanGiven);
 
 const data = ref([]);
 const loading = ref(false);
 const search = ref("");
 
 const loanVoucheredSum = computed(() =>
-  data.value.reduce((sum, item) => sum + (Number(item.PaidAmount) || 0), 0)
+  data.value.reduce((sum, item) => sum + (Number(item.VoucheredAmount) || 0), 0)
+);
+
+const loanAmountSum = computed(() =>
+  data.value.reduce((sum, item) => sum + (Number(item.LoanAmount) || 0), 0)
 );
 
 const filteredData = computed(() => {

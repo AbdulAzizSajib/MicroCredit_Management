@@ -243,15 +243,11 @@ const allMenuItems = computed(() => [
 
   {
     key: "files",
-    label: t("menu.files"),
+    label: "Settings",
     icon: () => h(FileTextOutlined),
     permission: "Files",
     children: [
-      {
-        key: "/files/customer",
-        label: t("menu.customer"),
-        onClick: navigateTo("/files/customer"),
-      },
+    
       {
         key: "/files/group-code",
         label: t("menu.groupCode"),
