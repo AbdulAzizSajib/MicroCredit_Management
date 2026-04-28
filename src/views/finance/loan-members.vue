@@ -1,10 +1,14 @@
 <template>
   <MainLayout>
+    <div class="flex justify-end mb-4">
+      <a-input :placeholder="$t('common.searchByName')" v-model:value="search"
+        class="w-full sm:w-64" />
+    </div>
+
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
-        {{ $t('dashboard.loanMembers') }} ({{ data.length }})
+        {{ $t('dashboard.loanMembers') }} ({{ filteredData.length }})
       </h1>
-      <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
@@ -23,7 +27,7 @@
           </tr>
         </thead>
         <tbody class="capitalize">
-          <tr v-for="(item, index) in data" :key="index">
+          <tr v-for="(item, index) in filteredData" :key="index">
             <td class="px-4 border sticky left-0 bg-white z-10">
               {{ item?.CustomerName || item?.AMDetails }}
               <span v-if="item?.MemberCode" class="ml-1 text-xs font-semibold text-primary bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">{{ item?.MemberCode }}</span>
@@ -37,7 +41,7 @@
             <td class="px-4 border text-right">{{ item?.PaidAmount != null ? formatAmount(Number(item.PaidAmount)) : '' }}</td>
             <td class="px-4 border text-right">{{ item?.DueAmount != null ? formatAmount(Number(item.DueAmount)) : '' }}</td>
           </tr>
-          <tr v-if="!loading && !data.length">
+          <tr v-if="!loading && !filteredData.length">
             <td colspan="9" class="px-4 py-6 border text-center text-gray-500">{{ $t('common.noData') }}</td>
           </tr>
           <tr v-if="loading">
@@ -50,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config.js";
 import { getToken, showNotification } from "@/utilities/common.js";
@@ -58,6 +62,19 @@ import axios from "axios";
 
 const data = ref([]);
 const loading = ref(false);
+const search = ref("");
+
+const filteredData = computed(() => {
+  const q = search.value.trim().toLowerCase();
+  if (!q) return data.value;
+  return data.value.filter((item) => {
+    const name = (item?.CustomerName || item?.AMDetails || "").toLowerCase();
+    const banglaName = (item?.CustomerBanglaName || "").toLowerCase();
+    const mobile = (item?.Mobile || "").toLowerCase();
+    const code = (item?.MemberCode || "").toLowerCase();
+    return name.includes(q) || banglaName.includes(q) || mobile.includes(q) || code.includes(q);
+  });
+});
 
 const formatAmount = (amount) =>
   new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);

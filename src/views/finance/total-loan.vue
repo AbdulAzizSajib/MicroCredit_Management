@@ -9,7 +9,7 @@
       <div class="text-right mb-3 flex justify-end items-center gap-2">
         <label class="font-semibold text-gray-700">{{ $t('dashboard.totalLoanPosted') }}</label>
         <input type="text" class="w-32 border rounded-lg p-1 text-right bg-yellow-300 text-black font-bold"
-          :value="totalLoan" readonly />
+          :value="Number(totalLoan || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })" readonly />
       </div>
 
       <div class="">
@@ -41,10 +41,10 @@
               <td class="px-4 border">{{ item.AMCode }}</td>
               <td class="px-4 border">{{ item.AMDetails }}</td>
               <td class="px-4 border">{{ item.CustomerBanglaName || item.AMDetailsBn || item.BanglaName || '' }}</td>
-              <td class="px-4 border text-right">{{ item.TotalDebit }}</td>
-              <td class="px-4 border text-right">{{ item.TotalCredit }}</td>
-              <td class="px-4 border text-right">{{ item.Balance }}</td>
-              <td class="px-4 border text-right">{{ item.TotalEarning != null ? item.TotalEarning : '' }}</td>
+              <td class="px-4 border text-right">{{ item.TotalDebit != null ? Number(item.TotalDebit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }}</td>
+              <td class="px-4 border text-right">{{ item.TotalCredit != null ? Number(item.TotalCredit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }}</td>
+              <td class="px-4 border text-right">{{ item.Balance != null ? Number(item.Balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }}</td>
+              <td class="px-4 border text-right">{{ item.TotalEarning != null ? Number(item.TotalEarning).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }}</td>
             </tr>
           </tbody>
         </table>

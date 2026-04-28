@@ -76,7 +76,8 @@
         readonly
       />
     </div>
-    <table class="w-full border border-collapse text-left mt-5">
+    <div class="overflow-x-auto mt-5">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2 w-[3%]">
@@ -99,7 +100,7 @@
       </thead>
       <tbody class="capitalize">
         <tr v-if="allData.length === 0">
-          <td colspan="6" class="text-center py-4 text-gray-500">
+          <td colspan="7" class="text-center py-4 text-gray-500">
             {{ $t('common.noData') }}
           </td>
         </tr>
@@ -139,7 +140,7 @@
           </tr>
 
           <tr v-if="isOpen(data.InvoiceNo)">
-            <td colspan="6" class="bg-gray-50">
+            <td colspan="7" class="bg-gray-50">
               <div
                 v-if="invoiceDetails[data.InvoiceNo]?.length"
                 class="overflow-x-auto"
@@ -182,6 +183,7 @@
         </template>
       </tbody>
     </table>
+    </div>
 
     <a-pagination
       v-if="allData.length > pageSize"

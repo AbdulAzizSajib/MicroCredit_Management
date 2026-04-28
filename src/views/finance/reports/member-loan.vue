@@ -76,7 +76,8 @@
         readonly
       />
     </div>
-    <table class="w-full border border-collapse text-left mt-5">
+    <div class="overflow-x-auto mt-5">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2 w-[3%]">
@@ -100,7 +101,7 @@
       </thead>
       <tbody class="capitalize">
         <tr v-if="allData.length === 0">
-          <td colspan="7" class="text-center py-4 text-gray-500">
+          <td colspan="8" class="text-center py-4 text-gray-500">
             {{ $t('common.noData') }}
           </td>
         </tr>
@@ -125,6 +126,7 @@
         </template>
       </tbody>
     </table>
+    </div>
 
     <a-pagination
       v-if="allData.length > pageSize"

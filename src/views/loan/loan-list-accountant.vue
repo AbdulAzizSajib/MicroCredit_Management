@@ -1,28 +1,34 @@
 <template>
   <MainLayout>
-    <div class="flex flex-wrap justify-end items-center gap-3">
-      <div class="flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between sm:items-center gap-3">
+      <a-input
+        :placeholder="$t('common.searchHere')"
+        v-model:value="search"
+        @input="handleSearch"
+        class="w-full sm:w-64"
+      />
+      <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 w-full sm:w-auto">
         <a-range-picker
           v-model:value="dateRange"
           value-format="YYYY-MM-DD"
           format="DD-MMM-YYYY"
           @change="handleDateChange"
+          class="w-full sm:w-auto"
         />
-      </div>
-      <div>
         <button
-          class="bg-primary text-white px-4 py-2 rounded"
+          class="bg-primary text-white px-4 py-2 rounded w-full sm:w-auto"
           @click="isCreateModalVisible = true"
         >
           {{ $t('loan.newLoanAdd') }}
         </button>
       </div>
     </div>
-    <h1 class="text-2xl font-bold text-primary mb-4" data-aos="fade-right">
+    <h1 class="text-2xl font-bold text-primary mt-4 mb-4" data-aos="fade-right">
       {{ $t('loan.loanList') }}
     </h1>
 
-    <table class="w-full border border-collapse text-left" data-aos="fade-up" data-aos-delay="150">
+    <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
+    <table class="w-full min-w-[900px] border border-collapse text-left">
       <thead>
         <tr class="bg-primary text-white">
           <th class="border border-white px-4 py-2">{{ $t('loan.loanId') }}</th>
@@ -40,7 +46,7 @@
           <td class="px-4 border">{{ loan?.type?.LoanTypeDetails }}</td>
           <td class="px-4 border">{{ loan?.EmpCode }}</td>
           <td class="px-4 border">{{ loan?.AMDetails }}</td>
-          <td class="px-4 border text-right">{{ loan?.LoanAmount }}</td>
+          <td class="px-4 border text-right">{{ loan?.LoanAmount != null ? Number(loan.LoanAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }}</td>
           <td class="px-4 border text-right">{{ loan?.NofInstallment }}</td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
@@ -54,6 +60,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <a-modal
       v-model:open="isCreateModalVisible"
@@ -482,11 +489,12 @@ watch(
 
 const loadDataloading = ref(false);
 const loanData = ref([]);
+const search = ref("");
 
 const getLoadData = async () => {
   try {
     loadDataloading.value = true;
-    const params = new URLSearchParams({ search: "", per_page: 10 });
+    const params = new URLSearchParams({ search: search.value || "", per_page: 10 });
     if (dateRange.value?.[0]) params.append("from_date", dateRange.value[0]);
     if (dateRange.value?.[1]) params.append("to_date", dateRange.value[1]);
     const res = await axios.get(
@@ -501,6 +509,14 @@ const getLoadData = async () => {
   } finally {
     loadDataloading.value = false;
   }
+};
+
+let searchTimer = null;
+const handleSearch = () => {
+  if (searchTimer) clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    getLoadData();
+  }, 350);
 };
 
 const loadTypeloading = ref(false);

@@ -1,8 +1,7 @@
 <template>
   <MainLayout>
-    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+    <div class="flex justify-end mb-4">
       <a-input :placeholder="$t('common.searchHere')" v-model:value="search" @input="handleSearch" class="w-full sm:w-64" />
-      <a-button @click="$router.back()">{{ $t('common.back') }}</a-button>
     </div>
     <div class="flex flex-wrap justify-between items-center mb-4 gap-2 mt-5" data-aos="fade-right">
       <h1 class="text-2xl font-bold text-primary">
