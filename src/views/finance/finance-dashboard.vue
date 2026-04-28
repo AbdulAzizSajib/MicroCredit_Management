@@ -152,7 +152,7 @@
       <!-- Accountant Dashboard Cards -->
       <div v-if="!isCustomerDashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-4 2xl:gap-6">
         <!-- 1. Total Savings Members -->
-        <div class="glass-card glass-purple cursor-pointer" @click="goToSavingsMembers">
+        <div class="glass-card glass-purple cursor-pointer" @click="goToSavingsMembers()">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-purple-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -166,7 +166,7 @@
         </div>
 
         <!-- 2. Total Savings Voucher -->
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push('/transaction/member-savings')">
+        <div class="glass-card glass-blue cursor-pointer" @click="$router.push({ path: '/transaction/member-savings', query: { showVoucherTotal: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-blue-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:ticket-confirmation-outline" class="text-blue-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -180,7 +180,7 @@
         </div>
 
         <!-- 3. Total Savings Paid -->
-        <div class="glass-card glass-green cursor-pointer" @click="goToSavingsMembers()">
+        <div class="glass-card glass-green cursor-pointer" @click="goToSavingsMembers(true)">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-green-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -194,7 +194,7 @@
         </div>
 
         <!-- 4. Total Balance Due -->
-        <div class="glass-card glass-rose cursor-pointer" @click="goToSavingsMembers()">
+        <div class="glass-card glass-rose cursor-pointer" @click="goToSavingsMembers(false, true)">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-rose-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -250,7 +250,7 @@
         </div>
 
         <!-- 8. Total Loan Given -->
-        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+        <div class="glass-card glass-teal cursor-pointer" @click="$router.push('/dashboard/loan-members')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-teal-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:bank-outline" class="text-teal-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -289,7 +289,7 @@
         </div>
 
         <!-- 11. Total Earning -->
-        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/loan-members')">
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-loan')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-amber-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:trending-up" class="text-amber-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -481,12 +481,12 @@ const goToPageWithTotal = (path, total, kind) => {
   router.push({ path, query });
 };
 
-const goToSavingsMembers = () => {
+const goToSavingsMembers = (showVoucherTotal = false, showDueTotal = false) => {
   const [from, to] = getDateRange();
-  router.push({
-    path: "/dashboard/savings-members",
-    query: { from_date: from, to_date: to },
-  });
+  const query = { from_date: from, to_date: to };
+  if (showVoucherTotal) query.showVoucherTotal = 1;
+  if (showDueTotal) query.showDueTotal = 1;
+  router.push({ path: "/dashboard/savings-members", query });
 };
 
 const goToSavingsCustomers = (total, kind) => {

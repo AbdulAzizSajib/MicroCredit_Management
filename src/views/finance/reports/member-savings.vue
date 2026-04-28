@@ -1,6 +1,9 @@
 <template>
   <MainLayout>
-    <h1 class="text-2xl font-bold text-indigo-700 mb-6">{{ $t('menu.memberSavings') }}</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-indigo-700">{{ $t('menu.memberSavings') }}</h1>
+      
+    </div>
 
     <div class="bg-white shadow-md rounded-xl p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -532,6 +535,10 @@ import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
 import dayjs from "dayjs";
 import { Icon } from "@iconify/vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const showVoucherTotal = computed(() => !!route.query.showVoucherTotal);
 
 // --- Existing Refs (Outside Modal Logic) ---
 const formData = ref({
@@ -548,6 +555,13 @@ const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   return allData.value.slice(start, start + pageSize.value);
 });
+
+const totalAllNet = computed(() =>
+  allData.value.reduce((sum, item) => sum + (Number(item.NET) || 0), 0)
+);
+
+const formatTotalNet = (amount) =>
+  new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
 const customerData = ref([]);
 const openInvoices = ref([]);
 const invoiceDetails = ref({});

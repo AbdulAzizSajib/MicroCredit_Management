@@ -9,6 +9,14 @@
       <h1 class="text-2xl font-bold text-primary">
         {{ $t('customer.savingsMembers') }} ({{ total }})
       </h1>
+      <div v-if="showVoucherTotal" class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2 shadow-sm">
+        <span class="text-xs font-semibold text-green-500 uppercase tracking-wider">{{ $t('dashboard.totalSavingsVouchered') }}</span>
+        <span class="text-xl font-extrabold text-green-700">{{ formatAmount(voucheredTotalSum) }}</span>
+      </div>
+      <div v-if="showDueTotal" class="flex items-center gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 shadow-sm">
+        <span class="text-xs font-semibold text-rose-500 uppercase tracking-wider">{{ $t('dashboard.totalBalanceDue') }}</span>
+        <span class="text-xl font-extrabold text-rose-700">{{ formatAmount(dueTotalSum) }}</span>
+      </div>
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
@@ -60,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
@@ -77,6 +85,11 @@ const search = ref(route.query.search || "");
 
 const allData = ref([]);
 const loading = ref(false);
+
+const showVoucherTotal = computed(() => !!route.query.showVoucherTotal);
+const voucheredTotalSum = ref(0);
+const showDueTotal = computed(() => !!route.query.showDueTotal);
+const dueTotalSum = ref(0);
 
 const formatAmount = (amount) =>
   new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
@@ -102,11 +115,12 @@ const fetchData = async () => {
 };
 
 const syncQuery = () => {
-  router.replace({
-    query: {
-      ...(search.value?.trim() ? { search: search.value.trim() } : {}),
-    },
-  });
+  const query = {
+    ...(search.value?.trim() ? { search: search.value.trim() } : {}),
+    ...(route.query.showVoucherTotal ? { showVoucherTotal: route.query.showVoucherTotal } : {}),
+    ...(route.query.showDueTotal ? { showDueTotal: route.query.showDueTotal } : {}),
+  };
+  router.replace({ query });
 };
 
 let searchTimer = null;
@@ -119,5 +133,22 @@ const handleSearch = () => {
   }, 350);
 };
 
-onMounted(fetchData);
+const fetchAllForTotals = async () => {
+  try {
+    const res = await axios.get(
+      `${apiBase}/customer?search=&limit=99999&page=1`,
+      getToken()
+    );
+    const rows = res?.data?.data || [];
+    voucheredTotalSum.value = rows.reduce((sum, item) => sum + (Number(item.PaidAmount) || 0), 0);
+    dueTotalSum.value = rows.reduce((sum, item) => sum + (Number(item.DueAmount) || 0), 0);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  fetchData();
+  if (showVoucherTotal.value || showDueTotal.value) fetchAllForTotals();
+});
 </script>
