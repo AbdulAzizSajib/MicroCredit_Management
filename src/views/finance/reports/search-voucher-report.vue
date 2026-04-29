@@ -7,42 +7,22 @@
       <!-- Date From Field -->
       <div class="flex items-center">
         <label for="dateFrom" class="mb-1 font-semibold w-48">Date From:</label>
-        <a-date-picker
-          v-model:value="formData.VoucherFrom"
-          class="w-full"
-          placeholder="Select Date From"
-          :format="dateFormat"
-          @change="handleDateFromChange"
-        />
+        <a-date-picker v-model:value="formData.VoucherFrom" class="w-full" placeholder="Select Date From"
+          :format="dateFormat" @change="handleDateFromChange" />
       </div>
       <!-- Date To Field -->
       <div class="flex items-center">
         <label for="dateTo" class="mb-1 font-semibold w-52">Date To:</label>
-        <a-date-picker
-          v-model:value="formData.VoucherTo"
-          class="w-full"
-          placeholder="Select Date To"
-          :format="dateFormat"
-          @change="handleDateToChange"
-        />
+        <a-date-picker v-model:value="formData.VoucherTo" class="w-full" placeholder="Select Date To"
+          :format="dateFormat" @change="handleDateToChange" />
       </div>
 
       <!-- Voucher Type with Search -->
       <div class="flex items-center">
-        <label for="voucherType" class="mb-1 font-semibold w-52"
-          >Voucher Type:</label
-        >
-        <a-select
-          ref="voucher_type_ref"
-          v-model:value="formData.Type"
-          class="w-full"
-          placeholder="Select Voucher Type"
-          show-search
-          allowClear
-          :filter-option="false"
-          option-label-prop="label"
-          :dropdown-style="{ minWidth: '700px', maxWidth: '900px' }"
-          @search="
+        <label for="voucherType" class="mb-1 font-semibold w-52">Voucher Type:</label>
+        <a-select ref="voucher_type_ref" v-model:value="formData.Type" class="w-full" placeholder="Select Voucher Type"
+          show-search allowClear :filter-option="false" option-label-prop="label"
+          :dropdown-style="{ minWidth: '700px', maxWidth: '900px' }" @search="
             (event) => {
               voucherTypes = all_voucherTypes.filter(
                 (item) =>
@@ -54,15 +34,9 @@
                   item?.AMCode?.toLowerCase().includes(event.toLowerCase())
               );
             }
-          "
-        >
-          <a-select-option
-            v-for="item in voucherTypes"
-            :key="item.JVType"
-            :value="item.JVType"
-            :label="item.JVType"
-            class="!whitespace-normal"
-          >
+          ">
+          <a-select-option v-for="item in voucherTypes" :key="item.JVType" :value="item.JVType" :label="item.JVType"
+            class="!whitespace-normal">
             {{ item.JVType }} - {{ item.JVDetails }} - {{ item.Location }} -
             {{ item.AMCode }}
           </a-select-option>
@@ -71,58 +45,30 @@
 
       <!-- Voucher No -->
       <div class="flex items-center">
-        <label for="voucherNo" class="mb-1 font-semibold w-72"
-          >Cheqe/Voucher No:</label
-        >
-        <a-input
-          v-model:value="formData.ChequeNo"
-          placeholder="Enter Voucher No"
-          class="w-full"
-        />
+        <label for="voucherNo" class="mb-1 font-semibold w-72">Cheqe/Voucher No:</label>
+        <a-input v-model:value="formData.ChequeNo" placeholder="Enter Voucher No" class="w-full" />
       </div>
 
       <!-- Cheque No -->
       <div class="flex items-center">
-        <label for="chequeNo" class="mb-1 font-semibold w-48"
-          >Master Code:</label
-        >
-        <a-input
-          v-model:value="formData.Code"
-          placeholder="Enter Master Code"
-          class="w-full"
-        />
+        <label for="chequeNo" class="mb-1 font-semibold w-48">Master Code:</label>
+        <a-input v-model:value="formData.Code" placeholder="Enter Master Code" class="w-full" />
       </div>
 
       <!-- Cheque Name -->
       <div class="flex items-center">
-        <label for="chequeName" class="mb-1 font-semibold w-52"
-          >Cheque Name:</label
-        >
-        <a-input
-          v-model:value="formData.ChequeName"
-          placeholder="Enter Cheque Name"
-          class="w-full"
-        />
+        <label for="chequeName" class="mb-1 font-semibold w-52">Cheque Name:</label>
+        <a-input v-model:value="formData.ChequeName" placeholder="Enter Cheque Name" class="w-full" />
       </div>
 
       <!-- P.O. No -->
       <div class="flex items-center">
         <label for="poNo" class="mb-1 font-semibold w-52">Narration:</label>
-        <a-input
-          v-model:value="formData.Narration"
-          placeholder="Enter Narration"
-          class="w-full"
-        />
+        <a-input v-model:value="formData.Narration" placeholder="Enter Narration" class="w-full" />
       </div>
 
       <div class="flex gap-2">
-        <a-button
-          class="px-8"
-          type="primary"
-          @click="fetchAllData"
-          :loading="loading"
-          >Show</a-button
-        >
+        <a-button class="px-8" type="primary" @click="fetchAllData" :loading="loading">Show</a-button>
       </div>
     </div>
 
@@ -139,7 +85,7 @@
               Voucher Search Report
             </h1>
             <p class="text-base text-gray-700 font-semibold">
-              P-ERP Food and Snacks
+              Bhai Bandu Akota
             </p>
             <p class="text-[10px] text-gray-700 font-semibold">
               Statement of Voucher Search Report from
@@ -188,33 +134,23 @@
                   Narration
                 </th>
                 <th class="px-2 py-1 border border-print text-right">Debit</th>
-                <th
-                  class="px-2 py-1 border border-print text-right border-right-force"
-                >
+                <th class="px-2 py-1 border border-print text-right border-right-force">
                   Credit
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(data, index) in allData" :key="index">
-                <td
-                  class="px-2 py-1 border border-print text-left whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-left whitespace-nowrap w-4">
                   {{ data?.JVNo }}
                 </td>
-                <td
-                  class="px-2 py-1 border border-print text-left whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-left whitespace-nowrap w-4">
                   {{ formatDisplayDate(data?.JVDate) }}
                 </td>
-                <td
-                  class="px-2 py-1 border border-print text-left whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-left whitespace-nowrap w-4">
                   {{ data?.Period }}
                 </td>
-                <td
-                  class="px-2 py-1 border border-print text-left whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-left whitespace-nowrap w-4">
                   {{ data?.AMCode }}
                 </td>
                 <td class="px-2 py-1 border border-print text-right">
@@ -226,18 +162,14 @@
                 <td class="px-2 py-1 border border-print whitespace-nowrap w-4">
                   {{ data?.Narration }}
                 </td>
-                <td
-                  class="px-2 py-1 border border-print text-right whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-right whitespace-nowrap w-4">
                   {{
                     formatNumber(data?.debit) == 0
                       ? "-"
                       : formatNumber(data?.debit)
                   }}
                 </td>
-                <td
-                  class="px-2 py-1 border border-print text-right border-right-force whitespace-nowrap w-4"
-                >
+                <td class="px-2 py-1 border border-print text-right border-right-force whitespace-nowrap w-4">
                   {{
                     formatNumber(data?.Credit) == 0
                       ? "-"
@@ -248,20 +180,13 @@
             </tbody>
             <tfoot>
               <tr class="text-gray-600 font-normal">
-                <th
-                  colspan="7"
-                  class="px-2 py-1 border border-print text-right font-normal"
-                >
+                <th colspan="7" class="px-2 py-1 border border-print text-right font-normal">
                   <span class="">Total</span>
                 </th>
-                <th
-                  class="px-2 py-1 border border-print text-right font-normal"
-                >
+                <th class="px-2 py-1 border border-print text-right font-normal">
                   <span class="">{{ formatNumber(total_debit || 0) }}</span>
                 </th>
-                <th
-                  class="px-2 py-1 border border-print text-right font-normal"
-                >
+                <th class="px-2 py-1 border border-print text-right font-normal">
                   <span class="">{{ formatNumber(total_credit || 0) }}</span>
                 </th>
               </tr>

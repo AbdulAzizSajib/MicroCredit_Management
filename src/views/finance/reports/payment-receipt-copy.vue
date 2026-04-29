@@ -11,9 +11,7 @@
         </div>
       </div>
       <div class="col-span-8">
-        <div
-          class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-5 gap-2 mb-2"
-        >
+        <div class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-5 gap-2 mb-2">
           <!-- Category Select with Search -->
 
           <div class="col-span-4">
@@ -30,9 +28,7 @@
           </div>
           <div class="col-span-1">
             <div>
-              <a-button type="primary" @click="fetchVouchers" :loading="loading"
-                >Preview</a-button
-              >
+              <a-button type="primary" @click="fetchVouchers" :loading="loading">Preview</a-button>
             </div>
           </div>
         </div>
@@ -59,9 +55,9 @@
 
       <!-- Organization Name -->
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold">P-ERP Food and Snacks</h2>
+        <h2 class="text-2xl font-bold">Bhai Bandu Akota</h2>
         <p class="text-sm underline">
-          145, Siddique Bazar (1st Floor), Dhaka-1000.
+          Ananda Nagar, Dhaka-1000.
         </p>
       </div>
 
@@ -77,33 +73,21 @@
         <!-- Table Header -->
         <thead>
           <tr class="border-2 border-black">
-            <th
-              class="border-r-2 border-black px-4 py-2 text-left w-20 text-center"
-              rowspan="2"
-            >
+            <th class="border-r-2 border-black px-4 py-2 text-left w-20 text-center" rowspan="2">
               Sl. #
             </th>
             <th class="border-r-2 border-black px-4 py-2 text-left" rowspan="2">
               Particulars
             </th>
-            <th
-              class="border-r-2 border-black px-4 py-2 text-center w-32"
-              rowspan="2"
-            >
+            <th class="border-r-2 border-black px-4 py-2 text-center w-32" rowspan="2">
               Notes/Sch.
             </th>
-            <th
-              class="border-b-2 border-black px-4 py-2 text-center"
-              colspan="2"
-            >
+            <th class="border-b-2 border-black px-4 py-2 text-center" colspan="2">
               Amount (Tk.)
             </th>
           </tr>
           <tr class="border-2 border-black">
-            <th
-              class="px-4 py-2 w-32 border-e-2 border-black text-center"
-              colspan="2"
-            >
+            <th class="px-4 py-2 w-32 border-e-2 border-black text-center" colspan="2">
               30.06.2024
             </th>
             <!-- <th class="px-4 py-2 text-right w-32">30.06.2023</th> -->
@@ -163,14 +147,10 @@
             <td class="px-4 py-2 font-bold">C.</td>
             <td class="px-4 py-2 font-bold">Total Property & Assets : (A+B)</td>
             <td class="px-4 py-2"></td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,566,891
             </td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,929,196
             </td>
           </tr>
@@ -241,14 +221,10 @@
               Total Fund & Liabilities : (D+E)
             </td>
             <td class="px-4 py-2"></td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,566,892
             </td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,929,196
             </td>
           </tr>

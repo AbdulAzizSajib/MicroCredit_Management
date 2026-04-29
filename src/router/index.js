@@ -137,6 +137,9 @@ import SavingsCustomer from "@/views/savings/customer.vue";
 import LoanMember from "@/views/savings/loan-member.vue";
 import DashboardMembers from "@/views/savings/dashboard-members.vue";
 import FilesCustomer from "@/views/finance/files/customer.vue";
+import Expense from "@/views/finance/expense.vue";
+import SavingsCollection from "@/views/finance/savings-collection.vue";
+import ExpenseCategory from "@/views/finance/expense-category.vue";
 
 const routes = [
   {
@@ -305,6 +308,24 @@ const routes = [
     path: "/dashboard/savings-members",
     name: "dashboard-savings-members",
     component: DashboardMembers,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
+    path: "/expense",
+    name: "expense",
+    component: Expense,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
+    path: "/expense/savings-collection",
+    name: "expense-savings-collection",
+    component: SavingsCollection,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
+    path: "/expense/expense-category",
+    name: "expense-category",
+    component: ExpenseCategory,
     meta: { permission: "Accountant Dashboard" },
   },
   {

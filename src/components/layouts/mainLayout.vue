@@ -84,9 +84,15 @@
 import { ref, h, onMounted, onUnmounted, watch, reactive, computed, nextTick } from "vue";
 import {
   UserOutlined,
-  FileTextOutlined,
+  BarChartOutlined,
+  SettingOutlined,
+  SwapOutlined,
+  BankOutlined,
+  CreditCardOutlined,
+  TeamOutlined,
+  DashboardOutlined,
+  WalletOutlined,
   ContainerOutlined,
-  InboxOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -180,7 +186,7 @@ const allMenuItems = computed(() => [
   {
     key: "/finance-dashboard",
     label: t("menu.customerDashboard"),
-    icon: () => h(ContainerOutlined),
+    icon: () => h(DashboardOutlined),
     onClick: navigateTo("/finance-dashboard"),
     permission: "Customer Dashboard",
   },
@@ -194,7 +200,7 @@ const allMenuItems = computed(() => [
   {
     key: "member",
     label: t("menu.customer"),
-    icon: () => h(UserOutlined),
+    icon: () => h(TeamOutlined),
     children: [
       {
         key: "/savings/customer",
@@ -212,7 +218,7 @@ const allMenuItems = computed(() => [
   {
     key: "collection",
     label: t("menu.collection"),
-    icon: () => h(InboxOutlined),
+    icon: () => h(WalletOutlined),
     children: [
       {
         key: "/savings/member-collection",
@@ -230,7 +236,7 @@ const allMenuItems = computed(() => [
   {
     key: "loan-accountant",
     label: t("menu.loan"),
-    icon: () => h(InboxOutlined),
+    icon: () => h(BankOutlined),
     children: [
       {
         key: "/loan/loan-list",
@@ -240,11 +246,34 @@ const allMenuItems = computed(() => [
     ],
     permission: "Accountant Dashboard",
   },
+  {
+    key: "expense-parent",
+    label: "Expense",
+    icon: () => h(CreditCardOutlined),
+    permission: "Accountant Dashboard",
+    children: [
+      {
+        key: "/expense",
+        label: "Expense",
+        onClick: navigateTo("/expense"),
+      },
+      {
+        key: "/expense/expense-category",
+        label: "Expense Category",
+        onClick: navigateTo("/expense/expense-category"),
+      },
+      {
+        key: "/expense/savings-collection",
+        label: "Savings Collection",
+        onClick: navigateTo("/expense/savings-collection"),
+      },
+    ],
+  },
 
   {
     key: "files",
     label: "Settings",
-    icon: () => h(FileTextOutlined),
+    icon: () => h(SettingOutlined),
     permission: "Files",
     children: [
     
@@ -338,7 +367,7 @@ const allMenuItems = computed(() => [
   {
     key: "transaction",
     label: t("menu.transaction"),
-    icon: () => h(FileTextOutlined),
+    icon: () => h(SwapOutlined),
     permission: "Transaction",
     children: [
       {
@@ -391,7 +420,7 @@ const allMenuItems = computed(() => [
   {
     key: "/reports",
     label: t("menu.reports"),
-    icon: () => h(FileTextOutlined),
+    icon: () => h(BarChartOutlined),
     permission: "Reports",
     children: [
       {
@@ -561,12 +590,32 @@ watch(
 </script>
 
 <style>
-.finance-sidebar .ant-menu-item {
+/* Expanded state */
+.finance-sidebar .ant-menu:not(.ant-menu-inline-collapsed) .ant-menu-item {
   @apply !h-fit !px-5 !rounded-full;
 }
 
-.finance-sidebar .ant-menu-title-content svg {
-  @apply !align-baseline;
+/* Collapsed state — center icons both axes */
+.finance-sidebar .ant-menu-inline-collapsed .ant-menu-item,
+.finance-sidebar .ant-menu-inline-collapsed .ant-menu-submenu-title {
+  border-radius: 8px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.finance-sidebar .ant-menu-inline-collapsed .ant-menu-item .ant-menu-title-content,
+.finance-sidebar .ant-menu-inline-collapsed .ant-menu-submenu-title .ant-menu-title-content {
+  display: none !important;
+}
+
+.finance-sidebar .ant-menu-item .anticon,
+.finance-sidebar .ant-menu-submenu-title .anticon {
+  @apply !flex !items-center !justify-center;
+  font-size: 16px !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
 }
 
 .finance-sidebar .ant-menu-item-selected {

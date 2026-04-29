@@ -4,59 +4,35 @@
     <!-- Filter -->
     <div class="grid lg:grid-cols-6 gap-4 items-end">
       <div class="">
-        <label class="mb-1 font-semibold block text-sm"
-          >Code <span class="text-red-500">*</span>
+        <label class="mb-1 font-semibold block text-sm">Code <span class="text-red-500">*</span>
           <LoadingOutlined class="ml-1 align-baseline" v-if="code_loading" />
         </label>
-        <a-select
-          class="w-full !text-sm"
-          placeholder="Select Voucher Type"
-          showSearch
-          allowClear
-          :filterOption="false"
-          v-model:value="formData.Type"
-          @input="debounceGetCode($event?.target?.value)"
-          @select="getCategory(formData.Type)"
-        >
+        <a-select class="w-full !text-sm" placeholder="Select Voucher Type" showSearch allowClear :filterOption="false"
+          v-model:value="formData.Type" @input="debounceGetCode($event?.target?.value)"
+          @select="getCategory(formData.Type)">
           <template v-for="(data, index) in codeData" :key="index">
-            <a-select-option :value="data?.JVType"
-              >{{ data?.JVType }} - {{ data?.JVDetails }}
+            <a-select-option :value="data?.JVType">{{ data?.JVType }} - {{ data?.JVDetails }}
             </a-select-option>
           </template>
         </a-select>
       </div>
       <div>
-        <label class="mb-1 font-semibold block text-sm"
-          >Category <span class="text-red-500">*</span>
-          <LoadingOutlined
-            class="ml-1 align-baseline"
-            v-if="category_loading"
-          />
+        <label class="mb-1 font-semibold block text-sm">Category <span class="text-red-500">*</span>
+          <LoadingOutlined class="ml-1 align-baseline" v-if="category_loading" />
         </label>
-        <a-select
-          class="w-full"
-          placeholder="Select Voucher Type"
-          v-model:value="formData.Category"
-        >
+        <a-select class="w-full" placeholder="Select Voucher Type" v-model:value="formData.Category">
           <template v-for="(data, index) in categoryData" :key="index">
             <a-select-option :value="data?.Short">{{
               data?.Category
-            }}</a-select-option></template
-          >
+            }}</a-select-option></template>
         </a-select>
       </div>
       <div>
-        <label class="mb-1 font-semibold block text-sm"
-          >Vouchar No From
+        <label class="mb-1 font-semibold block text-sm">Vouchar No From
           <span class="text-red-500">*</span>
         </label>
-        <a-input-number
-          type="number"
-          placeholder="Enter Voucher No"
-          class="w-full"
-          min="1"
-          v-model:value="formData.VoucherFrom"
-          @input="
+        <a-input-number type="number" placeholder="Enter Voucher No" class="w-full" min="1"
+          v-model:value="formData.VoucherFrom" @input="
             () => {
               if (formData.VoucherTo) {
                 if (Number(formData.VoucherFrom) > Number(formData.VoucherTo)) {
@@ -65,54 +41,32 @@
                 }
               }
             }
-          "
-        />
+          " />
       </div>
       <div>
-        <label class="mb-1 font-semibold block text-sm"
-          >Vouchar No To
+        <label class="mb-1 font-semibold block text-sm">Vouchar No To
           <span class="text-red-500">*</span>
         </label>
-        <a-input-number
-          type="number"
-          placeholder="Enter Voucher No"
-          class="w-full"
-          v-model:value="formData.VoucherTo"
-        />
+        <a-input-number type="number" placeholder="Enter Voucher No" class="w-full"
+          v-model:value="formData.VoucherTo" />
       </div>
 
       <div>
-        <label class="mb-1 font-semibold block text-sm"
-          >Period
+        <label class="mb-1 font-semibold block text-sm">Period
           <span class="text-red-500">*</span>
         </label>
-        <a-date-picker
-          class="w-full"
-          picker="month"
-          placeholder="Select Date From"
-          v-model:value="formData.Period"
-        />
+        <a-date-picker class="w-full" picker="month" placeholder="Select Date From" v-model:value="formData.Period" />
       </div>
       <div>
         <div class="flex gap-1">
-          <a-button
-            :disabled="report_Loading"
-            class="px-6 w-full"
-            type="primary"
-            @click="getReport()"
-            >Preview</a-button
-          >
+          <a-button :disabled="report_Loading" class="px-6 w-full" type="primary"
+            @click="getReport()">Preview</a-button>
         </div>
       </div>
     </div>
     <hr class="my-4" />
     <!-- table -->
-    <a-button
-      type="primary"
-      class="bg-blue-600 text-white px-4"
-      v-if="reportData.length"
-      @click="printAll"
-    >
+    <a-button type="primary" class="bg-blue-600 text-white px-4" v-if="reportData.length" @click="printAll">
       Print All
     </a-button>
 
@@ -122,17 +76,9 @@
       <a-empty description="No data found " />
     </div>
 
-    <div
-      v-for="(data, index) in reportData"
-      :key="index"
-      :id="`voucher-${index}`"
-    >
+    <div v-for="(data, index) in reportData" :key="index" :id="`voucher-${index}`">
       <div class="flex justify-end items-end no-print">
-        <a-button
-          type="primary"
-          class="bg-green-600 text-white px-6"
-          @click="printSingle(index)"
-        >
+        <a-button type="primary" class="bg-green-600 text-white px-6" @click="printSingle(index)">
           Print This
         </a-button>
       </div>
@@ -142,15 +88,15 @@
           data?.at(0)?.JvCat === "P"
             ? "Payment Voucher"
             : data?.at(0)?.JvCat === "R"
-            ? "Receipt Voucher"
-            : data?.at(0)?.JvCat === "J"
-            ? "Journal Voucher"
-            : ""
+              ? "Receipt Voucher"
+              : data?.at(0)?.JvCat === "J"
+                ? "Journal Voucher"
+                : ""
         }}
       </h2>
 
       <h3 class="font-semibold text-base capitalize mb-3 text-center">
-        P-ERP Food and Snacks
+        Bhai Bandu Akota
       </h3>
 
       <div>
@@ -159,14 +105,10 @@
         </h4>
 
         <div class="overflow-x-auto">
-          <table
-            class="border border-gray-400 border-collapse w-full text-left"
-          >
+          <table class="border border-gray-400 border-collapse w-full text-left">
             <thead>
               <tr>
-                <th
-                  class="border border-gray-400 w-4 whitespace-nowrap px-3 py-1 text-sm font-normal"
-                >
+                <th class="border border-gray-400 w-4 whitespace-nowrap px-3 py-1 text-sm font-normal">
                   DATE:
                   <span class="font-semibold">{{ data?.at(0)?.Period }}</span>
                 </th>
@@ -177,34 +119,22 @@
                 <th class="border border-gray-400"></th>
               </tr>
               <tr class="text-center">
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal">
                   Account Code
                 </th>
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal">
                   Account Name
                 </th>
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal">
                   Narration
                 </th>
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal">
                   SUB Ledger
                 </th>
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal debit-credit-label"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal debit-credit-label">
                   DEBIT-TAKA
                 </th>
-                <th
-                  class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal debit-credit-label"
-                >
+                <th class="uppercase w-2 border border-gray-400 px-3 py-1 text-sm font-normal debit-credit-label">
                   CREDIT-TAKA
                 </th>
               </tr>
@@ -233,53 +163,37 @@
                 <!-- <td class="capitalize border border-gray-400 px-3 py-1 text-sm">
                   -
                 </td> -->
-                <td
-                  class="capitalize border border-gray-400 px-3 py-1 text-sm text-right debit-credit-value"
-                >
+                <td class="capitalize border border-gray-400 px-3 py-1 text-sm text-right debit-credit-value">
                   {{ formatNumber(item?.Debit || 0) }}
                 </td>
-                <td
-                  class="capitalize border border-gray-400 px-3 py-1 text-sm text-right debit-credit-value"
-                >
+                <td class="capitalize border border-gray-400 px-3 py-1 text-sm text-right debit-credit-value">
                   {{ formatNumber(item?.Credit || 0) }}
                 </td>
               </tr>
             </tbody>
             <tfoot>
               <tr class="total-row">
-                <td
-                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm"
-                ></td>
-                <td
-                  colspan="3"
-                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right"
-                >
+                <td class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm"></td>
+                <td colspan="3"
+                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right">
                   TOTAL ===>
                 </td>
                 <td
-                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right font-semibold debit-credit-value"
-                >
+                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right font-semibold debit-credit-value">
                   {{ calculateTotal(data, "Debit") }}
                 </td>
                 <td
-                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right font-semibold debit-credit-value"
-                >
+                  class="capitalize border border-t-2 border-gray-400 border-t-gray-600 px-3 py-1 text-sm text-right font-semibold debit-credit-value">
                   {{ calculateTotal(data, "Credit") }}
                 </td>
               </tr>
               <tr class="words-row">
-                <td
-                  colspan="6"
-                  class="capitalize border border-gray-400 px-3 py-1 text-sm font-semibold"
-                >
+                <td colspan="6" class="capitalize border border-gray-400 px-3 py-1 text-sm font-semibold">
                   {{ numberToTakaWords(calculateTotal(data, "Debit")) }}
                 </td>
               </tr>
               <tr class="narration-row">
-                <td
-                  colspan="6"
-                  class="border border-gray-400 px-3 py-1 text-xs"
-                >
+                <td colspan="6" class="border border-gray-400 px-3 py-1 text-xs">
                   <!-- {{ data[0]?.Narration }} -->
                   {{ "-" }}
                 </td>
@@ -648,6 +562,7 @@ const printSingle = (index) => {
   .no-print {
     display: none !important;
   }
+
   .voucher-page {
     margin-top: 10mm;
     page-break-after: always;

@@ -11,22 +11,13 @@
         </div>
       </div>
       <div class="col-span-8">
-        <div
-          class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-3 gap-2 mb-2"
-        >
+        <div class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-3 gap-2 mb-2">
           <!-- Category Select with Search -->
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="category" class="w-36 font-bold">Category:</label>
-              <a-select
-                v-model:value="category"
-                class="w-full"
-                placeholder="Select Category"
-                show-search
-                allowClear
-                :filter-option="false"
-                option-label-prop="label"
-                @search="
+              <a-select v-model:value="category" class="w-full" placeholder="Select Category" show-search allowClear
+                :filter-option="false" option-label-prop="label" @search="
                   (event) => {
                     voucherTypes = all_voucherTypes.filter(
                       (item) =>
@@ -44,15 +35,9 @@
                         )
                     );
                   }
-                "
-              >
-                <a-select-option
-                  v-for="item in voucherTypes"
-                  :key="item.JVType"
-                  :value="item.JVType"
-                  :label="item.JVType"
-                  class="!whitespace-normal"
-                >
+                ">
+                <a-select-option v-for="item in voucherTypes" :key="item.JVType" :value="item.JVType"
+                  :label="item.JVType" class="!whitespace-normal">
                   {{ item.JVType }} - {{ item.JVDetails }}
                 </a-select-option>
               </a-select>
@@ -61,30 +46,19 @@
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">Form Date:</label>
-              <a-date-picker
-                v-model:value="fromDate"
-                format="YYYY/MM/DD"
-                class="w-full"
-                @change="handleDateFromChange"
-              />
+              <a-date-picker v-model:value="fromDate" format="YYYY/MM/DD" class="w-full"
+                @change="handleDateFromChange" />
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">To Date:</label>
-              <a-date-picker
-                v-model:value="toDate"
-                format="YYYY/MM/DD"
-                class="w-full"
-                @change="handleDateToChange"
-              />
+              <a-date-picker v-model:value="toDate" format="YYYY/MM/DD" class="w-full" @change="handleDateToChange" />
             </div>
           </div>
           <div class="col-span-1">
             <div>
-              <a-button type="primary" @click="fetchVouchers" :loading="loading"
-                >Preview</a-button
-              >
+              <a-button type="primary" @click="fetchVouchers" :loading="loading">Preview</a-button>
             </div>
           </div>
         </div>
@@ -102,17 +76,10 @@
           <div v-if="loading" class="flex justify-center mt-4">
             <a-spin></a-spin>
           </div>
-          <div
-            class="p-6 border border-gray-200 rounded-md shadow"
-            v-else-if="voucherData.length > 0"
-          >
+          <div class="p-6 border border-gray-200 rounded-md shadow" v-else-if="voucherData.length > 0">
             <div class="flex justify-end gap-2 pb-4">
               <button @click="exportExcel" class="" :disabled="excelLoading">
-                <a-spin
-                  v-if="excelLoading"
-                  size="small"
-                  class="spinner-white"
-                />
+                <a-spin v-if="excelLoading" size="small" class="spinner-white" />
                 <span>
                   <Icon icon="vscode-icons:file-type-excel" class="text-4xl" />
                 </span>
@@ -128,7 +95,7 @@
             <div class="flex justify-between mb-4 items-center space-x-10">
               <div class="text-left mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">
-                  P-ERP Food and Snacks
+                  Bhai Bandu Akota
                 </h1>
                 <p class="text-xl text-gray-700 font-bold">
                   Journal Book (Temporary)
@@ -181,9 +148,7 @@
             </div>
             <!-- header area end -->
             <div class="overflow-x-auto w-full report-table">
-              <table
-                class="min-w-full table-auto border-collapse border border-gray-800 table-print mt-8"
-              >
+              <table class="min-w-full table-auto border-collapse border border-gray-800 table-print mt-8">
                 <thead>
                   <tr>
                     <th class="border border-gray-800 px-2 py-1 text-left">
@@ -210,24 +175,15 @@
                   <template v-for="(data, index) in voucherData">
                     <template v-for="(item, i_index) in data">
                       <tr v-if="i_index == 0">
-                        <td
-                          class="border border-gray-800 px-2 py-1 font-bold"
-                          colspan="7"
-                        >
+                        <td class="border border-gray-800 px-2 py-1 font-bold" colspan="7">
                           Period: {{ item?.Period }}
                         </td>
                       </tr>
                       <tr v-if="i_index == 0">
-                        <td
-                          class="border border-gray-800 px-2 py-1"
-                          :rowspan="data?.length * 2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1" :rowspan="data?.length * 2">
                           {{ item?.JvNo }}
                         </td>
-                        <td
-                          class="border border-gray-800 px-2 py-1"
-                          :rowspan="data?.length * 2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1" :rowspan="data?.length * 2">
                           {{
                             item?.JVdate
                               ? dayjs(item?.JVdate).format("DD-MMM-YYYY")
@@ -240,20 +196,14 @@
                         <td class="border border-gray-800 px-2 py-1">
                           {{ item?.AMDetails }}
                         </td>
-                        <td
-                          class="border border-gray-800 px-2 py-1 text-right"
-                          rowspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1 text-right" rowspan="2">
                           {{
                             formatNumber(item?.Debit) == 0
                               ? "-"
                               : formatNumber(item?.Debit)
                           }}
                         </td>
-                        <td
-                          class="border border-gray-800 px-2 py-1 text-right"
-                          rowspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1 text-right" rowspan="2">
                           {{
                             formatNumber(item?.Credit) == 0
                               ? "-"
@@ -262,10 +212,7 @@
                         </td>
                       </tr>
                       <tr v-if="i_index == 0">
-                        <td
-                          class="border border-gray-800 px-2 py-1"
-                          colspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1" colspan="2">
                           {{ item?.Narration }}
                         </td>
                       </tr>
@@ -276,20 +223,14 @@
                         <td class="border border-gray-800 px-2 py-1">
                           {{ item?.AMDetails }}
                         </td>
-                        <td
-                          class="border border-gray-800 px-2 py-1 text-right"
-                          rowspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1 text-right" rowspan="2">
                           {{
                             formatNumber(item?.Debit) == 0
                               ? "-"
                               : formatNumber(item?.Debit)
                           }}
                         </td>
-                        <td
-                          class="border border-gray-800 px-2 py-1 text-right"
-                          rowspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1 text-right" rowspan="2">
                           {{
                             formatNumber(item?.Credit) == 0
                               ? "-"
@@ -298,20 +239,14 @@
                         </td>
                       </tr>
                       <tr v-if="i_index > 0">
-                        <td
-                          class="border border-gray-800 px-2 py-1"
-                          colspan="2"
-                        >
+                        <td class="border border-gray-800 px-2 py-1" colspan="2">
                           {{ item?.Narration }}
                         </td>
                       </tr>
                     </template>
                   </template>
                   <tr class="font-bold bg-gray-100">
-                    <td
-                      colspan="4"
-                      class="border border-gray-800 px-2 py-1 text-right"
-                    >
+                    <td colspan="4" class="border border-gray-800 px-2 py-1 text-right">
                       Journal Total ==>
                     </td>
                     <td class="border border-gray-800 px-2 py-1 text-right">
@@ -693,6 +628,7 @@ const exportPDF = () => {
     font-size: 14px !important;
   }
 }
+
 .report-table th,
 .report-table td {
   font-size: 12px;

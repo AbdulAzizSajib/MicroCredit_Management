@@ -211,5 +211,43 @@ table tbody tr {
   }
 }
 
+// Restore range picker separator icon size & alignment
+// (overridden by global * { font-size: 14px })
+.ant-picker-separator {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+.ant-picker-separator .anticon,
+.ant-picker-separator svg {
+    font-size: 16px !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    display: inline-block !important;
+}
+
+// Neutralize Chrome autofill yellow background on date picker inputs
+.ant-picker input,
+.ant-picker-input > input,
+.ant-picker input:-webkit-autofill,
+.ant-picker input:-webkit-autofill:hover,
+.ant-picker input:-webkit-autofill:focus,
+.ant-picker input:-webkit-autofill:active,
+.ant-picker-input > input:-webkit-autofill,
+.ant-picker-input > input:-webkit-autofill:hover,
+.ant-picker-input > input:-webkit-autofill:focus,
+.ant-picker-input > input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+    box-shadow: 0 0 0 1000px #fff inset !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    caret-color: inherit !important;
+    transition: background-color 99999s ease-in-out 0s !important;
+}
+
 // table customisation
 

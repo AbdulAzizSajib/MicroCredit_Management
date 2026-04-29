@@ -474,11 +474,16 @@ watch(
 }
 
 .finance-sidebar .ant-menu-submenu-selected .ant-menu-submenu-title {
+  @apply !bg-[#00284d] font-semibold !flex;
+
+}
+.finance-sidebar .ant-menu-submenu-selected .ant-menu-submenu-title {
   @apply !bg-[#00284d] font-semibold;
 }
 
 .finance-sidebar .ant-menu-submenu-selected .ant-menu-submenu-title.active {
   @apply !bg-[#00284d] font-semibold;
+    display: flex
 }
 
 .finance-sidebar .ant-menu .ant-menu-submenu .ant-menu-item {

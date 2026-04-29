@@ -11,22 +11,13 @@
         </div>
       </div>
       <div class="col-span-8">
-        <div
-          class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-3 gap-2 mb-2"
-        >
+        <div class="grid filter-grid m-auto grid-cols-12 border border-gray-200 rounded-md shadow py-4 px-3 gap-2 mb-2">
           <!-- Category Select with Search -->
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="category" class="w-36 font-bold">Category:</label>
-              <a-select
-                v-model:value="category"
-                class="w-full"
-                placeholder="Select Category"
-                show-search
-                allowClear
-                :filter-option="false"
-                option-label-prop="label"
-                @search="
+              <a-select v-model:value="category" class="w-full" placeholder="Select Category" show-search allowClear
+                :filter-option="false" option-label-prop="label" @search="
                   (event) => {
                     voucherTypes = all_voucherTypes.filter(
                       (item) =>
@@ -44,15 +35,9 @@
                         )
                     );
                   }
-                "
-              >
-                <a-select-option
-                  v-for="item in voucherTypes"
-                  :key="item.JVType"
-                  :value="item.JVType"
-                  :label="item.JVType"
-                  class="!whitespace-normal"
-                >
+                ">
+                <a-select-option v-for="item in voucherTypes" :key="item.JVType" :value="item.JVType"
+                  :label="item.JVType" class="!whitespace-normal">
                   {{ item.JVType }} - {{ item.JVDetails }}
                 </a-select-option>
               </a-select>
@@ -61,28 +46,18 @@
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">Form Date:</label>
-              <a-date-picker
-                v-model:value="fromDate"
-                format="DD/MM/YYYY"
-                class="w-full"
-              />
+              <a-date-picker v-model:value="fromDate" format="DD/MM/YYYY" class="w-full" />
             </div>
           </div>
           <div class="col-span-3">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">To Date:</label>
-              <a-date-picker
-                v-model:value="toDate"
-                format="DD/MM/YYYY"
-                class="w-full"
-              />
+              <a-date-picker v-model:value="toDate" format="DD/MM/YYYY" class="w-full" />
             </div>
           </div>
           <div class="col-span-1">
             <div>
-              <a-button type="primary" @click="fetchVouchers" :loading="loading"
-                >Preview</a-button
-              >
+              <a-button type="primary" @click="fetchVouchers" :loading="loading">Preview</a-button>
             </div>
           </div>
         </div>
@@ -109,9 +84,9 @@
 
       <!-- Organization Name -->
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold">P-ERP Food and Snacks</h2>
+        <h2 class="text-2xl font-bold">Bhai Bandu Akota</h2>
         <p class="text-sm underline">
-          145, Siddique Bazar (1st Floor), Dhaka-1000.
+          Ananda Nagar, Dhaka-1000.
         </p>
       </div>
 
@@ -127,25 +102,16 @@
         <!-- Table Header -->
         <thead>
           <tr class="border-2 border-black">
-            <th
-              class="border-r-2 border-black px-4 py-2 text-left w-16"
-              rowspan="2"
-            >
+            <th class="border-r-2 border-black px-4 py-2 text-left w-16" rowspan="2">
               Sl. #
             </th>
             <th class="border-r-2 border-black px-4 py-2 text-left" rowspan="2">
               Particulars
             </th>
-            <th
-              class="border-r-2 border-black px-4 py-2 text-center w-32"
-              rowspan="2"
-            >
+            <th class="border-r-2 border-black px-4 py-2 text-center w-32" rowspan="2">
               Notes/Sch.
             </th>
-            <th
-              class="border-b-2 border-black px-4 py-2 text-center"
-              colspan="2"
-            >
+            <th class="border-b-2 border-black px-4 py-2 text-center" colspan="2">
               Amount (Tk.)
             </th>
           </tr>
@@ -211,14 +177,10 @@
             <td class="px-4 py-2 font-bold">C.</td>
             <td class="px-4 py-2 font-bold">Total Property & Assets : (A+B)</td>
             <td class="px-4 py-2"></td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,566,891
             </td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,929,196
             </td>
           </tr>
@@ -289,14 +251,10 @@
               Total Fund & Liabilities : (D+E)
             </td>
             <td class="px-4 py-2"></td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,566,892
             </td>
-            <td
-              class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black"
-            >
+            <td class="px-4 py-2 text-right font-bold border-t-2 border-b-4 border-double border-black">
               46,929,196
             </td>
           </tr>

@@ -8,13 +8,8 @@
           <div class="flex items-center">
             <label for="period" class="w-36 font-bold">Form Date:</label>
             <div class="w-full">
-              <input
-                type="date"
-                v-model="FromDate"
-                :max="ToDate"
-                class="w-full border p-1 border-black rounded-md"
-                :class="{ 'border-red-500': dateError }"
-              />
+              <input type="date" v-model="FromDate" :max="ToDate" class="w-full border p-1 border-black rounded-md"
+                :class="{ 'border-red-500': dateError }" />
             </div>
           </div>
         </div>
@@ -22,13 +17,8 @@
           <div class="flex items-center">
             <label for="period" class="w-36 font-bold">To Date:</label>
             <div class="w-full">
-              <input
-                type="date"
-                v-model="ToDate"
-                :min="FromDate"
-                class="w-full border p-1 border-black rounded-md"
-                :class="{ 'border-red-500': dateError }"
-              />
+              <input type="date" v-model="ToDate" :min="FromDate" class="w-full border p-1 border-black rounded-md"
+                :class="{ 'border-red-500': dateError }" />
               <p v-if="dateError" class="text-red-500 text-xs mt-1">
                 To Date must be greater than or equal to From Date
               </p>
@@ -37,13 +27,7 @@
         </div>
         <div class="col-span-1">
           <div>
-            <a-button
-              type="primary"
-              @click="fetchAllData"
-              :loading="loading"
-              :disabled="dateError"
-              >Preview</a-button
-            >
+            <a-button type="primary" @click="fetchAllData" :loading="loading" :disabled="dateError">Preview</a-button>
           </div>
         </div>
       </div>
@@ -77,10 +61,7 @@
 
     <div class="" v-if="allData.length">
       <!-- report table -->
-      <div
-        id="trialBalanceToPrint"
-        class="p-6 bg-white rounded-lg shadow-md max-w-6xl mx-auto border"
-      >
+      <div id="trialBalanceToPrint" class="p-6 bg-white rounded-lg shadow-md max-w-6xl mx-auto border">
         <div class="flex justify-end gap-2 pb-4">
           <button @click="exportExcel" class="" :disabled="excelLoading">
             <a-spin v-if="excelLoading" size="small" class="spinner-white" />
@@ -103,7 +84,7 @@
             <!-- title -->
             <h1 class="text-2xl font-bold text-gray-800">Trial Balance</h1>
             <p class="text-base text-gray-700 font-semibold">
-              P-ERP Food and Snacks
+              Bhai Bandu Akota
             </p>
             <p class="text-base text-gray-700">
               From {{ DateFrom }} to {{ DateTo }}
@@ -138,29 +119,20 @@
             <!-- Table Header -->
             <thead>
               <tr class="border-b border-gray-300">
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   SL
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Account Code
                 </th>
                 <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center min-w-[300px]"
-                >
+                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center min-w-[300px]">
                   Account Description
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Debit
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Credit
                 </th>
               </tr>
@@ -169,22 +141,14 @@
             <!-- Table Body -->
             <tbody>
               <!-- Data Rows -->
-              <tr
-                class="hover:bg-gray-50"
-                v-for="(data, index) in allData"
-                :key="index"
-              >
+              <tr class="hover:bg-gray-50" v-for="(data, index) in allData" :key="index">
                 <td class="px-2 py-1.5 text-sm border border-gray-700 text-end">
                   {{ index + 1 }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-start"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-start">
                   {{ data?.AMCode }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-start"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-start">
                   {{ data?.AMDetails }}
                 </td>
                 <td class="px-2 py-1.5 text-sm border border-gray-700 text-end">
@@ -206,24 +170,18 @@
 
             <!-- Table Footer with Totals -->
             <tfoot>
-              <tr
-                v-if="
-                  SuspendingAccount?.Status === 'Debit' ||
-                  SuspendingAccount?.Status === 'Credit'
-                "
-                class="font-bold"
-              >
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-center font-normal"
-                  colspan="3"
-                >
+              <tr v-if="
+                SuspendingAccount?.Status === 'Debit' ||
+                SuspendingAccount?.Status === 'Credit'
+              " class="font-bold">
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-center font-normal" colspan="3">
                   <h2>Suspending A/C:</h2>
                 </td>
 
                 <td class="px-2 py-1.5 text-sm border border-gray-700 text-end">
                   {{
                     SuspendingAccount?.Status === "Debit" &&
-                    SuspendingAccount?.Amount
+                      SuspendingAccount?.Amount
                       ? formatNumber(SuspendingAccount.Amount)
                       : "-"
                   }}
@@ -231,31 +189,24 @@
                 <td class="px-2 py-1.5 text-sm border border-gray-700 text-end">
                   {{
                     SuspendingAccount?.Status === "Credit" &&
-                    SuspendingAccount?.Amount
+                      SuspendingAccount?.Amount
                       ? formatNumber(SuspendingAccount.Amount)
                       : "-"
                   }}
                 </td>
               </tr>
               <tr class="bg-gray-100 font-bold">
-                <td
-                  colspan="3"
-                  class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold"
-                >
+                <td colspan="3" class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold">
                   Total:
                 </td>
-                <td
-                  class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold"
-                >
+                <td class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold">
                   {{
                     formatNumber(
                       Number(SuspendingAccount?.TotalDebit || 0).toFixed(2)
                     )
                   }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold"
-                >
+                <td class="px-2 py-1.5 text-base border border-gray-700 text-end font-bold">
                   <!-- {{
                     formatNumber(totalCredit) == 0
                       ? "-"

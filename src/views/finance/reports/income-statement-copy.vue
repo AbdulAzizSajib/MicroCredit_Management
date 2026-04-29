@@ -11,40 +11,28 @@
         </div>
       </div>
       <div class="col-span-8">
-        <div
-          class="grid grid-cols-12 border border-gray-200 rounded p-4 gap-2 max-w-6xl mx-auto"
-        >
+        <div class="grid grid-cols-12 border border-gray-200 rounded p-4 gap-2 max-w-6xl mx-auto">
           <!-- Category Select with Search -->
 
           <div class="col-span-4">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">Form Date:</label>
               <!-- v-model:value="formData.DateFrom" -->
-              <a-date-picker
-                v-model:value="formData.DateFrom"
-                format="DD/MM/YYYY"
-                class="w-full"
-                @change="handleDateFromChange"
-              />
+              <a-date-picker v-model:value="formData.DateFrom" format="DD/MM/YYYY" class="w-full"
+                @change="handleDateFromChange" />
             </div>
           </div>
           <div class="col-span-4">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">To Date:</label>
               <!-- v-model:value="formData.DateTo" -->
-              <a-date-picker
-                v-model:value="formData.DateTo"
-                format="DD/MM/YYYY"
-                class="w-full"
-                @change="handleDateToChange"
-              />
+              <a-date-picker v-model:value="formData.DateTo" format="DD/MM/YYYY" class="w-full"
+                @change="handleDateToChange" />
             </div>
           </div>
           <div class="flex justify-end col-span-4 gap-2">
             <div>
-              <a-button type="primary" @click="fetchVouchers" :loading="loading"
-                >Preview</a-button
-              >
+              <a-button type="primary" @click="fetchVouchers" :loading="loading">Preview</a-button>
             </div>
             <!-- <div>
               <a-button type="primary" @click="exportPDF" :loading="loading"
@@ -61,8 +49,8 @@
 
       <!-- Organization Name -->
       <div class="org-section">
-        <h2 class="org-name">P-ERP Food and Snacks</h2>
-        <p class="org-address">145, Siddique Bazar (1st Floor), Dhaka-1000.</p>
+        <h2 class="org-name">Bhai Bandu Akota</h2>
+        <p class="org-address">Ananda Nagar, Dhaka-1000.</p>
       </div>
 
       <!-- Statement Title -->
@@ -174,9 +162,7 @@
               <td class="table-cell indent-text">{{ item?.AccountDetails }}</td>
               <td class="table-cell"></td>
               <td class="table-cell"></td>
-              <td
-                class="table-cell text-right border-b border-black font-bold border-double"
-              >
+              <td class="table-cell text-right border-b border-black font-bold border-double">
                 {{ formatAmount(item?.Amount) }}
               </td>
             </tr>

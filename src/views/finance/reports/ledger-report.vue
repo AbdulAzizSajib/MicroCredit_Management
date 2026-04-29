@@ -12,32 +12,18 @@
 
           <!-- Form Section -->
           <div class="col-span-12 lg:col-span-10">
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-2 mb-6 w-full items-end"
-            >
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-2 mb-6 w-full items-end">
               <!-- Account Head with Search -->
               <div class="col-span-5">
                 <div class="flex w-full">
-                  <a-form-item
-                    label="Account Head"
-                    class="w-full"
-                    name="accountHead"
-                    :rules="[
-                      {
-                        required: false,
-                        message: 'Please select account head!',
-                      },
-                    ]"
-                  >
-                    <a-select
-                      class="w-full"
-                      v-model:value="formData.AMCode1"
-                      placeholder="Select Account Head"
-                      allow-clear
-                      :loading="isLoading"
-                      show-search
-                      :filter-option="false"
-                      option-label-prop="label"
+                  <a-form-item label="Account Head" class="w-full" name="accountHead" :rules="[
+                    {
+                      required: false,
+                      message: 'Please select account head!',
+                    },
+                  ]">
+                    <a-select class="w-full" v-model:value="formData.AMCode1" placeholder="Select Account Head"
+                      allow-clear :loading="isLoading" show-search :filter-option="false" option-label-prop="label"
                       @search="
                         (event) => {
                           accountHeadList = all_accountHeadList.filter(
@@ -50,15 +36,9 @@
                                 .includes(event.toLowerCase())
                           );
                         }
-                      "
-                    >
-                      <a-select-option
-                        v-for="item in accountHeadList"
-                        :key="item.value"
-                        :value="item.value"
-                        :label="item.label"
-                        class="!whitespace-normal"
-                      >
+                      ">
+                      <a-select-option v-for="item in accountHeadList" :key="item.value" :value="item.value"
+                        :label="item.label" class="!whitespace-normal">
                         {{ item.label }}
                       </a-select-option>
                     </a-select>
@@ -71,37 +51,20 @@
                 <div class="flex gap-2">
                   <div>
                     <a-form-item label="From" name="fromDate">
-                      <a-date-picker
-                        v-model:value="formData.Date1"
-                        class="w-full"
-                        format="DD-MM-YYYY"
-                        value-format="YYYY-MM-DD"
-                        :disabled-date="disabledDate"
-                        placeholder="Select start date"
-                        @change="handleDateFromChange"
-                      />
+                      <a-date-picker v-model:value="formData.Date1" class="w-full" format="DD-MM-YYYY"
+                        value-format="YYYY-MM-DD" :disabled-date="disabledDate" placeholder="Select start date"
+                        @change="handleDateFromChange" />
                     </a-form-item>
                   </div>
                   <div>
                     <a-form-item label="To" name="toDate">
-                      <a-date-picker
-                        v-model:value="formData.Date2"
-                        class="w-full"
-                        format="DD-MM-YYYY"
-                        value-format="YYYY-MM-DD"
-                        :disabled-date="disabledDate"
-                        placeholder="Select end date"
-                        @change="handleDateToChange"
-                      />
+                      <a-date-picker v-model:value="formData.Date2" class="w-full" format="DD-MM-YYYY"
+                        value-format="YYYY-MM-DD" :disabled-date="disabledDate" placeholder="Select end date"
+                        @change="handleDateToChange" />
                     </a-form-item>
                   </div>
                   <div>
-                    <a-button
-                      type="primary"
-                      @click="fetchAllData"
-                      :loading="loading"
-                      class="w-full"
-                    >
+                    <a-button type="primary" @click="fetchAllData" :loading="loading" class="w-full">
                       Preview
                     </a-button>
                   </div>
@@ -117,11 +80,8 @@
       </div>
 
       <!-- Report Table -->
-      <div
-        id="ledgerBookToPrint"
-        class="max-w-6xl m-auto p-8 border border-gray-200 rounded-md shadow"
-        v-if="allData.length > 0"
-      >
+      <div id="ledgerBookToPrint" class="max-w-6xl m-auto p-8 border border-gray-200 rounded-md shadow"
+        v-if="allData.length > 0">
         <div class="flex justify-end gap-2 pb-4">
           <button @click="exportExcel" class="" :disabled="excelLoading">
             <a-spin v-if="excelLoading" size="small" class="spinner-white" />
@@ -141,11 +101,10 @@
           <div class="text-left mb-6">
             <h1 class="text-xl font-bold text-gray-800">Ledger Book</h1>
             <p class="text-lg text-gray-700 font-semibold">
-              P-ERP Food and Snacks
+              Bhai Bandu Akota
             </p>
             <p class="text-base font-bold">
-              <span>{{ allData?.[0].AMCode }}</span
-              >:<span>{{ allData?.[0].AMDetails }}</span>
+              <span>{{ allData?.[0].AMCode }}</span>:<span>{{ allData?.[0].AMDetails }}</span>
             </p>
           </div>
           <div class="flex gap-10">
@@ -197,44 +156,29 @@
           <table class="w-full border-collapse table-print">
             <thead>
               <tr class="border-b border-gray-300">
-                <th
-                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700">
                   Date
                 </th>
-                <th
-                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700">
                   JV Number
                 </th>
                 <th
-                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700 min-w-[300px]"
-                >
+                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700 min-w-[300px]">
                   Details
                 </th>
-                <th
-                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700">
                   ID No
                 </th>
-                <th
-                  class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-left text-sm font-semibold text-gray-700 border border-gray-700">
                   Cheque No
                 </th>
-                <th
-                  class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700">
                   Debit
                 </th>
-                <th
-                  class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700">
                   Credit
                 </th>
-                <th
-                  class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700"
-                >
+                <th class="px-2 py-2 text-right text-sm font-semibold text-gray-700 border border-gray-700">
                   Balance
                 </th>
               </tr>
@@ -247,21 +191,14 @@
                 <td class="px-2 py-1 text-sm border border-gray-700">
                   {{ allData.at(0)?.Period }}
                 </td>
-                <td
-                  class="px-2 py-1 text-sm border border-gray-700 text-center"
-                  colspan="6"
-                >
+                <td class="px-2 py-1 text-sm border border-gray-700 text-center" colspan="6">
                   Opening Balance =====>
                 </td>
                 <td class="px-2 py-1 text-sm border border-gray-700"></td>
               </tr>
 
               <!-- Data Rows -->
-              <tr
-                v-for="(item, index) in allData"
-                :key="index"
-                class="hover:bg-gray-50"
-              >
+              <tr v-for="(item, index) in allData" :key="index" class="hover:bg-gray-50">
                 <td class="px-2 py-1 text-sm border border-gray-700">
                   {{ formatTableDate(item.JVdate) }}
                 </td>

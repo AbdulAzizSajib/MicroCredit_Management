@@ -3,10 +3,7 @@
     <!-- title -->
     <div>
       <!-- report table -->
-      <div
-        id="chartOfAccountsToPrint"
-        class="p-8 m-auto max-w-6xl shadow-md rounded-lg"
-      >
+      <div id="chartOfAccountsToPrint" class="p-8 m-auto max-w-6xl shadow-md rounded-lg">
         <div class="flex justify-end gap-2 pb-4">
           <button @click="exportExcel" class="" :disabled="excelLoading">
             <a-spin v-if="excelLoading" size="small" class="spinner-white" />
@@ -27,7 +24,7 @@
             <!-- title -->
             <h1 class="text-2xl font-bold text-gray-800">{{ $t('finance.chartOfAccounts') }}</h1>
             <p class="text-xl text-gray-700 font-semibold">
-              P-ERP Food and Snacks
+              Bhai Bandu Akota
             </p>
           </div>
         </div>
@@ -41,39 +38,25 @@
             <!-- Table Header -->
             <thead>
               <tr class="border-b border-gray-300">
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   SL
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Group Code
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Group Details
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Type Code
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Type Name
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Accounts Code
                 </th>
-                <th
-                  class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center"
-                >
+                <th class="px-2 py-1.5 text-base font-semibold text-gray-700 border border-gray-700 text-center">
                   Accounts Description
                 </th>
               </tr>
@@ -82,45 +65,27 @@
             <!-- Table Body -->
             <tbody>
               <!-- Data Rows -->
-              <tr
-                class="hover:bg-gray-50"
-                v-for="(data, index) in allData"
-                :key="index"
-              >
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+              <tr class="hover:bg-gray-50" v-for="(data, index) in allData" :key="index">
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ index + 1 }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ data?.GroupCode }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ data?.groupDetails }}
                 </td>
 
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ data?.typeCode }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ data?.typeName }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm border border-gray-700 text-left">
                   {{ data?.accountCode }}
                 </td>
-                <td
-                  class="px-2 py-1.5 text-sm font-medium border border-gray-700 text-left"
-                >
+                <td class="px-2 py-1.5 text-sm font-medium border border-gray-700 text-left">
                   {{ data?.accountDetails }}
                 </td>
               </tr>

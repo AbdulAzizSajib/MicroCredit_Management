@@ -11,56 +11,41 @@
         </div>
       </div>
       <div class="col-span-8">
-        <div
-          class="grid grid-cols-12 border border-gray-200 rounded p-4 gap-2 max-w-6xl mx-auto"
-        >
+        <div class="grid grid-cols-12 border border-gray-200 rounded p-4 gap-2 max-w-6xl mx-auto">
           <!-- Category Select with Search -->
 
           <div class="col-span-4">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">Form Date:</label>
-              <a-date-picker
-                v-model:value="formData.DateFrom"
-                format="DD/MM/YYYY"
-                class="w-full"
-                @change="handleDateFromChange"
-              />
+              <a-date-picker v-model:value="formData.DateFrom" format="DD/MM/YYYY" class="w-full"
+                @change="handleDateFromChange" />
             </div>
           </div>
           <div class="col-span-4">
             <div class="flex items-center">
               <label for="period" class="w-36 font-bold">To Date:</label>
-              <a-date-picker
-                v-model:value="formData.DateTo"
-                format="DD/MM/YYYY"
-                class="w-full"
-                @change="handleDateToChange"
-              />
+              <a-date-picker v-model:value="formData.DateTo" format="DD/MM/YYYY" class="w-full"
+                @change="handleDateToChange" />
             </div>
           </div>
           <div class="flex justify-end col-span-4 gap-2">
             <div>
-              <a-button type="primary" @click="fetchVouchers" :loading="loading"
-                >Preview</a-button
-              >
+              <a-button type="primary" @click="fetchVouchers" :loading="loading">Preview</a-button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      v-if="voucherData"
-      id="receiptPaymentReport"
-      class="w-full max-w-5xl mx-auto p-8 bg-white border border-gray-200"
-    >
+    <div v-if="voucherData" id="receiptPaymentReport"
+      class="w-full max-w-5xl mx-auto p-8 bg-white border border-gray-200">
       <!-- Header Section -->
 
       <!-- Organization Name -->
       <div class="text-center relative">
-        <h2 class="text-3xl font-bold mb-2">P-ERP Food and Snacks</h2>
+        <h2 class="text-3xl font-bold mb-2">Bhai Bandu Akota</h2>
         <p class="text-base underline">
-          145, Siddique Bazar (1st Floor), Dhaka-1000.
+          Ananda Nagar, Dhaka-1000.
         </p>
 
         <div class="absolute top-0 right-0 no-print">
@@ -86,36 +71,21 @@
         <!-- Table Header -->
         <thead>
           <tr>
-            <th
-              class="border border-black p-2 text-center font-bold"
-              rowspan="2"
-            >
+            <th class="border border-black p-2 text-center font-bold" rowspan="2">
               Sl. #
             </th>
-            <th
-              class="border border-black p-2 text-center font-bold"
-              rowspan="2"
-            >
+            <th class="border border-black p-2 text-center font-bold" rowspan="2">
               Particulars
             </th>
-            <th
-              class="border border-black p-2 text-center font-bold"
-              rowspan="2"
-            >
+            <th class="border border-black p-2 text-center font-bold" rowspan="2">
               Notes/Sch.
             </th>
-            <th
-              class="border border-black p-2 text-center font-bold"
-              colspan="2"
-            >
+            <th class="border border-black p-2 text-center font-bold" colspan="2">
               Amount (Tk.)
             </th>
           </tr>
           <tr>
-            <th
-              class="border border-black p-2 text-center font-bold"
-              colspan="2"
-            >
+            <th class="border border-black p-2 text-center font-bold" colspan="2">
               2024-2025
             </th>
           </tr>
@@ -151,9 +121,7 @@
               <td class="align-top py-1 px-2"></td>
               <td class="align-top py-1 px-2"></td>
               <td class="align-top py-1 px-2"></td>
-              <td
-                class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold"
-              >
+              <td class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold">
                 {{ calculateTotals(A_data) }}
               </td>
             </tr>
@@ -189,9 +157,7 @@
               <td class="align-top py-1 px-2 font-bold">Total Receipts</td>
               <td class="align-top py-1 px-2"></td>
               <td class="align-top py-1 px-2"></td>
-              <td
-                class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold"
-              >
+              <td class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold">
                 {{ calculateTotals(B_data) }}
               </td>
             </tr>
@@ -205,13 +171,11 @@
             </td>
             <td class="align-top py-1 px-2"></td>
             <td class="align-top py-1 px-2"></td>
-            <td
-              class="align-top py-1 px-2 text-right border-t-2 border-b-4 border-double border-black font-bold"
-            >
+            <td class="align-top py-1 px-2 text-right border-t-2 border-b-4 border-double border-black font-bold">
               {{
                 formatAmount(
                   Number(calculateTotals(A_data)) +
-                    Number(calculateTotals(B_data))
+                  Number(calculateTotals(B_data))
                 )
               }}
             </td>
@@ -247,9 +211,7 @@
               <td class="align-top py-1 px-2 font-bold">Total Payment</td>
               <td class="align-top py-1 px-2"></td>
               <td class="align-top py-1 px-2"></td>
-              <td
-                class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold"
-              >
+              <td class="align-top py-1 px-2 text-right border-t border-b border-black font-semibold">
                 {{ calculateTotals(D_data) }}
               </td>
             </tr>
