@@ -18,8 +18,8 @@
       <!-- Collection Summary (Customer Dashboard) -->
       <!-- Collection Summary (Customer Dashboard) -->
       <div v-if="isCustomerDashboard && collectionData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/savings/customer')"
-          data-aos="fade-up" data-aos-delay="100">
+        <div class="glass-card glass-purple cursor-pointer" @click="goToPage('/savings/customer')" data-aos="fade-up"
+          data-aos-delay="100">
           <div class="flex items-center gap-4">
             <div class="bg-purple-200/40 rounded-xl p-3">
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl" />
@@ -32,8 +32,8 @@
           </div>
         </div>
 
-        <div class="glass-card glass-blue cursor-pointer" @click="goToPage('/savings/customer', { showSavingsPayable: 1 })" data-aos="fade-up"
-          data-aos-delay="200">
+        <div class="glass-card glass-blue cursor-pointer"
+          @click="goToPage('/savings/customer', { showSavingsPayable: 1 })" data-aos="fade-up" data-aos-delay="200">
           <div class="flex items-center gap-4">
             <div class="bg-blue-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-check" class="text-blue-600 text-3xl" />
@@ -47,29 +47,33 @@
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPageWithTotal('/savings/member-collection', collectionData.TotalSaving, 'savingsPaid')"
+        <div class="glass-card glass-green cursor-pointer"
+          @click="goToPageWithTotal('/savings/member-collection', collectionData.TotalSaving, 'savingsPaid')"
           data-aos="fade-up" data-aos-delay="300">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.cashierSavingsPaid')
-              }}</div>
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider leading-tight">{{
+                $t('dashboard.cashierSavingsPaid')
+                }}</div>
               <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalSaving ||
                 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPageWithTotal('/savings/customer', collectionData.TotalDue, 'savingsDue')"
-          data-aos="fade-up" data-aos-delay="400">
+        <div class="glass-card glass-rose cursor-pointer"
+          @click="goToPageWithTotal('/savings/customer', collectionData.TotalDue, 'savingsDue')" data-aos="fade-up"
+          data-aos-delay="400">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:alert-circle-outline" class="text-rose-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalDue') }}
+              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider leading-tight">{{
+                $t('dashboard.totalDue') }}
               </div>
               <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDue || 0))
               }}</div>
@@ -78,42 +82,48 @@
         </div>
 
         <!-- Loan Summary Cards -->
-        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member')"
-          data-aos="fade-up" data-aos-delay="500">
+        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member')" data-aos="fade-up"
+          data-aos-delay="500">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.cashierLoanMembers') }}</div>
-              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ collectionData.TotalLoanMemeber || collectionData.TotalLoanMembers || collectionData.LoanMemberCount || 0 }}</div>
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{
+                $t('dashboard.cashierLoanMembers') }}</div>
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ collectionData.TotalLoanMemeber ||
+                collectionData.TotalLoanMembers || collectionData.LoanMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-indigo cursor-pointer" @click="goToPage('/savings/loan-member', { showLoanPayable: 1 })"
-          data-aos="fade-up" data-aos-delay="600">
+        <div class="glass-card glass-indigo cursor-pointer"
+          @click="goToPage('/savings/loan-member', { showLoanPayable: 1 })" data-aos="fade-up" data-aos-delay="600">
           <div class="flex items-center gap-4">
             <div class="bg-indigo-200/40 rounded-xl p-3">
               <Icon icon="mdi:bank-outline" class="text-indigo-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{ $t('loan.totalLoanPayable') }}
+              <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{
+                $t('loan.totalLoanPayable') }}
               </div>
-              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayableLoanAmount ||
+              <div class="text-2xl font-bold text-indigo-700 mt-0.5">{{
+                formatAmount(Number(collectionData.TotalPayableLoanAmount ||
                 0)) }}</div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card glass-green cursor-pointer" @click="goToPageWithTotal('/loan/pay-loan', collectionData.TotalPayment, 'loanPaid')"
-          data-aos="fade-up" data-aos-delay="700">
+        <div class="glass-card glass-green cursor-pointer"
+          @click="goToPageWithTotal('/loan/pay-loan', collectionData.TotalPayment, 'loanPaid')" data-aos="fade-up"
+          data-aos-delay="700">
           <div class="flex items-center gap-4">
             <div class="bg-green-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-multiple" class="text-green-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider leading-tight">{{ $t('loan.totalPaid') }}
+              <div class="text-xs font-semibold text-green-400 uppercase tracking-wider leading-tight">{{
+                $t('loan.totalPaid') }}
               </div>
               <div class="text-2xl font-bold text-green-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalPayment
                 || 0)) }}</div>
@@ -121,14 +131,16 @@
           </div>
         </div>
 
-        <div class="glass-card glass-rose cursor-pointer" @click="goToPageWithTotal('/savings/loan-member', collectionData.TotalDueAmount, 'loanDue')"
+        <div class="glass-card glass-rose cursor-pointer"
+          @click="goToPageWithTotal('/savings/loan-member', collectionData.TotalDueAmount, 'loanDue')"
           data-aos="fade-up" data-aos-delay="800">
           <div class="flex items-center gap-4">
             <div class="bg-rose-200/40 rounded-xl p-3">
               <Icon icon="mdi:cash-clock" class="text-rose-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider leading-tight">{{ $t('loan.remaining') }}</div>
+              <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider leading-tight">{{
+                $t('loan.remaining') }}</div>
               <div class="text-2xl font-bold text-rose-700 mt-0.5">{{ formatAmount(Number(collectionData.TotalDueAmount
                 || 0)) }}</div>
             </div>
@@ -142,8 +154,10 @@
               <Icon icon="mdi:percent-outline" class="text-amber-600 text-3xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider leading-tight">{{ $t('loan.interestAmount') }}</div>
-              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount || 0)) }}</div>
+              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider leading-tight">{{
+                $t('loan.interestAmount') }}</div>
+              <div class="text-2xl font-bold text-amber-700 mt-0.5">{{ formatAmount(Number(collectionData.InterestAmount
+                || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -158,23 +172,33 @@
               <Icon icon="mdi:account-group-outline" class="text-purple-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-purple-400 uppercase tracking-wider leading-tight">{{
-                $t('dashboard.totalSavingsMembers') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-purple-700 mt-1 leading-tight whitespace-nowrap">{{ summaryData?.allMemberCount || 0 }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-purple-400 uppercase tracking-wider leading-tight">
+                {{
+                  $t('dashboard.totalSavingsMembers') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-purple-700 mt-1 leading-tight whitespace-nowrap">
+                {{ summaryData?.allMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
 
         <!-- 2. Total Savings Voucher -->
-        <div class="glass-card glass-blue cursor-pointer" @click="$router.push({ path: '/transaction/member-savings', query: { showVoucherTotal: 1 } })">
+        <div class="glass-card glass-blue cursor-pointer"
+          @click="$router.push({ path: '/transaction/member-savings', query: { showVoucherTotal: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-blue-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:ticket-confirmation-outline" class="text-blue-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-blue-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalSavingsVoucher') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-blue-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
-              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-blue-500 mt-0.5">{{ $t('common.total') }}: {{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-blue-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalSavingsVoucher') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-blue-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(pendingCount?.ForSavingApprovalAmount || 0)) }}</div>
+              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-blue-500 mt-0.5">{{ $t('common.total') }}:
+                {{ pendingCount?.ForSavingApprovalCount || 0 }}</div>
             </div>
           </div>
         </div>
@@ -186,9 +210,13 @@
               <Icon icon="mdi:piggy-bank-outline" class="text-green-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-green-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalSavingsPosted') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-green-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalSaving ||
-                0)) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-green-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalSavingsPosted') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-green-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(summaryData?.totalSaving ||
+                  0)) }}</div>
             </div>
           </div>
         </div>
@@ -200,9 +228,13 @@
               <Icon icon="mdi:wallet-outline" class="text-rose-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-rose-400 uppercase tracking-wider leading-tight">{{
-                $t('dashboard.totalBalanceDue') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-rose-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(totalBalanceDue) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-rose-400 uppercase tracking-wider leading-tight">
+                {{
+                  $t('dashboard.totalBalanceDue') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-rose-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(totalBalanceDue) }}</div>
             </div>
           </div>
         </div>
@@ -214,9 +246,13 @@
               <Icon icon="mdi:account-cash-outline" class="text-indigo-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-indigo-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalLoanMembers')
-              }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-indigo-700 mt-1 leading-tight whitespace-nowrap">{{ summaryData?.loanMemberCount || 0 }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-indigo-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalLoanMembers')
+                }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-indigo-700 mt-1 leading-tight whitespace-nowrap">
+                {{ summaryData?.loanMemberCount || 0 }}</div>
             </div>
           </div>
         </div>
@@ -228,62 +264,88 @@
               <Icon icon="mdi:file-document-multiple-outline" class="text-cyan-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-cyan-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalLoanVoucher') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-cyan-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(loanPendingCount?.PendingAmount || 0)) }}</div>
-              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-cyan-500 mt-0.5">{{ $t('common.total') }}: {{ loanPendingCount?.PendingCount || 0 }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-cyan-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalLoanVoucher') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-cyan-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(loanPendingCount?.PendingAmount || 0)) }}</div>
+              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-cyan-500 mt-0.5">{{ $t('common.total') }}:
+                {{ loanPendingCount?.PendingCount || 0 }}</div>
             </div>
           </div>
         </div>
 
         <!-- 7. Total Loan Vouchered -->
-        <div class="glass-card glass-violet cursor-pointer" @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanVouchered: 1 } })">
+        <div class="glass-card glass-violet cursor-pointer"
+          @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanVouchered: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-violet-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:file-check-outline" class="text-violet-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-violet-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalLoanVouchered') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-violet-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(loanPostedCount?.PostedAmount || 0)) }}</div>
-              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-violet-500 mt-0.5">{{ $t('common.total') }}: {{ loanPostedCount?.PostedCount || 0 }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-violet-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalLoanVouchered') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-violet-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(loanPostedCount?.PostedAmount || 0)) }}</div>
+              <div class="text-[10px] xl:text-xs 2xl:text-sm font-bold text-violet-500 mt-0.5">{{ $t('common.total') }}:
+                {{ loanPostedCount?.PostedCount || 0 }}</div>
             </div>
           </div>
         </div>
 
         <!-- 8. Total Loan Given -->
-        <div class="glass-card glass-teal cursor-pointer" @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanGiven: 1 } })">
+        <div class="glass-card glass-teal cursor-pointer"
+          @click="$router.push({ path: '/dashboard/loan-members', query: { showLoanGiven: 1 } })">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-teal-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:bank-outline" class="text-teal-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-teal-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalLoanPosted') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-teal-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalLoan || 0)) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-teal-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalLoanPosted') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-teal-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(summaryData?.totalLoan || 0)) }}</div>
             </div>
           </div>
         </div>
 
         <!-- 9. Total Savings Payable -->
-        <div class="glass-card glass-fuchsia cursor-pointer" @click="goToSavingsCustomers(collectionData?.totalShouldPay, 'savingsPayable')">
+        <div class="glass-card glass-fuchsia cursor-pointer"
+          @click="goToSavingsCustomers(collectionData?.totalShouldPay, 'savingsPayable')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-fuchsia-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:cash-check" class="text-fuchsia-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-fuchsia-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalShouldPay') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-fuchsia-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(collectionData?.totalShouldPay || 0)) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-fuchsia-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalShouldPay') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-fuchsia-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(collectionData?.totalShouldPay || 0)) }}</div>
             </div>
           </div>
         </div>
 
         <!-- 10. Remaining Collection -->
-        <div class="glass-card glass-orange cursor-pointer" @click="goToSavingsCustomers(remainingCollection, 'savingsDue')">
+        <div class="glass-card glass-orange cursor-pointer"
+          @click="goToSavingsCustomers(remainingCollection, 'savingsDue')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-orange-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:cash-clock" class="text-orange-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-orange-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.remainingCollection') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-orange-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(remainingCollection) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-orange-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.remainingCollection') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-orange-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(remainingCollection) }}</div>
             </div>
           </div>
         </div>
@@ -295,8 +357,12 @@
               <Icon icon="mdi:trending-up" class="text-amber-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-amber-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.totalEarning') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-amber-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalEarning || 0)) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-amber-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.totalEarning') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-amber-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(summaryData?.totalEarning || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -308,8 +374,46 @@
               <Icon icon="mdi:bank-check" class="text-emerald-600 text-3xl xl:text-4xl 2xl:text-5xl" />
             </div>
             <div class="flex-1 text-right min-w-0">
-              <div class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-emerald-400 uppercase tracking-wider leading-tight">{{ $t('dashboard.availableBalance') }}</div>
-              <div class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-emerald-700 mt-1 leading-tight whitespace-nowrap">{{ formatAmount(availableBalance) }}</div>
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-emerald-400 uppercase tracking-wider leading-tight">
+                {{ $t('dashboard.availableBalance') }}</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-emerald-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(availableBalance) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 13. Total Expense Voucherable -->
+        <div class="glass-card glass-red cursor-pointer" @click="$router.push('/expense/savings-collection')">
+          <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
+            <div class="bg-red-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
+              <Icon icon="mdi:receipt-text-outline" class="text-red-600 text-3xl xl:text-4xl 2xl:text-5xl" />
+            </div>
+            <div class="flex-1 text-right min-w-0">
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-red-400 uppercase tracking-wider leading-tight">
+                Total Expense Voucherable</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-red-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(summaryData?.totalExpenseVoucharable || 0)) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 14. Total Expense Vouchered -->
+        <div class="glass-card glass-slate cursor-pointer" @click="$router.push('/expense/savings-collection')">
+          <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
+            <div class="bg-slate-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
+              <Icon icon="mdi:receipt-text-check-outline" class="text-slate-600 text-3xl xl:text-4xl 2xl:text-5xl" />
+            </div>
+            <div class="flex-1 text-right min-w-0">
+              <div
+                class="text-[11px] xl:text-xs 2xl:text-sm font-semibold text-slate-400 uppercase tracking-wider leading-tight">
+                Total Expense Vouchered</div>
+              <div
+                class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-slate-700 mt-1 leading-tight whitespace-nowrap">
+                {{ formatAmount(Number(summaryData?.totalExpenseVouchared || 0)) }}</div>
             </div>
           </div>
         </div>
@@ -396,6 +500,14 @@
 
 .glass-emerald {
   background: linear-gradient(135deg, rgba(209, 250, 229, 0.7), rgba(167, 243, 208, 0.5));
+}
+
+.glass-red {
+  background: linear-gradient(135deg, rgba(254, 226, 226, 0.7), rgba(254, 202, 202, 0.5));
+}
+
+.glass-slate {
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.7), rgba(203, 213, 225, 0.5));
 }
 </style>
 

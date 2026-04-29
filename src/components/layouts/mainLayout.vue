@@ -262,11 +262,7 @@ const allMenuItems = computed(() => [
         label: "Expense Category",
         onClick: navigateTo("/expense/expense-category"),
       },
-      {
-        key: "/expense/savings-collection",
-        label: "Savings Collection",
-        onClick: navigateTo("/expense/savings-collection"),
-      },
+     
     ],
   },
 
@@ -404,6 +400,11 @@ const allMenuItems = computed(() => [
         key: "/transaction/member-loan",
         label: t("menu.memberLoan"),
         onClick: navigateTo("/transaction/member-loan"),
+      },
+      {
+        key: "/expense/savings-collection",
+        label: t("menu.savingsCollection"),
+        onClick: navigateTo("/expense/savings-collection"),
       },
       // {
       //   key: "/transaction/purchase-voucher",
