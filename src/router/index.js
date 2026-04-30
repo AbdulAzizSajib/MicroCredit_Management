@@ -140,6 +140,7 @@ import FilesCustomer from "@/views/finance/files/customer.vue";
 import Expense from "@/views/finance/expense.vue";
 import SavingsCollection from "@/views/finance/savings-collection.vue";
 import ExpenseCategory from "@/views/finance/expense-category.vue";
+import ExpenseVouchered from "@/views/finance/expense-vouchered.vue";
 
 const routes = [
   {
@@ -320,6 +321,12 @@ const routes = [
     path: "/expense/expense-voucher",
     name: "expense-voucher",
     component: SavingsCollection,
+    meta: { permission: "Accountant Dashboard" },
+  },
+  {
+    path: "/expense/expense-vouchered",
+    name: "expense-vouchered",
+    component: ExpenseVouchered,
     meta: { permission: "Accountant Dashboard" },
   },
   {

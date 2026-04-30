@@ -351,7 +351,7 @@
         </div>
 
         <!-- 11. Total Earning -->
-        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-loan')">
+        <div class="glass-card glass-amber cursor-pointer" @click="$router.push('/dashboard/total-earning')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-amber-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:trending-up" class="text-amber-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -402,7 +402,7 @@
         </div>
 
         <!-- 14. Total Expense Vouchered -->
-        <div class="glass-card glass-slate cursor-pointer" @click="$router.push('/expense/expense-voucher')">
+        <div class="glass-card glass-slate cursor-pointer" @click="$router.push('/expense/expense-vouchered')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-slate-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:receipt-text-check-outline" class="text-slate-600 text-3xl xl:text-4xl 2xl:text-5xl" />

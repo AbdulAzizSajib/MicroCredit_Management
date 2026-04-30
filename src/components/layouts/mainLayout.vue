@@ -279,6 +279,21 @@ const allMenuItems = computed(() => [
         onClick: navigateTo("/files/group-code"),
       },
       {
+        key: "/files/ac-sub-group",
+        label: t("menu.acSubGroup"),
+        onClick: navigateTo("/files/ac-sub-group"),
+      },
+      {
+        key: "/files/ac-type",
+        label: t("menu.acType"),
+        onClick: navigateTo("/files/ac-type"),
+      },
+      {
+        key: "/files/search-chart-of-accounts",
+        label: t("menu.chartOfAccounts"),
+        onClick: navigateTo("/files/search-chart-of-accounts"),
+      },
+      {
         key: "/files/voucher-type",
         label: t("menu.voucherType"),
         onClick: navigateTo("/files/voucher-type"),
@@ -288,76 +303,68 @@ const allMenuItems = computed(() => [
         label: t("menu.voucherCategory"),
         onClick: navigateTo("/files/voucher-category"),
       },
-      {
-        key: "/files/ac-type",
-        label: t("menu.acType"),
-        onClick: navigateTo("/files/ac-type"),
-      },
-      {
-        key: "/files/ac-sub-group",
-        label: t("menu.acSubGroup"),
-        onClick: navigateTo("/files/ac-sub-group"),
-      },
-      {
-        key: "/files/cash-flow",
-        label: t("menu.cashFlow"),
-        onClick: navigateTo("/files/cash-flow"),
-      },
-      {
-        key: "/files/search-chart-of-accounts",
-        label: t("menu.chartOfAccounts"),
-        onClick: navigateTo("/files/search-chart-of-accounts"),
-      },
-      {
-        key: "/files/sub-ledger-category",
-        label: t("menu.subLedgerCategory"),
-        onClick: navigateTo("/files/sub-ledger-category"),
-      },
-      {
-        key: "/files/sub-ledger",
-        label: t("menu.subLedger"),
-        onClick: navigateTo("/files/sub-ledger"),
-      },
+   
+     
+      // {
+      //   key: "/files/cash-flow",
+      //   label: t("menu.cashFlow"),
+      //   onClick: navigateTo("/files/cash-flow"),
+      // },
+      // {
+      //   key: "/files/search-chart-of-accounts",
+      //   label: t("menu.chartOfAccounts"),
+      //   onClick: navigateTo("/files/search-chart-of-accounts"),
+      // },
+      // {
+      //   key: "/files/sub-ledger-category",
+      //   label: t("menu.subLedgerCategory"),
+      //   onClick: navigateTo("/files/sub-ledger-category"),
+      // },
+      // {
+      //   key: "/files/sub-ledger",
+      //   label: t("menu.subLedger"),
+      //   onClick: navigateTo("/files/sub-ledger"),
+      // },
       {
         key: "/files/opening",
         label: t("menu.opening"),
         onClick: navigateTo("/files/opening"),
       },
-      {
-        key: "/files/cheque-no",
-        label: t("menu.chequeNo"),
-        onClick: navigateTo("/files/cheque-no"),
-      },
-      {
-        key: "/files/cheque-book-entry",
-        label: t("menu.chequeBook"),
-        onClick: navigateTo("/files/cheque-book-entry"),
-      },
-      {
-        key: "/files/financial-month",
-        label: t("menu.financialMonth"),
-        onClick: navigateTo("/files/financial-month"),
-      },
-      {
-        key: "/files/set-period",
-        label: t("menu.setPeriod"),
-        onClick: navigateTo("/files/set-period"),
-      },
+      // {
+      //   key: "/files/cheque-no",
+      //   label: t("menu.chequeNo"),
+      //   onClick: navigateTo("/files/cheque-no"),
+      // },
+      // {
+      //   key: "/files/cheque-book-entry",
+      //   label: t("menu.chequeBook"),
+      //   onClick: navigateTo("/files/cheque-book-entry"),
+      // },
+      // {
+      //   key: "/files/financial-month",
+      //   label: t("menu.financialMonth"),
+      //   onClick: navigateTo("/files/financial-month"),
+      // },
+      // {
+      //   key: "/files/set-period",
+      //   label: t("menu.setPeriod"),
+      //   onClick: navigateTo("/files/set-period"),
+      // },
       {
         key: "/files/site",
         label: t("menu.site"),
         onClick: navigateTo("/files/site"),
       },
-      {
-        key: "/files/vendor-entry",
-        label: t("menu.vendorEntry"),
-        onClick: navigateTo("/files/vendor-entry"),
-      },
-      {
-        key: "/files/vendor-type",
-        label: t("menu.vendorType"),
-        onClick: navigateTo("/files/vendor-type"),
-      },
+      // {
+      //   key: "/files/vendor-entry",
+      //   label: t("menu.vendorEntry"),
+      //   onClick: navigateTo("/files/vendor-entry"),
+      // },
+      // {
+      //   key: "/files/vendor-type",
+      //   label: t("menu.vendorType"),
+      //   onClick: navigateTo("/files/vendor-type"),
+      // },
     ],
   },
   {
@@ -459,11 +466,11 @@ const allMenuItems = computed(() => [
         label: t("menu.balanceSheet"),
         onClick: navigateTo("/reports/balance-sheet-new"),
       },
-      {
-        key: "/reports/balance-sheet-petra",
-        label: t("menu.balanceSheetPetra"),
-        onClick: navigateTo("/reports/balance-sheet-petra"),
-      },
+      // {
+      //   key: "/reports/balance-sheet-petra",
+      //   label: t("menu.balanceSheetPetra"),
+      //   onClick: navigateTo("/reports/balance-sheet-petra"),
+      // },
       {
         key: "/reports/payment-receipt",
         label: t("menu.paymentReceipt"),
@@ -479,11 +486,11 @@ const allMenuItems = computed(() => [
         label: t("menu.chartOfAccounts"),
         onClick: navigateTo("/reports/chart-of-accounts-reports"),
       },
-      {
-        key: "/reports/cash-flow-statement-report",
-        label: t("menu.cashFlowStatement"),
-        onClick: navigateTo("/reports/cash-flow-statement-report"),
-      },
+      // {
+      //   key: "/reports/cash-flow-statement-report",
+      //   label: t("menu.cashFlowStatement"),
+      //   onClick: navigateTo("/reports/cash-flow-statement-report"),
+      // },
       {
         key: "/reports/account-ratio-report",
         label: t("menu.accountRatio"),
@@ -494,11 +501,11 @@ const allMenuItems = computed(() => [
         label: t("menu.trialBalance"),
         onClick: navigateTo("/reports/trial-balance"),
       },
-      {
-        key: "/reports/trial-balance-sub",
-        label: t("menu.trialBalanceSub"),
-        onClick: navigateTo("/reports/trial-balance-sub"),
-      },
+      // {
+      //   key: "/reports/trial-balance-sub",
+      //   label: t("menu.trialBalanceSub"),
+      //   onClick: navigateTo("/reports/trial-balance-sub"),
+      // },
     ],
   },
   {
