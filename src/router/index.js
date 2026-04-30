@@ -317,8 +317,8 @@ const routes = [
     meta: { permission: "Accountant Dashboard" },
   },
   {
-    path: "/expense/savings-collection",
-    name: "expense-savings-collection",
+    path: "/expense/expense-voucher",
+    name: "expense-voucher",
     component: SavingsCollection,
     meta: { permission: "Accountant Dashboard" },
   },

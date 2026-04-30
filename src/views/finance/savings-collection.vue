@@ -82,7 +82,7 @@
                 @change="toggleSelectAll($event)"
               />
             </th>
-            <th class="border border-white px-4 py-2">ID</th>
+            <th class="border border-white px-4 py-2">Invoice No</th>
             <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
             <th class="border border-white px-4 py-2">Account Code</th>
             <th class="border border-white px-4 py-2">Category ID</th>
@@ -229,7 +229,7 @@
                   <tr class="bg-primary text-white">
                     <th class="border border-white px-4 py-2">{{ $t('voucher.accountCode') }}</th>
                     <th class="border border-white px-4 py-2">{{ $t('voucher.accountDetails') }}</th>
-                    <th class="border border-white px-4 py-2">{{ $t('voucher.billNo') }}</th>
+                    <th class="border border-white px-4 py-2">Invoice No</th>
                     <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
                     <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.debit') }}</th>
                     <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.credit') }}</th>
@@ -247,20 +247,17 @@
                     <td class="px-4 border">{{ item.AccountDetails }}</td>
                     <td class="px-4 border">{{ item.BillNo }}</td>
                     <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
-                    <td class="px-4 border text-right">{{ 0.0 }}</td>
                     <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
+                    <td class="px-4 border text-right">{{ 0.0 }}</td>
                   </tr>
 
                   <tr v-for="item in modalForm.Details" :key="'pending-' + item.BillNo" class="bg-yellow-50 hover:bg-yellow-100 border-l-4 border-l-yellow-400">
                     <td class="px-4 border">{{ item.AccountCode }}</td>
                     <td class="px-4 border">{{ item.AccountDetails }}</td>
-                    <td class="px-4 border">
-                      {{ item.BillNo }}
-                      <span class="text-xs text-yellow-600">(pending)</span>
-                    </td>
+                    <td class="px-4 border">{{ item.BillNo }}</td>
                     <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
-                    <td class="px-4 border text-right">{{ 0.0 }}</td>
                     <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
+                    <td class="px-4 border text-right">{{ 0.0 }}</td>
                   </tr>
 
                   <tr v-if="debitVoucherEntry" key="debit-entry" class="bg-gray-100 hover:bg-gray-200">
@@ -268,8 +265,8 @@
                     <td class="px-4 border">{{ debitVoucherEntry.AccountDetails }}</td>
                     <td class="px-4 border">-</td>
                     <td class="px-4 border">-</td>
-                    <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                     <td class="px-4 border text-right">{{ 0.0 }}</td>
+                    <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                   </tr>
                 </tbody>
 
@@ -362,9 +359,9 @@ const fetchAllData = async () => {
     );
 
     currentPage.value = 1;
-    allData.value = (res?.data || []).map((item, idx) => ({
+    allData.value = (res?.data || []).map((item) => ({
       ...item,
-      InvoiceNo: `${item.ID}-${idx}`,
+      InvoiceNo: item.ID,
       InvoiceDate: item.ExpenseDate ? dayjs(item.ExpenseDate).format("YYYY-MM-DD") : "",
       NET: item.Amount || 0,
     }));
@@ -567,16 +564,15 @@ const saveExpenseVoucher = async () => {
     const payload = {
       SiteCode: modalForm.value.SiteCode || "01",
       Period: Number(dayjs(jvDate).format("YYYYMM")),
+      Narration: commonNarration.value,
       JVType: modalForm.value.JVType || "CSH",
       JVCat: modalForm.value.JVCat || "P",
       JVDate: jvDate,
       AMCode: debitVoucherEntry.value?.AccountCode || "",
-      Narration: commonNarration.value,
+      ExpenseIDs: creditVoucherEntries.value.map((item) => Number(item.BillNo)),
       ExpenseEntries: creditVoucherEntries.value.map((item) => ({
-        ExpenseCatId: item.ExpenseCatId,
+        ExpenseID: Number(item.BillNo),
         AMCode: item.AccountCode,
-        Amount: item.Credit,
-        Narration: item.Narration,
       })),
     };
 

@@ -402,9 +402,9 @@ const allMenuItems = computed(() => [
         onClick: navigateTo("/transaction/member-loan"),
       },
       {
-        key: "/expense/savings-collection",
+        key: "/expense/expense-voucher",
         label: t("menu.savingsCollection"),
-        onClick: navigateTo("/expense/savings-collection"),
+        onClick: navigateTo("/expense/expense-voucher"),
       },
       // {
       //   key: "/transaction/purchase-voucher",

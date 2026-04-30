@@ -385,7 +385,7 @@
         </div>
 
         <!-- 13. Total Expense Voucherable -->
-        <div class="glass-card glass-red cursor-pointer" @click="$router.push('/expense/savings-collection')">
+        <div class="glass-card glass-red cursor-pointer" @click="$router.push('/expense/expense-voucher')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-red-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:receipt-text-outline" class="text-red-600 text-3xl xl:text-4xl 2xl:text-5xl" />
@@ -402,7 +402,7 @@
         </div>
 
         <!-- 14. Total Expense Vouchered -->
-        <div class="glass-card glass-slate cursor-pointer" @click="$router.push('/expense/savings-collection')">
+        <div class="glass-card glass-slate cursor-pointer" @click="$router.push('/expense/expense-voucher')">
           <div class="flex items-center gap-2.5 xl:gap-3 2xl:gap-5 min-w-0">
             <div class="bg-slate-200/40 rounded-2xl p-2.5 xl:p-3 2xl:p-4 shrink-0">
               <Icon icon="mdi:receipt-text-check-outline" class="text-slate-600 text-3xl xl:text-4xl 2xl:text-5xl" />
