@@ -229,6 +229,7 @@
                   <tr class="bg-primary text-white">
                     <th class="border border-white px-4 py-2">{{ $t('voucher.accountCode') }}</th>
                     <th class="border border-white px-4 py-2">{{ $t('voucher.accountDetails') }}</th>
+                    <th class="border border-white px-4 py-2">Cat ID</th>
                     <th class="border border-white px-4 py-2">Invoice No</th>
                     <th class="border border-white px-4 py-2">{{ $t('common.date') }}</th>
                     <th class="border border-white px-4 py-2 text-right">{{ $t('voucher.debit') }}</th>
@@ -245,6 +246,7 @@
                   <tr v-for="item in creditVoucherEntries" :key="'confirmed-' + item.BillNo" class="bg-gray-100 hover:bg-gray-200">
                     <td class="px-4 border">{{ item.AccountCode }}</td>
                     <td class="px-4 border">{{ item.AccountDetails }}</td>
+                    <td class="px-4 border">{{ item.ExpenseCatId || "-" }}</td>
                     <td class="px-4 border">{{ item.BillNo }}</td>
                     <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
                     <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
@@ -254,6 +256,7 @@
                   <tr v-for="item in modalForm.Details" :key="'pending-' + item.BillNo" class="bg-yellow-50 hover:bg-yellow-100 border-l-4 border-l-yellow-400">
                     <td class="px-4 border">{{ item.AccountCode }}</td>
                     <td class="px-4 border">{{ item.AccountDetails }}</td>
+                    <td class="px-4 border">{{ item.ExpenseCatId || "-" }}</td>
                     <td class="px-4 border">{{ item.BillNo }}</td>
                     <td class="px-4 border">{{ item.BillDate ? dayjs(item.BillDate).format("YYYY-MM-DD") : "" }}</td>
                     <td class="px-4 border text-right">{{ (parseFloat(item.Credit) || 0).toFixed(2) }}</td>
@@ -265,13 +268,14 @@
                     <td class="px-4 border">{{ debitVoucherEntry.AccountDetails }}</td>
                     <td class="px-4 border">-</td>
                     <td class="px-4 border">-</td>
+                    <td class="px-4 border">-</td>
                     <td class="px-4 border text-right">{{ 0.0 }}</td>
                     <td class="px-4 border text-right">{{ calculateTotalCredit() }}</td>
                   </tr>
                 </tbody>
 
                 <tr class="bg-gray-50 border-t-2 border-gray-400" v-if="creditVoucherEntries.length > 0">
-                  <td colspan="4"></td>
+                  <td colspan="5"></td>
                   <td class="px-4 border">
                     <div class="w-full h-8 bg-teal-500 text-white text-center flex justify-center items-center rounded font-bold">
                       {{ calculateTotalDebit() }}
@@ -333,7 +337,7 @@ const modalForm = ref({
   SiteCode: "01",
   Period: dayjs().format("YYYYMM"),
   JVType: "",
-  JVCat: "R",
+  JVCat: "P",
   JVDate: dayjs(),
   Posted: 0,
   UserId: userInfo?.UserId || "",
@@ -470,6 +474,7 @@ const handleAddExpense = () => {
     return {
       AccountCode: invoice?.AMCode || "",
       AccountDetails: invoice?.ExpenseCatName || "",
+      ExpenseCatId: invoice?.ExpenseCatId || "",
       Credit: parseFloat(invoice?.NET) || 0,
       BillNo: invNo,
       BillDate: invoiceDateDayjs,
@@ -512,6 +517,7 @@ const addVoucherEntry = () => {
   const newCreditEntries = modalForm.value.Details.map((detail) => ({
     AccountCode: detail.AccountCode,
     AccountDetails: detail.AccountDetails,
+    ExpenseCatId: detail.ExpenseCatId || "",
     Credit: detail.Credit,
     BillNo: detail.BillNo,
     BillDate: detail.BillDate,
