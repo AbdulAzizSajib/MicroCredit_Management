@@ -13,7 +13,7 @@
         <span class="text-xs font-semibold text-green-500 uppercase tracking-wider">{{ $t('dashboard.totalSavingsVouchered') }}</span>
         <span class="text-xl font-extrabold text-green-700">{{ formatAmount(voucheredTotalSum) }}</span>
       </div>
- 
+
     </div>
 
     <div class="overflow-x-auto" data-aos="fade-up" data-aos-delay="150">
