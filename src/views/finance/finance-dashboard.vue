@@ -380,6 +380,12 @@
               <div
                 class="text-lg xl:text-xl 2xl:text-2xl min-[1920px]:text-3xl font-extrabold text-emerald-700 mt-1 leading-tight whitespace-nowrap">
                 {{ formatAmount(availableBalance) }}</div>
+              <div class="mt-0.5 leading-tight" style="font-size: 9px;">
+                <span class="text-emerald-600">Savings</span> <span class="text-gray-500">−</span> <span class="text-red-600">Loan</span> <span class="text-gray-500">+</span> <span class="text-yellow-600">Earning</span>
+              </div>
+              <div class="font-semibold leading-tight break-words" style="font-size: 10px;">
+                <span class="text-emerald-600 whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalSaving || 0)) }}</span> <span class="text-gray-500">−</span> <span class="text-red-600 whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalLoan || 0)) }}</span> <span class="text-gray-500">+</span> <span class="text-yellow-600 whitespace-nowrap">{{ formatAmount(Number(summaryData?.totalEarning || 0)) }}</span>
+              </div>
             </div>
           </div>
         </div>

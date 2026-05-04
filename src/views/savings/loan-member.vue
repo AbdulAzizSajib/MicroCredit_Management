@@ -66,6 +66,11 @@
           </td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
+              <a-tooltip :title="$t('loan.addCollection')">
+                <button type="button" class="action-btn action-btn-success" @click="openLoanCollectionModal(item)">
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+              </a-tooltip>
               <a-tooltip :title="$t('common.details')">
                 <button type="button" class="action-btn action-btn-info" @click="openDetailsModal(item)">
                   <i class="bi bi-eye"></i>
@@ -90,6 +95,79 @@
     <div ref="scrollSentinel" class="py-4 text-center">
       <a-spin v-if="loadingMore" />
     </div>
+
+    <!-- Add Loan Collection Modal -->
+    <a-modal
+      v-model:open="isLoanCollectionModalVisible"
+      :title="$t('loan.payment')"
+      @cancel="isLoanCollectionModalVisible = false"
+      :footer="null"
+      width="500px"
+    >
+      <div v-if="loanCollectionLoading" class="text-center py-8"><a-spin /></div>
+      <form v-else @submit.prevent="submitLoanCollection">
+        <div v-if="loanCollectionDetails" class="mb-4 p-3 bg-blue-50 rounded-lg border text-sm space-y-1">
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Actual Loan:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(loanCollectionDetails.loan?.LoanAmount || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.noOfInstallment') }}:</span>
+            <span class="font-bold text-blue-700">{{ loanCollectionDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.installment') }} No:</span>
+            <span class="font-bold text-blue-700">{{ loanCollectionDetails.payments?.length || 0 }} / {{ loanCollectionDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Running {{ $t('loan.installment') }} No:</span>
+            <span class="font-bold text-green-700">{{ (loanCollectionDetails.payments?.length || 0) + 1 }} / {{ loanCollectionDetails.loan?.NofInstallment }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.installmentAmount') }}:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(loanCollectionDetails.loan?.Installment || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.totalLoanPayable') }}:</span>
+            <span class="font-bold text-blue-700">{{ formatAmount(Number(loanCollectionDetails.loan?.InterestAmount || 0)) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">{{ $t('loan.remaining') }}:</span>
+            <span class="font-bold text-red-600">{{ formatAmount(Number(loanCollectionDetails.loan?.InterestAmount || 0) - Number(loanCollectionDetails.total_payment || 0)) }}</span>
+          </div>
+        </div>
+        <div class="space-y-5 mb-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.payment') }}</label>
+            <a-input
+              class="w-full"
+              placeholder="Enter Payment Amount"
+              v-model:value="loanCollectionForm.Payment"
+              type="number"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('loan.paymentDate') }}</label>
+            <a-date-picker
+              class="w-full"
+              placeholder="Payment Date"
+              value-format="YYYY-MM-DD"
+              v-model:value="loanCollectionForm.PaymentDate"
+            />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" @click="isLoanCollectionModalVisible = false"
+            class="px-6 py-2 rounded font-semibold bg-gray-500 text-white hover:bg-gray-600 transition-colors">
+            {{ $t('common.close') }}
+          </button>
+          <button type="submit" :disabled="isLoanCollectionSaving"
+            class="px-6 py-2 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors">
+            {{ isLoanCollectionSaving ? $t('loan.saveChanges') : $t('loan.saveChanges') }}
+          </button>
+        </div>
+      </form>
+    </a-modal>
 
     <!-- Collections Modal -->
     <a-modal v-model:open="isCollectionsModalVisible" :title="$t('customer.collections')"
@@ -231,6 +309,7 @@ import MainLayout from "@/components/layouts/mainLayout.vue";
 import { getToken, showNotification } from "@/utilities/common";
 import axios from "axios";
 import { apiBase } from "@/config";
+import dayjs from "dayjs";
 
 const route = useRoute();
 const showTotalBadge = ref(!!route.query.showTotal && route.query.kind === "loanDue");
@@ -352,6 +431,124 @@ const openDetailsModal = async (item) => {
     showNotification("error", "Failed to load details.");
   } finally {
     detailsLoading.value = false;
+  }
+};
+
+// Loan Collection
+const isLoanCollectionModalVisible = ref(false);
+const isLoanCollectionSaving = ref(false);
+const loanCollectionLoading = ref(false);
+const loanCollectionDetails = ref(null);
+const loanCollectionForm = ref({
+  MemberCode: "",
+  CustomerName: "",
+  LoanId: null,
+  Payment: null,
+  PaymentDate: dayjs().format("YYYY-MM-DD"),
+});
+
+const openLoanCollectionModal = async (item) => {
+  loanCollectionForm.value = {
+    MemberCode: item.MemberCode || "",
+    CustomerName: item.CustomerName || item.AMDetails || "",
+    LoanId: null,
+    Payment: Number(item.Installment) || null,
+    PaymentDate: dayjs().format("YYYY-MM-DD"),
+  };
+  loanCollectionDetails.value = null;
+  isLoanCollectionModalVisible.value = true;
+  loanCollectionLoading.value = true;
+
+  try {
+    const memberCode = (item.MemberCode || "").toLowerCase();
+    const memberName = (item.CustomerName || item.AMDetails || "").toLowerCase();
+    let foundLoanId = null;
+    let foundInstallment = null;
+
+    // Step 1: search pay-loan-payment — each row has a nested `loan` object (payment?.loan)
+    const res = await axios.get(
+      `${apiBase}/settings/pay-loan-payment?search=&per_page=9999&page=1`,
+      getToken()
+    );
+    const rows = Array.isArray(res.data?.data?.data) ? res.data.data.data : [];
+
+    let memberLoan = rows.find(l =>
+      (l.loan?.account?.MemberCode || "").toLowerCase() === memberCode
+    );
+    if (!memberLoan && memberName) {
+      memberLoan = rows.find(l =>
+        (l.loan?.account?.AMDetails || "").toLowerCase().includes(memberName)
+      );
+    }
+
+    if (memberLoan?.loan?.LoanId) {
+      foundLoanId = memberLoan.loan.LoanId;
+      foundInstallment = memberLoan.loan.Installment;
+    } else {
+      // Step 2: fallback — search pay-loan list (covers members with 0 payments)
+      const loanRes = await axios.get(
+        `${apiBase}/settings/pay-loan?per_page=9999`,
+        getToken()
+      );
+      const loans = Array.isArray(loanRes.data?.data) ? loanRes.data.data : [];
+      const loan = loans.find(l =>
+        (l.account?.MemberCode || "").toLowerCase() === memberCode ||
+        (l.AMDetails || "").toLowerCase() === memberName
+      );
+      if (loan?.LoanId) {
+        foundLoanId = loan.LoanId;
+        foundInstallment = loan.Installment;
+      }
+    }
+
+    if (foundLoanId) {
+      loanCollectionForm.value.LoanId = foundLoanId;
+      if (foundInstallment) loanCollectionForm.value.Payment = Number(foundInstallment);
+      const detailRes = await axios.get(
+        `${apiBase}/settings/pay-loan-payment/show?loanId=${foundLoanId}`,
+        getToken()
+      );
+      if (detailRes.data?.success) loanCollectionDetails.value = detailRes.data.data || null;
+    } else {
+      showNotification("error", "No active loan found for this member.");
+    }
+  } catch (e) {
+    console.log(e);
+    showNotification("error", "Failed to fetch loan data.");
+  } finally {
+    loanCollectionLoading.value = false;
+  }
+};
+
+const submitLoanCollection = async () => {
+  if (!loanCollectionForm.value.LoanId) return showNotification("error", "Loan not found for this member.");
+  if (!Number(loanCollectionForm.value.Payment)) return showNotification("error", "Please enter a valid payment amount.");
+  if (!loanCollectionForm.value.PaymentDate) return showNotification("error", "Payment date is required.");
+
+  isLoanCollectionSaving.value = true;
+  try {
+    const payload = {
+      Payment: Number(loanCollectionForm.value.Payment),
+      PaymentDate: loanCollectionForm.value.PaymentDate,
+      EntryBy: "cashier",
+      EntryDate: dayjs().format("YYYY-MM-DD"),
+    };
+    const res = await axios.post(
+      `${apiBase}/settings/pay-loan-payment?loanId=${loanCollectionForm.value.LoanId}`,
+      payload,
+      getToken()
+    );
+    if (res.data?.success) {
+      showNotification("success", "Collection added successfully!");
+      isLoanCollectionModalVisible.value = false;
+      fetchLoanMembers(false);
+    } else {
+      showNotification("error", res.data?.message || "Failed to add collection.");
+    }
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || "Failed to add collection.");
+  } finally {
+    isLoanCollectionSaving.value = false;
   }
 };
 

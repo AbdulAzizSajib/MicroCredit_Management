@@ -18,10 +18,10 @@
           >
             <a-select-option
               v-for="customer in customerData"
-              :key="customer.AMCode"
-              :value="customer.MemberCode"
+              :key="customer.CustomerCode"
+              :value="customer.CustomerCode"
             >
-              {{ customer.MemberCode }} - {{ customer.AMDetails }}
+              {{ customer.CustomerCode }} - {{ customer.CustomerName }}
             </a-select-option>
           </a-select>
         </div>
@@ -86,7 +86,7 @@
         </div>
 
         <!-- Loan Summary -->
-        <div>
+        <div v-if="Number(customerInfo?.LoanAmount || 0) > 0">
           <h2 class="text-sm font-bold text-primary uppercase tracking-wider mb-3">Loan Summary</h2>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
             <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
@@ -195,7 +195,7 @@ const loading = ref(false);
 
 const getCustomerData = async (q) => {
   try {
-    const res = await axios.get(`${apiBase}/get_customer?q=${q}`, getToken());
+    const res = await axios.get(`${apiBase}/customer/all/list?search=${encodeURIComponent(q || "")}`, getToken());
     if (res.data) {
       customerData.value = Array.isArray(res.data?.data) ? res.data.data : res.data;
     }

@@ -58,6 +58,11 @@
           </td>
           <td class="px-4 border text-center">
             <div class="flex justify-center items-center gap-1">
+              <a-tooltip :title="$t('collection.addCollection')">
+                <button type="button" class="action-btn action-btn-success" @click="openAddCollectionModal(data)">
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+              </a-tooltip>
               <a-tooltip :title="$t('common.details')">
                 <button type="button" class="action-btn action-btn-info" @click="openDetailsModal(data)">
                   <i class="bi bi-eye"></i>
@@ -66,11 +71,6 @@
               <a-tooltip :title="$t('customer.collections')">
                 <button type="button" class="action-btn action-btn-primary" @click="openCollectionsModal(data)">
                   <i class="bi bi-cash-stack"></i>
-                </button>
-              </a-tooltip>
-              <a-tooltip :title="$t('collection.addCollection')">
-                <button type="button" class="action-btn action-btn-success" @click="openAddCollectionModal(data)">
-                  <i class="bi bi-plus-circle"></i>
                 </button>
               </a-tooltip>
               <a-tooltip :title="$t('common.edit')">
@@ -751,6 +751,13 @@ const openAddCollectionModal = async (data) => {
   if (!code) return;
 
   try {
+    const searchRes = await axios.get(`${apiBase}/get_customer_for_saving?q=${code}`, getToken());
+    const list = Array.isArray(searchRes.data) ? searchRes.data : searchRes.data?.data || [];
+    const found = list.find(c => c.CustomerCode === code);
+    if (found) collectionForm.value.AMCode = found.AMCode || "";
+  } catch (e) { console.log(e); }
+
+  try {
     const infoRes = await axios.get(`${apiBase}/customer/${code}/info`, getToken());
     collectionCustomerInfo.value = infoRes?.data?.data?.[0] || null;
   } catch (e) { collectionCustomerInfo.value = null; }
@@ -765,7 +772,7 @@ const openAddCollectionModal = async (data) => {
   try {
     const cRes = await axios.get(`${apiBase}/customer/${code}`, getToken());
     const cust = cRes?.data?.data || {};
-    collectionForm.value.AMCode = cust.AMCode || "";
+    if (cust.AMCode) collectionForm.value.AMCode = cust.AMCode;
     collectionForm.value.CollectionType = cust.CollectionType || "M";
     collectionForm.value.Amount = Number(cust.SavingAmount || data.SavingAmount) || null;
   } catch (e) { console.log(e); }
