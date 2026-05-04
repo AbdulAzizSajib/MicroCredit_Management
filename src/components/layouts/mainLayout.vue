@@ -250,7 +250,7 @@ const allMenuItems = computed(() => [
     key: "expense-parent",
     label: "Expense",
     icon: () => h(CreditCardOutlined),
-    permission: "Accountant Dashboard",
+    permission: ["Expense", "Accountant Dashboard"],
     children: [
       {
         key: "/expense",
