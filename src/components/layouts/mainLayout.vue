@@ -93,6 +93,7 @@ import {
   DashboardOutlined,
   WalletOutlined,
   ContainerOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -245,6 +246,28 @@ const allMenuItems = computed(() => [
       },
     ],
     permission: "Accountant Dashboard",
+  },
+  {
+    key: "inventory",
+    label: "Inventory",
+    icon: () => h(ShoppingOutlined),
+    children: [
+      {
+        key: "/inventory/requisition",
+        label: "Requisition",
+        onClick: navigateTo("/inventory/requisition"),
+      },
+      {
+        key: "/inventory/receive",
+        label: "Receive",
+        onClick: navigateTo("/inventory/receive"),
+      },
+      {
+        key: "/inventory/release",
+        label: "Release",
+        onClick: navigateTo("/inventory/release"),
+      },
+    ],
   },
   {
     key: "expense-parent",

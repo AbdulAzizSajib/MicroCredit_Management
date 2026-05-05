@@ -142,6 +142,14 @@ import SavingsCollection from "@/views/finance/savings-collection.vue";
 import ExpenseCategory from "@/views/finance/expense-category.vue";
 import ExpenseVouchered from "@/views/finance/expense-vouchered.vue";
 
+// inventory
+import RequisitionList from "@/views/inventory/requisition-list.vue";
+import RequisitionCreate from "@/views/inventory/requisition-create.vue";
+import ReceiveList from "@/views/inventory/receive-list.vue";
+import ReceiveCreate from "@/views/inventory/receive-create.vue";
+import ReleaseList from "@/views/inventory/release-list.vue";
+import ReleaseCreate from "@/views/inventory/release-create.vue";
+
 const routes = [
   {
     path: "/",
@@ -777,6 +785,14 @@ const routes = [
     name: "cheque-book-entry",
     component: ChequeBookEntry,
   },
+
+  // inventory
+  { path: "/inventory/requisition", name: "requisition-list", component: RequisitionList },
+  { path: "/inventory/requisition/create", name: "requisition-create", component: RequisitionCreate },
+  { path: "/inventory/receive", name: "receive-list", component: ReceiveList },
+  { path: "/inventory/receive/create", name: "receive-create", component: ReceiveCreate },
+  { path: "/inventory/release", name: "release-list", component: ReleaseList },
+  { path: "/inventory/release/create", name: "release-create", component: ReleaseCreate },
 
   {
     path: "/:catchAll(.*)",
