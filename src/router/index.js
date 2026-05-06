@@ -145,10 +145,17 @@ import ExpenseVouchered from "@/views/finance/expense-vouchered.vue";
 // inventory
 import RequisitionList from "@/views/inventory/requisition-list.vue";
 import RequisitionCreate from "@/views/inventory/requisition-create.vue";
+import RequisitionEdit from "@/views/inventory/requisition-edit.vue";
 import ReceiveList from "@/views/inventory/receive-list.vue";
 import ReceiveCreate from "@/views/inventory/receive-create.vue";
 import ReleaseList from "@/views/inventory/release-list.vue";
 import ReleaseCreate from "@/views/inventory/release-create.vue";
+import ProductList from "@/views/inventory/product-list.vue";
+import ProductCreate from "@/views/inventory/product-create.vue";
+import ProductEdit from "@/views/inventory/product-edit.vue";
+import PlantList from "@/views/inventory/plant-list.vue";
+import PlantCreate from "@/views/inventory/plant-create.vue";
+import PlantEdit from "@/views/inventory/plant-edit.vue";
 
 const routes = [
   {
@@ -789,10 +796,17 @@ const routes = [
   // inventory
   { path: "/inventory/requisition", name: "requisition-list", component: RequisitionList },
   { path: "/inventory/requisition/create", name: "requisition-create", component: RequisitionCreate },
+  { path: "/inventory/requisition/edit", name: "requisition-edit", component: RequisitionEdit },
   { path: "/inventory/receive", name: "receive-list", component: ReceiveList },
   { path: "/inventory/receive/create", name: "receive-create", component: ReceiveCreate },
   { path: "/inventory/release", name: "release-list", component: ReleaseList },
   { path: "/inventory/release/create", name: "release-create", component: ReleaseCreate },
+  { path: "/inventory/product", name: "product-list", component: ProductList },
+  { path: "/inventory/product/create", name: "product-create", component: ProductCreate },
+  { path: "/inventory/product/edit", name: "product-edit", component: ProductEdit },
+  { path: "/inventory/plant", name: "plant-list", component: PlantList },
+  { path: "/inventory/plant/create", name: "plant-create", component: PlantCreate },
+  { path: "/inventory/plant/edit", name: "plant-edit", component: PlantEdit },
 
   {
     path: "/:catchAll(.*)",

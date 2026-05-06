@@ -202,6 +202,13 @@ const card = [
     iconBg: "#ff947a",
     permission: "Accountant Dashboard",
   },
+  {
+    titleKey: "menu.inventory",
+    icon: project,
+    route: "requisition-list",
+    bg: "#dcfce7",
+    iconBg: "#3cd856",
+  },
 ];
 
 const filteredCard = computed(() =>

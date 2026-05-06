@@ -249,22 +249,33 @@ const allMenuItems = computed(() => [
   },
   {
     key: "inventory",
-    label: "Inventory",
+    label: t("menu.inventory"),
     icon: () => h(ShoppingOutlined),
+    module: "inventory",
     children: [
       {
+        key: "/inventory/plant",
+        label: t("menu.plant"),
+        onClick: navigateTo("/inventory/plant"),
+      },
+      {
+        key: "/inventory/product",
+        label: t("menu.product"),
+        onClick: navigateTo("/inventory/product"),
+      },
+      {
         key: "/inventory/requisition",
-        label: "Requisition",
+        label: t("menu.requisition"),
         onClick: navigateTo("/inventory/requisition"),
       },
       {
         key: "/inventory/receive",
-        label: "Receive",
+        label: t("menu.receive"),
         onClick: navigateTo("/inventory/receive"),
       },
       {
         key: "/inventory/release",
-        label: "Release",
+        label: t("menu.release"),
         onClick: navigateTo("/inventory/release"),
       },
     ],
@@ -556,9 +567,16 @@ const allMenuItems = computed(() => [
   },
 ]);
 
-// Filter menu by permission
+// Detect if current route is inside inventory module
+const isInventoryRoute = computed(() => route.path.startsWith("/inventory"));
+
+// Filter menu by permission and active module (inventory is isolated)
 const items = computed(() => {
+  if (isInventoryRoute.value) {
+    return allMenuItems.value.filter((item) => item.module === "inventory");
+  }
   return allMenuItems.value.filter((item) => {
+    if (item.module === "inventory") return false;
     if (!item.permission) return true;
     if (Array.isArray(item.permission)) return item.permission.some((p) => hasPermission(p));
     return hasPermission(item.permission);
@@ -577,22 +595,20 @@ function flattenItems(list, out = []) {
   return out;
 }
 
-const parentOf = new Map();
-function indexItems(list, parentKey = null) {
+function buildParentMap(list, parentKey = null, map = new Map()) {
   list.forEach((it) => {
-    if (parentKey) parentOf.set(it.key, parentKey);
-    if (it.children?.length) indexItems(it.children, it.key);
+    if (parentKey) map.set(it.key, parentKey);
+    if (it.children?.length) buildParentMap(it.children, it.key, map);
   });
+  return map;
 }
-
-// build the parent map once
-indexItems(items.value);
 
 // watch the route and update menu state
 watch(
   () => route.path,
   async (newPath) => {
     const flat = flattenItems(items.value);
+    const parentOf = buildParentMap(items.value);
 
     // find exact match or fallback to prefix
     const exact = flat.find((i) => i.key === newPath);

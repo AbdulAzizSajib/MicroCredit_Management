@@ -1,8 +1,9 @@
 <template>
   <MainLayout>
     <div class="flex items-center justify-between gap-3">
-      <h1 class="text-2xl font-bold text-primary">
-        Purchase Requisition Create
+      <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
+        Edit Requisition — {{ RequisitionNo }}
+        <Icon v-if="isLoading" class="size-7" icon="line-md:loading-loop" />
       </h1>
       <button
         class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
@@ -117,7 +118,7 @@
             @click="save"
             type="button"
           >
-            {{ isSaving ? "Saving..." : "Save" }}
+            {{ isSaving ? "Updating..." : "Update" }}
           </button>
           <button
             class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition-colors"
@@ -134,23 +135,13 @@
         <h2 class="font-bold text-gray-800">Other Information</h2>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Plant <span class="text-red-500">*</span>
-          </label>
+          <label class="text-sm font-medium text-gray-700">Plant</label>
           <div class="col-span-3">
-            <a-select
-              class="w-full"
-              placeholder="Select Plant"
-              v-model:value="form.PlantCode"
-              show-search
-              :filter-option="filterOption"
-              option-filter-prop="label"
-            >
+            <a-select class="w-full" v-model:value="form.PlantCode" disabled>
               <a-select-option
                 v-for="p in plants"
                 :key="p.PlantCode"
                 :value="p.PlantCode"
-                :label="`${p.PlantCode} ${p.PlantName}`"
               >
                 {{ p.PlantCode }} — {{ p.PlantName }}
               </a-select-option>
@@ -173,20 +164,6 @@
           </label>
           <div class="col-span-3">
             <a-input placeholder="Customer code" v-model:value="form.CustomerCode" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Date <span class="text-red-500">*</span>
-          </label>
-          <div class="col-span-3">
-            <a-date-picker
-              class="w-full"
-              v-model:value="form.RequisitionDate"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-            />
           </div>
         </div>
 
@@ -259,24 +236,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import dayjs from "dayjs";
+import { onMounted, ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
 import { SALES_TYPES, INVOICE_TYPES, YN } from "./_static";
 import { fetchAllPlants } from "./plants-api";
 
+const route = useRoute();
 const router = useRouter();
 
-const plants = ref([]);
+const RequisitionNo = computed(() => route.query.RequisitionNo || "");
+const PlantCode = computed(() => route.query.PlantCode || "");
 
-onMounted(async () => {
-  const list = await fetchAllPlants();
-  plants.value = list;
-});
+const plants = ref([]);
 
 const filterOption = (input, option) => {
   const text = (option?.label ?? "").toString().toLowerCase();
@@ -294,7 +270,7 @@ const searchProducts = async (val = "") => {
   try {
     const params = new URLSearchParams({
       search: val,
-      PlantCode: form.value.PlantCode || "",
+      PlantCode: PlantCode.value || "",
       per_page: 20,
     }).toString();
     const res = await axios.get(`${apiBase}/inventory/product?${params}`, getToken());
@@ -323,10 +299,9 @@ const onProductDropdownOpen = (open) => {
 const productName = (code) => productMap.value[code] || code || "-";
 
 const form = ref({
-  PlantCode: undefined,
+  PlantCode: "",
   Business: "",
   CustomerCode: "",
-  RequisitionDate: dayjs().format("YYYY-MM-DD"),
   DeliveryDate: "",
   SalesType: "LOCAL",
   InvoiceType: "Invoice",
@@ -338,6 +313,7 @@ const form = ref({
 
 const itemForm = ref({ ProductCode: undefined, Quantity: null, Remark: "" });
 const items = ref([]);
+const isLoading = ref(false);
 const isSaving = ref(false);
 
 const addItem = () => {
@@ -357,11 +333,56 @@ const removeItem = (idx) => {
   items.value.splice(idx, 1);
 };
 
+const fetchDetail = async () => {
+  if (!RequisitionNo.value || !PlantCode.value) {
+    showNotification("error", "Missing RequisitionNo / PlantCode in URL");
+    router.push("/inventory/requisition");
+    return;
+  }
+  isLoading.value = true;
+  try {
+    const res = await axios.get(
+      `${apiBase}/inventory/requisition/show?RequisitionNo=${RequisitionNo.value}&PlantCode=${PlantCode.value}`,
+      getToken(),
+    );
+    const detail = res?.data?.data ?? res?.data;
+    if (!detail) {
+      showNotification("error", "Requisition not found");
+      router.push("/inventory/requisition");
+      return;
+    }
+    form.value = {
+      PlantCode: detail.PlantCode || PlantCode.value,
+      Business: detail.Business || "",
+      CustomerCode: detail.CustomerCode || "",
+      DeliveryDate: detail.DeliveryDate || "",
+      SalesType: detail.Segment || detail.SalesType || "LOCAL",
+      InvoiceType: detail.InvoiceType || "Invoice",
+      IsSTIProductCourier: detail.IsSTIProductCourier || "N",
+      AutoReceive: detail.AutoReceive || "N",
+      Notes: detail.Notes || "",
+      ApproveUser: detail.ApproveUser || detail.ApproveDate || "",
+    };
+    const rawItems = detail.Items ?? detail.items ?? [];
+    items.value = rawItems.map((i) => ({
+      ProductCode: i.ProductCode,
+      Quantity: i.Quantity,
+      Remark: i.Remark || "",
+    }));
+    // populate productMap from loaded items so names show in the table
+    rawItems.forEach((i) => {
+      if (i.ProductName) productMap.value[i.ProductCode] = i.ProductName;
+    });
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const validate = () => {
-  if (!form.value.PlantCode) return "Please select a Plant";
   if (!form.value.Business) return "Please enter Business";
   if (!form.value.CustomerCode) return "Please enter Customer code";
-  if (!form.value.RequisitionDate) return "Please select Requisition Date";
   if (!form.value.DeliveryDate) return "Please select Delivery Date";
   if (!items.value.length) return "Please add at least one item";
   return null;
@@ -375,17 +396,28 @@ const save = async () => {
   }
   isSaving.value = true;
   try {
-    const payload = { ...form.value, items: items.value };
-    const res = await axios.post(
-      `${apiBase}/inventory/requisition`,
+    const payload = {
+      Business: form.value.Business,
+      CustomerCode: form.value.CustomerCode,
+      DeliveryDate: form.value.DeliveryDate,
+      SalesType: form.value.SalesType,
+      InvoiceType: form.value.InvoiceType,
+      IsSTIProductCourier: form.value.IsSTIProductCourier,
+      AutoReceive: form.value.AutoReceive,
+      Notes: form.value.Notes,
+      ApproveUser: form.value.ApproveUser,
+      items: items.value,
+    };
+    const res = await axios.put(
+      `${apiBase}/inventory/requisition?RequisitionNo=${RequisitionNo.value}&PlantCode=${PlantCode.value}`,
       payload,
       getToken(),
     );
     if (res?.data?.success !== false) {
-      showNotification("success", res?.data?.message || "Requisition created");
+      showNotification("success", res?.data?.message || "Requisition updated");
       router.push("/inventory/requisition");
     } else {
-      showNotification("error", res?.data?.message || "Failed to create");
+      showNotification("error", res?.data?.message || "Failed to update");
     }
   } catch (e) {
     showNotification("error", e?.response?.data?.message || e?.message);
@@ -393,4 +425,10 @@ const save = async () => {
     isSaving.value = false;
   }
 };
+
+onMounted(async () => {
+  const list = await fetchAllPlants();
+  plants.value = list;
+  fetchDetail();
+});
 </script>
