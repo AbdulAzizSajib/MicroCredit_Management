@@ -156,6 +156,10 @@ import ProductEdit from "@/views/inventory/product-edit.vue";
 import PlantList from "@/views/inventory/plant-list.vue";
 import PlantCreate from "@/views/inventory/plant-create.vue";
 import PlantEdit from "@/views/inventory/plant-edit.vue";
+import InventoryBusiness from "@/views/inventory/business.vue";
+import InventorySupplier from "@/views/inventory/supplier.vue";
+import InventoryMovementType from "@/views/inventory/movement-type.vue";
+import InventoryCustomer from "@/views/inventory/customer.vue";
 
 const routes = [
   {
@@ -807,6 +811,10 @@ const routes = [
   { path: "/inventory/plant", name: "plant-list", component: PlantList },
   { path: "/inventory/plant/create", name: "plant-create", component: PlantCreate },
   { path: "/inventory/plant/edit", name: "plant-edit", component: PlantEdit },
+  { path: "/inventory/business", name: "inventory-business", component: InventoryBusiness },
+  { path: "/inventory/supplier", name: "inventory-supplier", component: InventorySupplier },
+  { path: "/inventory/movement-type", name: "inventory-movement-type", component: InventoryMovementType },
+  { path: "/inventory/customer", name: "inventory-customer", component: InventoryCustomer },
 
   {
     path: "/:catchAll(.*)",

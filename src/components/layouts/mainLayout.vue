@@ -264,6 +264,26 @@ const allMenuItems = computed(() => [
         onClick: navigateTo("/inventory/product"),
       },
       {
+        key: "/inventory/business",
+        label: t("menu.business"),
+        onClick: navigateTo("/inventory/business"),
+      },
+      {
+        key: "/inventory/supplier",
+        label: t("menu.supplier"),
+        onClick: navigateTo("/inventory/supplier"),
+      },
+      {
+        key: "/inventory/customer",
+        label: t("menu.invCustomer"),
+        onClick: navigateTo("/inventory/customer"),
+      },
+      {
+        key: "/inventory/movement-type",
+        label: t("menu.movementType"),
+        onClick: navigateTo("/inventory/movement-type"),
+      },
+      {
         key: "/inventory/requisition",
         label: t("menu.requisition"),
         onClick: navigateTo("/inventory/requisition"),
