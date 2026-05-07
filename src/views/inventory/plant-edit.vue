@@ -30,28 +30,39 @@
             Plant Name <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Plant name" v-model:value="form.PlantName" />
+            <a-input placeholder="Plant name" v-model:value="form.PlantName" :maxlength="200" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-start">
-          <label class="text-sm font-medium text-gray-700 mt-2">Address</label>
+          <label class="text-sm font-medium text-gray-700 mt-2">
+            Address <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-textarea placeholder="Plant address" v-model:value="form.PlantAddress" :rows="3" />
+            <a-textarea
+              placeholder="Plant address"
+              v-model:value="form.PlantAddress"
+              :rows="3"
+              :maxlength="100"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Email</label>
+          <label class="text-sm font-medium text-gray-700">
+            Email <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="plant@example.com" v-model:value="form.PlantEmail" />
+            <a-input placeholder="plant@example.com" v-model:value="form.PlantEmail" :maxlength="30" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Phone</label>
+          <label class="text-sm font-medium text-gray-700">
+            Phone <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="+88017XXXXXXXX" v-model:value="form.PlantPhone" />
+            <a-input placeholder="+88017XXXXXXXX" v-model:value="form.PlantPhone" :maxlength="20" />
           </div>
         </div>
       </div>
@@ -61,9 +72,11 @@
         <h2 class="font-bold text-gray-800">Other Settings</h2>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Depot Code</label>
+          <label class="text-sm font-medium text-gray-700">
+            Depot Code <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="e.g. D001" v-model:value="form.DepotCode" />
+            <a-input placeholder="Max 10 chars (e.g. D001)" v-model:value="form.DepotCode" :maxlength="10" />
           </div>
         </div>
 
@@ -75,7 +88,9 @@
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Active</label>
+          <label class="text-sm font-medium text-gray-700">
+            Active <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-select class="w-full" v-model:value="form.Active">
               <a-select-option value="Y">Yes</a-select-option>
@@ -192,8 +207,29 @@ const fetchDetail = async () => {
   }
 };
 
+const validate = () => {
+  const f = form.value;
+  if (!f.PlantName?.trim()) return "Please enter Plant Name";
+  if (f.PlantName.length > 200) return "Plant Name must be 200 characters max";
+  if (!f.PlantAddress?.trim()) return "Please enter Address";
+  if (f.PlantAddress.length > 100) return "Address must be 100 characters max";
+  if (!f.PlantEmail?.trim()) return "Please enter Email";
+  if (f.PlantEmail.length > 30) return "Email must be 30 characters max";
+  if (!/^\S+@\S+\.\S+$/.test(f.PlantEmail)) return "Email is invalid";
+  if (!f.PlantPhone?.trim()) return "Please enter Phone";
+  if (f.PlantPhone.length > 20) return "Phone must be 20 characters max";
+  if (!f.DepotCode?.trim()) return "Please enter Depot Code";
+  if (f.DepotCode.length > 10) return "Depot Code must be 10 characters max";
+  if (!f.Active) return "Please select Active";
+  return null;
+};
+
 const save = async () => {
-  if (!form.value.PlantName?.trim()) { showNotification("error", "Please enter Plant Name"); return; }
+  const err = validate();
+  if (err) {
+    showNotification("error", err);
+    return;
+  }
   isSaving.value = true;
   try {
     const res = await axios.put(

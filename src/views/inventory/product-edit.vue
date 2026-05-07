@@ -37,33 +37,68 @@
             Product Name <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Product name (English)" v-model:value="form.ProductName" />
+            <a-input
+              placeholder="Product name (English)"
+              v-model:value="form.ProductName"
+              :maxlength="200"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">Name (Bangla)</label>
           <div class="col-span-3">
-            <a-input placeholder="পণ্যের নাম" v-model:value="form.ProductNameBangla" />
+            <a-input
+              placeholder="পণ্যের নাম"
+              v-model:value="form.ProductNameBangla"
+              :maxlength="3000"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Business</label>
+          <label class="text-sm font-medium text-gray-700">
+            Business <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="Business code" v-model:value="form.Business" />
+            <a-select
+              class="w-full"
+              placeholder="Select Business"
+              v-model:value="form.Business"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="businessLoading"
+            >
+              <a-select-option
+                v-for="b in businesses"
+                :key="b.Business"
+                :value="b.Business"
+                :label="`${b.Business} ${b.BusinessName}`"
+              >
+                {{ b.Business }} — {{ b.BusinessName }}
+              </a-select-option>
+            </a-select>
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Sub Business</label>
+          <label class="text-sm font-medium text-gray-700">
+            Sub Business <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="Sub business code" v-model:value="form.SubBusinessCode" />
+            <a-input
+              placeholder="Max 10 chars"
+              v-model:value="form.SubBusinessCode"
+              :maxlength="10"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Active</label>
+          <label class="text-sm font-medium text-gray-700">
+            Active <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-select class="w-full" v-model:value="form.Active">
               <a-select-option value="Y">Yes</a-select-option>
@@ -78,56 +113,76 @@
         <h2 class="font-bold text-gray-800">Pricing & Packaging</h2>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Pack Size</label>
+          <label class="text-sm font-medium text-gray-700">
+            Pack Size <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input placeholder="e.g. 1x10" v-model:value="form.PackSize" />
+            <a-input
+              placeholder="e.g. 1x10"
+              v-model:value="form.PackSize"
+              :maxlength="50"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Pack Size WT</label>
+          <label class="text-sm font-medium text-gray-700">
+            Pack Size WT <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
-            <a-input-number class="w-full" placeholder="0.00" v-model:value="form.PackSizeWT" :precision="4" :min="0" />
+            <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.PackSizeWT" :precision="4" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Batch Size</label>
+          <label class="text-sm font-medium text-gray-700">
+            Batch Size <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.00" v-model:value="form.BatchSize" :precision="2" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Carton</label>
+          <label class="text-sm font-medium text-gray-700">
+            Carton <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.00" v-model:value="form.Carton" :precision="2" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Trade Price</label>
+          <label class="text-sm font-medium text-gray-700">
+            Trade Price <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.TradePrice" :precision="4" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">VAT (%)</label>
+          <label class="text-sm font-medium text-gray-700">
+            VAT (%) <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.VAT" :precision="4" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">MRP</label>
+          <label class="text-sm font-medium text-gray-700">
+            MRP <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.MRP" :precision="4" :min="0" />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Mushok Print</label>
+          <label class="text-sm font-medium text-gray-700">
+            Mushok Print <span class="text-red-500">*</span>
+          </label>
           <div class="col-span-3">
             <a-select class="w-full" v-model:value="form.MushokPrint">
               <a-select-option value="Y">Yes</a-select-option>
@@ -166,12 +221,21 @@ import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
+import { fetchAllBusinesses } from "./business-api";
 
 const route = useRoute();
 const router = useRouter();
 
 const ProductCode = computed(() => route.query.ProductCode || "");
 const PlantCode = computed(() => route.query.PlantCode || "");
+
+const businesses = ref([]);
+const businessLoading = ref(false);
+
+const filterOption = (input, option) => {
+  const text = (option?.label ?? "").toString().toLowerCase();
+  return text.includes(input.toLowerCase());
+};
 
 const form = ref({
   ProductName: "",
@@ -183,7 +247,7 @@ const form = ref({
   TradePrice: null,
   VAT: null,
   MRP: null,
-  Business: "",
+  Business: undefined,
   SubBusinessCode: "",
   Active: "Y",
   MushokPrint: "N",
@@ -220,7 +284,7 @@ const fetchDetail = async () => {
       TradePrice: detail.TradePrice ?? null,
       VAT: detail.VAT ?? null,
       MRP: detail.MRP ?? null,
-      Business: detail.Business || "",
+      Business: detail.Business || undefined,
       SubBusinessCode: detail.SubBusinessCode || "",
       Active: detail.Active || "Y",
       MushokPrint: detail.MushokPrint || "N",
@@ -232,9 +296,33 @@ const fetchDetail = async () => {
   }
 };
 
+const validate = () => {
+  const f = form.value;
+  if (!f.ProductName?.trim()) return "Please enter Product Name";
+  if (f.ProductName.length > 200) return "Product Name must be 200 characters max";
+  if (f.ProductNameBangla && f.ProductNameBangla.length > 3000)
+    return "Product Name (Bangla) must be 3000 characters max";
+  if (!f.PackSize?.trim()) return "Please enter Pack Size";
+  if (f.PackSize.length > 50) return "Pack Size must be 50 characters max";
+  if (f.PackSizeWT == null || f.PackSizeWT === "") return "Please enter Pack Size WT";
+  if (f.BatchSize == null || f.BatchSize === "") return "Please enter Batch Size";
+  if (f.Carton == null || f.Carton === "") return "Please enter Carton";
+  if (f.TradePrice == null || f.TradePrice === "") return "Please enter Trade Price";
+  if (f.VAT == null || f.VAT === "") return "Please enter VAT";
+  if (f.MRP == null || f.MRP === "") return "Please enter MRP";
+  if (!f.Business?.trim()) return "Please enter Business";
+  if (f.Business.length > 2) return "Business must be 2 characters max";
+  if (!f.SubBusinessCode?.trim()) return "Please enter Sub Business Code";
+  if (f.SubBusinessCode.length > 10) return "Sub Business Code must be 10 characters max";
+  if (!f.Active) return "Please select Active";
+  if (!f.MushokPrint) return "Please select Mushok Print";
+  return null;
+};
+
 const save = async () => {
-  if (!form.value.ProductName?.trim()) {
-    showNotification("error", "Please enter Product Name");
+  const err = validate();
+  if (err) {
+    showNotification("error", err);
     return;
   }
   isSaving.value = true;
@@ -257,5 +345,17 @@ const save = async () => {
   }
 };
 
-onMounted(fetchDetail);
+const loadBusinesses = async () => {
+  businessLoading.value = true;
+  try {
+    businesses.value = await fetchAllBusinesses();
+  } finally {
+    businessLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchDetail();
+  loadBusinesses();
+});
 </script>

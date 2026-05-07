@@ -86,17 +86,26 @@
           <a-form-item
             label="Business"
             name="Business"
-            :rules="[
-              { required: true, message: 'Business code is required' },
-              { max: 2, message: 'Max 2 characters' },
-            ]"
+            :rules="[{ required: true, message: 'Business is required' }]"
           >
-            <a-input
+            <a-select
+              class="w-full"
+              placeholder="Select Business"
               v-model:value="form.Business"
-              placeholder="e.g. B1"
-              :maxlength="2"
-              show-count
-            />
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="businessLoading"
+            >
+              <a-select-option
+                v-for="b in businesses"
+                :key="b.Business"
+                :value="b.Business"
+                :label="`${b.Business} ${b.BusinessName}`"
+              >
+                {{ b.Business }} — {{ b.BusinessName }}
+              </a-select-option>
+            </a-select>
           </a-form-item>
 
           <a-form-item
@@ -294,14 +303,27 @@ import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
 import { fetchAllPlants } from "./plants-api";
+import { fetchAllBusinesses } from "./business-api";
 
 const router = useRouter();
 const formRef = ref(null);
 
 const plants = ref([]);
+const businesses = ref([]);
+const businessLoading = ref(false);
 
 onMounted(async () => {
-  const allPlants = await fetchAllPlants();
+  const [allPlants] = await Promise.all([
+    fetchAllPlants(),
+    (async () => {
+      businessLoading.value = true;
+      try {
+        businesses.value = await fetchAllBusinesses();
+      } finally {
+        businessLoading.value = false;
+      }
+    })(),
+  ]);
   plants.value = allPlants;
 });
 

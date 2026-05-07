@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="flex flex-col gap-3 mb-4">
       <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">
-        <div class="flex-1 min-w-[200px]">
+        <div class="w-full sm:w-64">
           <label class="text-xs font-medium text-gray-600 block mb-1">Search</label>
           <a-input
             placeholder="Search Ref / Customer..."

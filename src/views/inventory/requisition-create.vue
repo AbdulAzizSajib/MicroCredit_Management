@@ -163,7 +163,25 @@
             Business <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Business code" v-model:value="form.Business" />
+            <a-select
+              class="w-full"
+              placeholder="Select Business"
+              v-model:value="form.Business"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="businessLoading"
+              @change="onBusinessChange"
+            >
+              <a-select-option
+                v-for="b in businesses"
+                :key="b.Business"
+                :value="b.Business"
+                :label="`${b.Business} ${b.BusinessName}`"
+              >
+                {{ b.Business }} — {{ b.BusinessName }}
+              </a-select-option>
+            </a-select>
           </div>
         </div>
 
@@ -172,7 +190,31 @@
             Customer <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Customer code" v-model:value="form.CustomerCode" />
+            <a-select
+              class="w-full"
+              :placeholder="
+                !form.PlantCode
+                  ? 'Select Plant first'
+                  : !form.Business
+                    ? 'Select Business first'
+                    : 'Select Customer'
+              "
+              v-model:value="form.CustomerCode"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="customerLoading"
+              :disabled="!form.PlantCode || !form.Business"
+            >
+              <a-select-option
+                v-for="c in customers"
+                :key="c.CustomerCode"
+                :value="c.CustomerCode"
+                :label="`${c.CustomerCode} ${c.CustomerName}`"
+              >
+                {{ c.CustomerCode }} — {{ c.CustomerName }}
+              </a-select-option>
+            </a-select>
           </div>
         </div>
 
@@ -259,7 +301,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -268,14 +310,29 @@ import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
 import { SALES_TYPES, INVOICE_TYPES, YN } from "./_static";
 import { fetchAllPlants } from "./plants-api";
+import { fetchAllBusinesses } from "./business-api";
+import { fetchCustomers } from "./customer-api";
 
 const router = useRouter();
 
 const plants = ref([]);
+const businesses = ref([]);
+const customers = ref([]);
+const businessLoading = ref(false);
+const customerLoading = ref(false);
 
 onMounted(async () => {
-  const list = await fetchAllPlants();
-  plants.value = list;
+  businessLoading.value = true;
+  try {
+    const [allPlants, allBusinesses] = await Promise.all([
+      fetchAllPlants(),
+      fetchAllBusinesses(),
+    ]);
+    plants.value = allPlants;
+    businesses.value = allBusinesses;
+  } finally {
+    businessLoading.value = false;
+  }
 });
 
 const filterOption = (input, option) => {
@@ -324,8 +381,8 @@ const productName = (code) => productMap.value[code] || code || "-";
 
 const form = ref({
   PlantCode: undefined,
-  Business: "",
-  CustomerCode: "",
+  Business: undefined,
+  CustomerCode: undefined,
   RequisitionDate: dayjs().format("YYYY-MM-DD"),
   DeliveryDate: "",
   SalesType: "LOCAL",
@@ -335,6 +392,35 @@ const form = ref({
   Notes: "",
   ApproveUser: "",
 });
+
+const loadCustomers = async () => {
+  if (!form.value.PlantCode || !form.value.Business) {
+    customers.value = [];
+    return;
+  }
+  customerLoading.value = true;
+  try {
+    customers.value = await fetchCustomers(form.value.PlantCode, form.value.Business);
+  } catch (e) {
+    customers.value = [];
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    customerLoading.value = false;
+  }
+};
+
+const onBusinessChange = () => {
+  form.value.CustomerCode = undefined;
+  loadCustomers();
+};
+
+watch(
+  () => form.value.PlantCode,
+  () => {
+    form.value.CustomerCode = undefined;
+    loadCustomers();
+  },
+);
 
 const itemForm = ref({ ProductCode: undefined, Quantity: null, Remark: "" });
 const items = ref([]);

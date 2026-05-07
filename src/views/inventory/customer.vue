@@ -2,17 +2,68 @@
   <MainLayout>
     <div class="flex flex-col gap-3 mb-4">
       <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">
-        <div class="flex-1 min-w-[200px]">
+        <div class="w-full sm:w-64">
           <label class="text-xs font-medium text-gray-600 block mb-1">Search</label>
           <a-input
             placeholder="Search by code, name or mobile..."
             v-model:value="search"
             allow-clear
+            @change="onSearchChange"
           />
+        </div>
+        <div class="w-full sm:w-44">
+          <label class="text-xs font-medium text-gray-600 block mb-1">Plant</label>
+          <a-select
+            class="w-full"
+            placeholder="All Plants"
+            v-model:value="filterPlant"
+            allow-clear
+            show-search
+            :filter-option="filterOption"
+            option-filter-prop="label"
+            @change="onFilterChange"
+          >
+            <a-select-option
+              v-for="p in plants"
+              :key="p.PlantCode"
+              :value="p.PlantCode"
+              :label="`${p.PlantCode} ${p.PlantName}`"
+            >
+              {{ p.PlantCode }} — {{ p.PlantName }}
+            </a-select-option>
+          </a-select>
+        </div>
+        <div class="w-full sm:w-44">
+          <label class="text-xs font-medium text-gray-600 block mb-1">Business</label>
+          <a-select
+            class="w-full"
+            placeholder="All Business"
+            v-model:value="filterBusiness"
+            allow-clear
+            show-search
+            :filter-option="filterOption"
+            option-filter-prop="label"
+            @change="onFilterChange"
+          >
+            <a-select-option
+              v-for="b in businesses"
+              :key="b.Business"
+              :value="b.Business"
+              :label="`${b.Business} ${b.BusinessName}`"
+            >
+              {{ b.Business }} — {{ b.BusinessName }}
+            </a-select-option>
+          </a-select>
         </div>
         <div class="w-full sm:w-36">
           <label class="text-xs font-medium text-gray-600 block mb-1">Active</label>
-          <a-select class="w-full" placeholder="All" v-model:value="filterActive" allow-clear>
+          <a-select
+            class="w-full"
+            placeholder="All"
+            v-model:value="filterActive"
+            allow-clear
+            @change="onFilterChange"
+          >
             <a-select-option value="Y">Active</a-select-option>
             <a-select-option value="N">Inactive</a-select-option>
           </a-select>
@@ -26,8 +77,9 @@
       </div>
     </div>
 
-    <h1 class="text-2xl font-bold text-primary mb-4">
-      Customers ({{ filtered.length }})
+    <h1 class="text-2xl font-bold text-primary flex gap-3 mb-4">
+      Customers ({{ total }})
+      <Icon v-if="loading" class="size-7" icon="line-md:loading-loop" />
     </h1>
 
     <div class="overflow-x-auto">
@@ -35,8 +87,7 @@
         <thead>
           <tr class="bg-primary text-white">
             <th class="border border-white px-4 py-2">S/L</th>
-            <th class="border border-white px-4 py-2">Code</th>
-            <th class="border border-white px-4 py-2">Customer Name</th>
+            <th class="border border-white px-4 py-2">Customer</th>
             <th class="border border-white px-4 py-2">Contact Person</th>
             <th class="border border-white px-4 py-2">Mobile</th>
             <th class="border border-white px-4 py-2">Business</th>
@@ -47,10 +98,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, i) in filtered" :key="row.CustomerCode">
-            <td class="px-4 py-2 border">{{ i + 1 }}</td>
-            <td class="px-4 py-2 border font-medium text-primary">{{ row.CustomerCode }}</td>
-            <td class="px-4 py-2 border">{{ row.CustomerName }}</td>
+          <tr v-for="(row, i) in list" :key="row.CustomerCode + (row.PlantCode || '')">
+            <td class="px-4 py-2 border">{{ (page - 1) * per_page + i + 1 }}</td>
+            <td class="px-4 py-2 border">
+              <div class="flex items-center gap-2">
+                <span class="text-gray-700">{{ row.CustomerName }}</span>
+                <span
+                  class="inline-flex items-center justify-center min-w-[32px] px-2 py-0.5 rounded bg-primary/10 text-primary text-xs font-bold tracking-wide"
+                >
+                  {{ row.CustomerCode }}
+                </span>
+              </div>
+            </td>
             <td class="px-4 py-2 border">{{ row.ContactPerson }}</td>
             <td class="px-4 py-2 border">{{ row.Mobile }}</td>
             <td class="px-4 py-2 border">{{ row.Business }}</td>
@@ -100,8 +159,8 @@
               </div>
             </td>
           </tr>
-          <tr v-if="!filtered.length">
-            <td colspan="10" class="px-4 py-6 border text-center text-gray-500">
+          <tr v-if="!list.length && !loading">
+            <td colspan="9" class="px-4 py-6 border text-center text-gray-500">
               No customer found.
             </td>
           </tr>
@@ -109,12 +168,24 @@
       </table>
     </div>
 
+    <a-pagination
+      class="mt-4"
+      v-model:current="page"
+      :page-size="per_page"
+      :total="total"
+      :show-size-changer="false"
+      :show-total="(t) => `Total ${t} items`"
+      @change="(p) => { page = p; fetchList(); }"
+      v-if="total > per_page"
+    />
+
     <!-- Create / Edit Modal -->
     <a-modal
       v-model:open="formModal"
       :title="isEditing ? 'Edit Customer' : 'Create Customer'"
       :footer="null"
       width="780px"
+      :mask-closable="false"
     >
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -129,6 +200,29 @@
           />
         </div>
         <div>
+          <label class="text-sm font-medium text-gray-700 block mb-1">
+            Plant <span class="text-red-500">*</span>
+          </label>
+          <a-select
+            class="w-full"
+            placeholder="Select Plant"
+            v-model:value="form.PlantCode"
+            show-search
+            :filter-option="filterOption"
+            option-filter-prop="label"
+            :disabled="isEditing"
+          >
+            <a-select-option
+              v-for="p in plants"
+              :key="p.PlantCode"
+              :value="p.PlantCode"
+              :label="`${p.PlantCode} ${p.PlantName}`"
+            >
+              {{ p.PlantCode }} — {{ p.PlantName }}
+            </a-select-option>
+          </a-select>
+        </div>
+        <div class="sm:col-span-2">
           <label class="text-sm font-medium text-gray-700 block mb-1">
             Customer Name <span class="text-red-500">*</span>
           </label>
@@ -173,7 +267,7 @@
             Mobile <span class="text-red-500">*</span>
           </label>
           <a-input
-            placeholder="Mobile"
+            placeholder="01XXXXXXXXX"
             v-model:value="form.Mobile"
             :maxlength="50"
           />
@@ -202,21 +296,23 @@
           <label class="text-sm font-medium text-gray-700 block mb-1">
             Business <span class="text-red-500">*</span>
           </label>
-          <a-input
-            placeholder="2 chars"
+          <a-select
+            class="w-full"
+            placeholder="Select Business"
             v-model:value="form.Business"
-            :maxlength="2"
-          />
-        </div>
-        <div>
-          <label class="text-sm font-medium text-gray-700 block mb-1">
-            Plant Code <span class="text-red-500">*</span>
-          </label>
-          <a-input
-            placeholder="4 chars"
-            v-model:value="form.PlantCode"
-            :maxlength="4"
-          />
+            show-search
+            :filter-option="filterOption"
+            option-filter-prop="label"
+          >
+            <a-select-option
+              v-for="b in businesses"
+              :key="b.Business"
+              :value="b.Business"
+              :label="`${b.Business} ${b.BusinessName}`"
+            >
+              {{ b.Business }} — {{ b.BusinessName }}
+            </a-select-option>
+          </a-select>
         </div>
         <div>
           <label class="text-sm font-medium text-gray-700 block mb-1">
@@ -243,17 +339,19 @@
       <div class="flex gap-3 mt-5 justify-end">
         <button
           class="bg-gray-200 text-gray-700 px-5 py-2 rounded hover:bg-gray-300"
+          :disabled="isSaving"
           @click="formModal = false"
           type="button"
         >
           Cancel
         </button>
         <button
-          class="bg-primary text-white px-5 py-2 rounded hover:opacity-90"
+          class="bg-primary text-white px-5 py-2 rounded hover:opacity-90 disabled:opacity-60"
+          :disabled="isSaving"
           @click="save"
           type="button"
         >
-          {{ isEditing ? "Update" : "Save" }}
+          {{ isSaving ? "Saving..." : isEditing ? "Update" : "Save" }}
         </button>
       </div>
     </a-modal>
@@ -266,6 +364,10 @@
           <span>{{ selected.CustomerCode }}</span>
         </div>
         <div class="flex justify-between border-b pb-1">
+          <span class="font-semibold text-gray-600">Plant Code:</span>
+          <span>{{ selected.PlantCode }}</span>
+        </div>
+        <div class="flex justify-between border-b pb-1 col-span-2">
           <span class="font-semibold text-gray-600">Customer Name:</span>
           <span>{{ selected.CustomerName }}</span>
         </div>
@@ -298,10 +400,6 @@
           <span>{{ selected.Business }}</span>
         </div>
         <div class="flex justify-between border-b pb-1">
-          <span class="font-semibold text-gray-600">Plant Code:</span>
-          <span>{{ selected.PlantCode }}</span>
-        </div>
-        <div class="flex justify-between border-b pb-1">
           <span class="font-semibold text-gray-600">Customer Type:</span>
           <span>{{ selected.CustomerType }}</span>
         </div>
@@ -323,86 +421,39 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
-import dayjs from "dayjs";
+import { onMounted, ref } from "vue";
+import axios from "axios";
+import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
-import { showNotification } from "@/utilities/common";
+import { apiBase } from "@/config";
+import { getToken, showNotification } from "@/utilities/common";
+import { fetchAllPlants } from "./plants-api";
+import { fetchAllBusinesses } from "./business-api";
 
-const list = ref([
-  {
-    CustomerCode: "CUS001",
-    CustomerName: "Lazz Pharma Ltd.",
-    ContactPerson: "Rahim Uddin",
-    Add1: "House 12, Road 5, Dhanmondi",
-    Add2: "Dhaka 1205",
-    Phone: "02-9123456",
-    Mobile: "+8801712000001",
-    Email: "rahim@lazzpharma.com",
-    Business: "01",
-    PlantCode: "P001",
-    CustomerType: "WHOLESALE",
-    CreateDate: "2025-01-15 10:00:00",
-    EditDate: "2025-03-10 14:25:00",
-    Active: "Y",
-  },
-  {
-    CustomerCode: "CUS002",
-    CustomerName: "Tamanna Pharmacy",
-    ContactPerson: "Sadia Akter",
-    Add1: "Shop 24, Mirpur 10",
-    Add2: "Dhaka 1216",
-    Phone: "02-8855221",
-    Mobile: "+8801712000002",
-    Email: "sadia@tamannapharma.bd",
-    Business: "02",
-    PlantCode: "P002",
-    CustomerType: "RETAIL",
-    CreateDate: "2025-02-08 09:30:00",
-    EditDate: "",
-    Active: "Y",
-  },
-  {
-    CustomerCode: "CUS003",
-    CustomerName: "Nandan Mega Shop",
-    ContactPerson: "Karim Hossain",
-    Add1: "Plot 14, Sector 7, Uttara",
-    Add2: "Dhaka 1230",
-    Phone: "02-7891122",
-    Mobile: "+8801712000003",
-    Email: "karim@nandan.com",
-    Business: "03",
-    PlantCode: "P001",
-    CustomerType: "DEALER",
-    CreateDate: "2024-11-20 16:45:00",
-    EditDate: "2025-04-02 11:10:00",
-    Active: "N",
-  },
-]);
+const list = ref([]);
+const total = ref(0);
+const page = ref(1);
+const per_page = ref(10);
+const loading = ref(false);
 
 const search = ref("");
+const filterPlant = ref(undefined);
+const filterBusiness = ref(undefined);
 const filterActive = ref(undefined);
 
-const filtered = computed(() => {
-  const q = (search.value || "").trim().toLowerCase();
-  return list.value.filter((r) => {
-    if (filterActive.value && r.Active !== filterActive.value) return false;
-    if (!q) return true;
-    return (
-      r.CustomerCode.toLowerCase().includes(q) ||
-      r.CustomerName.toLowerCase().includes(q) ||
-      r.Mobile.toLowerCase().includes(q)
-    );
-  });
-});
+const plants = ref([]);
+const businesses = ref([]);
 
 const formModal = ref(false);
 const viewModal = ref(false);
 const isEditing = ref(false);
+const isSaving = ref(false);
 const selected = ref(null);
-const editingKey = ref(null);
+const editingKey = ref({ CustomerCode: null, PlantCode: null });
 
 const blank = () => ({
   CustomerCode: "",
+  PlantCode: undefined,
   CustomerName: "",
   ContactPerson: "",
   Add1: "",
@@ -410,82 +461,195 @@ const blank = () => ({
   Phone: "",
   Mobile: "",
   Email: "",
-  Business: "",
-  PlantCode: "",
+  Business: undefined,
   CustomerType: "RETAIL",
-  CreateDate: "",
-  EditDate: "",
   Active: "Y",
 });
 
 const form = ref(blank());
 
+const filterOption = (input, option) => {
+  const text = (option?.label ?? "").toString().toLowerCase();
+  return text.includes(input.toLowerCase());
+};
+
+let searchTimer = null;
+const onSearchChange = () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    page.value = 1;
+    fetchList();
+  }, 350);
+};
+
+const onFilterChange = () => {
+  page.value = 1;
+  fetchList();
+};
+
+const fetchList = async () => {
+  loading.value = true;
+  try {
+    const params = new URLSearchParams({
+      search: search.value || "",
+      PlantCode: filterPlant.value || "",
+      Business: filterBusiness.value || "",
+      Active: filterActive.value || "",
+      per_page: per_page.value,
+      page: page.value,
+    }).toString();
+    const res = await axios.get(`${apiBase}/inventory/customer?${params}`, getToken());
+    const payload = res?.data?.data ?? res?.data;
+    list.value = payload?.data ?? payload ?? [];
+    total.value = payload?.total ?? list.value.length ?? 0;
+  } catch (err) {
+    list.value = [];
+    total.value = 0;
+    showNotification("error", err?.response?.data?.message || err?.message);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const showUrl = (row) =>
+  `${apiBase}/inventory/customer/show?CustomerCode=${encodeURIComponent(
+    row.CustomerCode,
+  )}&PlantCode=${encodeURIComponent(row.PlantCode)}`;
+
+const viewRow = async (row) => {
+  selected.value = row;
+  viewModal.value = true;
+  try {
+    const res = await axios.get(showUrl(row), getToken());
+    const detail = res?.data?.data ?? res?.data;
+    if (detail) selected.value = { ...row, ...detail };
+  } catch (err) {
+    showNotification("error", err?.response?.data?.message || err?.message);
+  }
+};
+
 const openCreate = () => {
   form.value = blank();
   isEditing.value = false;
-  editingKey.value = null;
+  editingKey.value = { CustomerCode: null, PlantCode: null };
   formModal.value = true;
 };
 
-const openEdit = (row) => {
-  form.value = { ...row };
+const openEdit = async (row) => {
   isEditing.value = true;
-  editingKey.value = row.CustomerCode;
+  editingKey.value = { CustomerCode: row.CustomerCode, PlantCode: row.PlantCode };
+  form.value = { ...blank(), ...row };
   formModal.value = true;
-};
-
-const viewRow = (row) => {
-  selected.value = row;
-  viewModal.value = true;
+  try {
+    const res = await axios.get(showUrl(row), getToken());
+    const detail = res?.data?.data ?? res?.data;
+    if (detail) form.value = { ...form.value, ...detail };
+  } catch (err) {
+    showNotification("error", err?.response?.data?.message || err?.message);
+  }
 };
 
 const validate = () => {
   const f = form.value;
-  if (!f.CustomerCode?.trim()) return "Customer code is required";
-  if (f.CustomerCode.length > 10) return "Customer code max 10 chars";
-  if (!f.CustomerName?.trim()) return "Customer name is required";
-  if (!f.ContactPerson?.trim()) return "Contact person is required";
-  if (!f.Add1?.trim()) return "Address line 1 is required";
-  if (!f.Add2?.trim()) return "Address line 2 is required";
+  if (!f.CustomerCode?.trim()) return "Customer Code is required";
+  if (f.CustomerCode.length > 10) return "Customer Code must be 10 characters max";
+  if (!f.PlantCode) return "Please select a Plant";
+  if (!f.CustomerName?.trim()) return "Customer Name is required";
+  if (f.CustomerName.length > 100) return "Customer Name must be 100 characters max";
+  if (!f.ContactPerson?.trim()) return "Contact Person is required";
+  if (f.ContactPerson.length > 50) return "Contact Person must be 50 characters max";
+  if (!f.Add1?.trim()) return "Address Line 1 is required";
+  if (f.Add1.length > 255) return "Address Line 1 must be 255 characters max";
+  if (!f.Add2?.trim()) return "Address Line 2 is required";
+  if (f.Add2.length > 255) return "Address Line 2 must be 255 characters max";
   if (!f.Phone?.trim()) return "Phone is required";
-  if (!f.Mobile?.trim()) return "Mobile is required";
-  if (!f.Email?.trim()) return "Email is required";
-  if (!/^\S+@\S+\.\S+$/.test(f.Email)) return "Email is invalid";
-  if (!f.Business?.trim()) return "Business is required";
-  if (f.Business.length > 2) return "Business max 2 chars";
-  if (!f.PlantCode?.trim()) return "Plant code is required";
-  if (f.PlantCode.length > 4) return "Plant code max 4 chars";
-  if (!f.CustomerType?.trim()) return "Customer type is required";
-  if (!f.Active) return "Active is required";
-  if (
-    !isEditing.value &&
-    list.value.some((r) => r.CustomerCode === f.CustomerCode)
-  ) {
-    return "Customer code already exists";
+  if (f.Phone.length > 50) return "Phone must be 50 characters max";
+  if (!/^[\d+\-\s()]+$/.test(f.Phone.trim()))
+    return "Phone can only contain digits, +, -, () and spaces";
+  {
+    const digits = f.Phone.replace(/\D/g, "");
+    if (digits.length < 7 || digits.length > 15)
+      return "Phone must be 7–15 digits (e.g. 02-9999999)";
   }
+  if (!f.Mobile?.trim()) return "Mobile is required";
+  if (f.Mobile.length > 50) return "Mobile must be 50 characters max";
+  {
+    const m = f.Mobile.replace(/[\s\-()]/g, "");
+    if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(m))
+      return "Invalid Mobile (e.g. 01711111111 or +8801711111111)";
+  }
+  if (!f.Email?.trim()) return "Email is required";
+  if (f.Email.length > 50) return "Email must be 50 characters max";
+  if (!/^\S+@\S+\.\S+$/.test(f.Email)) return "Email is invalid";
+  if (!f.Business) return "Please select a Business";
+  if (!f.CustomerType?.trim()) return "Customer Type is required";
+  if (!f.Active) return "Active is required";
   return null;
 };
 
-const save = () => {
+const save = async () => {
   const err = validate();
   if (err) {
     showNotification("error", err);
     return;
   }
-  const now = dayjs().format("YYYY-MM-DD HH:mm:ss");
-  if (isEditing.value) {
-    const idx = list.value.findIndex((r) => r.CustomerCode === editingKey.value);
-    if (idx > -1) list.value[idx] = { ...form.value, EditDate: now };
-    showNotification("success", "Customer updated");
-  } else {
-    list.value.push({ ...form.value, CreateDate: now, EditDate: "" });
-    showNotification("success", "Customer created");
+  isSaving.value = true;
+  try {
+    const payload = { ...form.value };
+    let res;
+    if (isEditing.value) {
+      res = await axios.put(
+        `${apiBase}/inventory/customer?CustomerCode=${encodeURIComponent(
+          editingKey.value.CustomerCode,
+        )}&PlantCode=${encodeURIComponent(editingKey.value.PlantCode)}`,
+        payload,
+        getToken(),
+      );
+    } else {
+      res = await axios.post(`${apiBase}/inventory/customer`, payload, getToken());
+    }
+    if (res?.data?.success !== false) {
+      showNotification(
+        "success",
+        res?.data?.message || (isEditing.value ? "Customer updated" : "Customer created"),
+      );
+      formModal.value = false;
+      await fetchList();
+    } else {
+      showNotification("error", res?.data?.message || "Operation failed");
+    }
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    isSaving.value = false;
   }
-  formModal.value = false;
 };
 
-const deleteRow = (row) => {
-  list.value = list.value.filter((r) => r.CustomerCode !== row.CustomerCode);
-  showNotification("success", "Customer deleted");
+const deleteRow = async (row) => {
+  try {
+    const res = await axios.delete(
+      `${apiBase}/inventory/customer?CustomerCode=${encodeURIComponent(
+        row.CustomerCode,
+      )}&PlantCode=${encodeURIComponent(row.PlantCode)}`,
+      getToken(),
+    );
+    showNotification(
+      res?.data?.success !== false ? "success" : "error",
+      res?.data?.message || "Deleted",
+    );
+    await fetchList();
+  } catch (err) {
+    showNotification("error", err?.response?.data?.message || err?.message);
+  }
 };
+
+onMounted(async () => {
+  const [allPlants, allBusinesses] = await Promise.all([
+    fetchAllPlants(),
+    fetchAllBusinesses(),
+  ]);
+  plants.value = allPlants;
+  businesses.value = allBusinesses;
+  fetchList();
+});
 </script>

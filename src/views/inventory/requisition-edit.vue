@@ -154,7 +154,25 @@
             Business <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Business code" v-model:value="form.Business" />
+            <a-select
+              class="w-full"
+              placeholder="Select Business"
+              v-model:value="form.Business"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="businessLoading"
+              @change="onBusinessChange"
+            >
+              <a-select-option
+                v-for="b in businesses"
+                :key="b.Business"
+                :value="b.Business"
+                :label="`${b.Business} ${b.BusinessName}`"
+              >
+                {{ b.Business }} — {{ b.BusinessName }}
+              </a-select-option>
+            </a-select>
           </div>
         </div>
 
@@ -163,7 +181,25 @@
             Customer <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input placeholder="Customer code" v-model:value="form.CustomerCode" />
+            <a-select
+              class="w-full"
+              :placeholder="form.Business ? 'Select Customer' : 'Select Business first'"
+              v-model:value="form.CustomerCode"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="customerLoading"
+              :disabled="!form.PlantCode || !form.Business"
+            >
+              <a-select-option
+                v-for="c in customers"
+                :key="c.CustomerCode"
+                :value="c.CustomerCode"
+                :label="`${c.CustomerCode} ${c.CustomerName}`"
+              >
+                {{ c.CustomerCode }} — {{ c.CustomerName }}
+              </a-select-option>
+            </a-select>
           </div>
         </div>
 
@@ -245,6 +281,8 @@ import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
 import { SALES_TYPES, INVOICE_TYPES, YN } from "./_static";
 import { fetchAllPlants } from "./plants-api";
+import { fetchAllBusinesses } from "./business-api";
+import { fetchCustomers } from "./customer-api";
 
 const route = useRoute();
 const router = useRouter();
@@ -253,6 +291,10 @@ const RequisitionNo = computed(() => route.query.RequisitionNo || "");
 const PlantCode = computed(() => route.query.PlantCode || "");
 
 const plants = ref([]);
+const businesses = ref([]);
+const customers = ref([]);
+const businessLoading = ref(false);
+const customerLoading = ref(false);
 
 const filterOption = (input, option) => {
   const text = (option?.label ?? "").toString().toLowerCase();
@@ -333,6 +375,27 @@ const removeItem = (idx) => {
   items.value.splice(idx, 1);
 };
 
+const loadCustomers = async () => {
+  if (!form.value.PlantCode || !form.value.Business) {
+    customers.value = [];
+    return;
+  }
+  customerLoading.value = true;
+  try {
+    customers.value = await fetchCustomers(form.value.PlantCode, form.value.Business);
+  } catch (e) {
+    customers.value = [];
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    customerLoading.value = false;
+  }
+};
+
+const onBusinessChange = () => {
+  form.value.CustomerCode = undefined;
+  loadCustomers();
+};
+
 const fetchDetail = async () => {
   if (!RequisitionNo.value || !PlantCode.value) {
     showNotification("error", "Missing RequisitionNo / PlantCode in URL");
@@ -353,8 +416,8 @@ const fetchDetail = async () => {
     }
     form.value = {
       PlantCode: detail.PlantCode || PlantCode.value,
-      Business: detail.Business || "",
-      CustomerCode: detail.CustomerCode || "",
+      Business: detail.Business || undefined,
+      CustomerCode: detail.CustomerCode || undefined,
       DeliveryDate: detail.DeliveryDate || "",
       SalesType: detail.Segment || detail.SalesType || "LOCAL",
       InvoiceType: detail.InvoiceType || "Invoice",
@@ -363,6 +426,7 @@ const fetchDetail = async () => {
       Notes: detail.Notes || "",
       ApproveUser: detail.ApproveUser || detail.ApproveDate || "",
     };
+    if (form.value.Business) loadCustomers();
     const rawItems = detail.Items ?? detail.items ?? [];
     items.value = rawItems.map((i) => ({
       ProductCode: i.ProductCode,
@@ -427,8 +491,17 @@ const save = async () => {
 };
 
 onMounted(async () => {
-  const list = await fetchAllPlants();
-  plants.value = list;
+  businessLoading.value = true;
+  try {
+    const [allPlants, allBusinesses] = await Promise.all([
+      fetchAllPlants(),
+      fetchAllBusinesses(),
+    ]);
+    plants.value = allPlants;
+    businesses.value = allBusinesses;
+  } finally {
+    businessLoading.value = false;
+  }
   fetchDetail();
 });
 </script>

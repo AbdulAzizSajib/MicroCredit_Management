@@ -248,9 +248,9 @@ const allMenuItems = computed(() => [
     permission: "Accountant Dashboard",
   },
   {
-    key: "inventory",
-    label: t("menu.inventory"),
-    icon: () => h(ShoppingOutlined),
+    key: "inventory-settings",
+    label: t("menu.inventorySettings"),
+    icon: () => h(SettingOutlined),
     module: "inventory",
     children: [
       {
@@ -259,14 +259,14 @@ const allMenuItems = computed(() => [
         onClick: navigateTo("/inventory/plant"),
       },
       {
-        key: "/inventory/product",
-        label: t("menu.product"),
-        onClick: navigateTo("/inventory/product"),
-      },
-      {
         key: "/inventory/business",
         label: t("menu.business"),
         onClick: navigateTo("/inventory/business"),
+      },
+      {
+        key: "/inventory/product",
+        label: t("menu.product"),
+        onClick: navigateTo("/inventory/product"),
       },
       {
         key: "/inventory/supplier",
@@ -283,6 +283,14 @@ const allMenuItems = computed(() => [
         label: t("menu.movementType"),
         onClick: navigateTo("/inventory/movement-type"),
       },
+    ],
+  },
+  {
+    key: "inventory",
+    label: t("menu.inventory"),
+    icon: () => h(ShoppingOutlined),
+    module: "inventory",
+    children: [
       {
         key: "/inventory/requisition",
         label: t("menu.requisition"),
