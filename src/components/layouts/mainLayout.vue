@@ -223,28 +223,22 @@ const allMenuItems = computed(() => [
     children: [
       {
         key: "/savings/member-collection",
-        label: t("menu.savings"),
+        label: t("menu.paymentSavings"),
         onClick: navigateTo("/savings/member-collection"),
       },
       {
         key: "/loan/pay-loan",
-        label: t("menu.loan"),
+        label: t("menu.paymentLoan"),
         onClick: navigateTo("/loan/pay-loan"),
       },
     ],
     permission: "Saving",
   },
   {
-    key: "loan-accountant",
-    label: t("menu.loan"),
+    key: "/loan/loan-list",
+    label: t("menu.newLoan"),
     icon: () => h(BankOutlined),
-    children: [
-      {
-        key: "/loan/loan-list",
-        label: t("menu.payLoan"),
-        onClick: navigateTo("/loan/loan-list"),
-      },
-    ],
+    onClick: navigateTo("/loan/loan-list"),
     permission: "Accountant Dashboard",
   },
   {
@@ -310,18 +304,18 @@ const allMenuItems = computed(() => [
   },
   {
     key: "expense-parent",
-    label: "Expense",
+    label: t("menu.expense"),
     icon: () => h(CreditCardOutlined),
     permission: ["Expense", "Accountant Dashboard"],
     children: [
       {
         key: "/expense",
-        label: "Expense",
+        label: t("menu.expense"),
         onClick: navigateTo("/expense"),
       },
       {
         key: "/expense/expense-category",
-        label: "Expense Category",
+        label: t("menu.expenseCategory"),
         onClick: navigateTo("/expense/expense-category"),
       },
      
@@ -330,7 +324,7 @@ const allMenuItems = computed(() => [
 
   {
     key: "files",
-    label: "Settings",
+    label: t("menu.settings"),
     icon: () => h(SettingOutlined),
     permission: "Files",
     children: [

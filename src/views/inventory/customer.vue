@@ -222,7 +222,7 @@
             </a-select-option>
           </a-select>
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="text-sm font-medium text-gray-700 block mb-1">
             Customer Name <span class="text-red-500">*</span>
           </label>
@@ -272,7 +272,7 @@
             :maxlength="50"
           />
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="text-sm font-medium text-gray-700 block mb-1">
             Address Line 1 <span class="text-red-500">*</span>
           </label>
@@ -282,7 +282,7 @@
             :maxlength="255"
           />
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="text-sm font-medium text-gray-700 block mb-1">
             Address Line 2 <span class="text-red-500">*</span>
           </label>
@@ -367,7 +367,7 @@
           <span class="font-semibold text-gray-600">Plant Code:</span>
           <span>{{ selected.PlantCode }}</span>
         </div>
-        <div class="flex justify-between border-b pb-1 col-span-2">
+        <div class="flex justify-between border-b pb-1">
           <span class="font-semibold text-gray-600">Customer Name:</span>
           <span>{{ selected.CustomerName }}</span>
         </div>

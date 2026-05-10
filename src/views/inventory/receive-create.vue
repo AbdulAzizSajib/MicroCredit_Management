@@ -1,15 +1,23 @@
 <template>
   <MainLayout>
-    <div class="flex items-center justify-between gap-3">
+    <div class="flex items-center justify-between gap-3 flex-wrap">
       <h1 class="text-2xl font-bold text-primary" data-aos="fade-right">
         Product Release By Production
       </h1>
-      <button
-        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
-        @click="$router.push('/inventory/receive')"
-      >
-        Back to List
-      </button>
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-700">Last Quarantine No:</span>
+          <span class="px-3 py-1 rounded bg-primary/10 text-primary font-semibold text-sm">
+            {{ lastQuarantineNo }}
+          </span>
+        </div>
+        <button
+          class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
+          @click="$router.push('/inventory/receive')"
+        >
+          Back to List
+        </button>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-3 mt-5" data-aos="fade-up" data-aos-delay="100">
@@ -46,7 +54,10 @@
             <a-input placeholder="FGTN NO" v-model:value="form.fgtnNo" />
           </div>
         </div>
+      </div>
 
+      <!-- Right column -->
+      <div class="space-y-3">
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">Store</label>
           <div class="col-span-3">
@@ -67,30 +78,6 @@
           <label class="text-sm font-medium text-gray-700">Reference Date</label>
           <div class="col-span-3">
             <a-date-picker class="w-full" v-model:value="form.referenceDate" format="DD-MM-YYYY" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Right column -->
-      <div class="space-y-3">
-        <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">Last Quarantine No</label>
-          <div class="col-span-3">
-            <a-input :value="lastQuarantineNo" readonly />
-          </div>
-        </div>
-        <div class="grid grid-cols-4 gap-3 items-center">
-          <div></div>
-          <div class="col-span-3">
-            <button class="bg-primary text-white w-full px-4 py-2 rounded hover:opacity-90 transition-opacity" @click="generateQuarantineNo">
-              Get Receive No
-            </button>
-          </div>
-        </div>
-        <div v-if="form.generatedNo" class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">New Quarantine No</label>
-          <div class="col-span-3">
-            <a-input :value="form.generatedNo" readonly />
           </div>
         </div>
       </div>
@@ -117,13 +104,34 @@
         <tbody>
           <tr v-for="(row, idx) in detailRows" :key="idx">
             <td class="border px-2 py-1">
-              <a-input v-model:value="row.product" :bordered="false" placeholder="Product name" />
+              <a-select
+                show-search
+                class="w-full"
+                :bordered="false"
+                placeholder="Search product..."
+                :value="row.proCode"
+                :filter-option="false"
+                :loading="productSearching"
+                :not-found-content="productSearching ? 'Searching...' : 'No product found'"
+                @search="onProductSearch"
+                @dropdown-visible-change="onProductDropdownOpen"
+                @change="(val) => onProductChange(idx, val)"
+              >
+                <a-select-option
+                  v-for="p in productOptions"
+                  :key="p.ProductCode"
+                  :value="p.ProductCode"
+                  :label="`${p.ProductCode} ${p.ProductName}`"
+                >
+                  {{ p.ProductCode }} — {{ p.ProductName }}
+                </a-select-option>
+              </a-select>
             </td>
             <td class="border px-2 py-1">
-              <a-input v-model:value="row.proCode" :bordered="false" />
+              <a-input v-model:value="row.proCode" :bordered="false" readonly />
             </td>
             <td class="border px-2 py-1">
-              <a-input v-model:value="row.packSize" :bordered="false" />
+              <a-input v-model:value="row.packSize" :bordered="false" readonly />
             </td>
             <td class="border px-2 py-1">
               <a-input v-model:value="row.batchNo" :bordered="false" />
@@ -170,7 +178,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
+import axios from "axios";
 import MainLayout from "@/components/layouts/mainLayout.vue";
+import { apiBase } from "@/config";
+import { getToken } from "@/utilities/common";
 
 const router = useRouter();
 const STORE_KEY = "inventory_receives";
@@ -196,13 +207,52 @@ const form = ref({
   store: "Sales",
   referenceNo: "",
   referenceDate: dayjs(),
-  generatedNo: "",
 });
 
 const detailRows = ref([{ product: "", proCode: "", packSize: "", batchNo: "", location: "Central Warehouse", quantity: null, balance: null }]);
 
-const generateQuarantineNo = () => {
-  form.value.generatedNo = `P${String(Date.now()).slice(-10)}`;
+// API-driven product search
+const productOptions = ref([]);
+const productMap = ref({});
+const productSearching = ref(false);
+let productSearchTimer = null;
+
+const searchProducts = async (val = "") => {
+  productSearching.value = true;
+  try {
+    const params = new URLSearchParams({ search: val, per_page: 20 }).toString();
+    const res = await axios.get(`${apiBase}/inventory/product?${params}`, getToken());
+    const payload = res?.data?.data ?? res?.data;
+    const items = payload?.data ?? payload ?? [];
+    productOptions.value = items;
+    items.forEach((p) => {
+      productMap.value[p.ProductCode] = p;
+    });
+  } catch {
+    productOptions.value = [];
+  } finally {
+    productSearching.value = false;
+  }
+};
+
+const onProductSearch = (val) => {
+  clearTimeout(productSearchTimer);
+  productSearchTimer = setTimeout(() => searchProducts(val), 350);
+};
+
+const onProductDropdownOpen = (open) => {
+  if (open && productOptions.value.length === 0) {
+    searchProducts("");
+  }
+};
+
+const onProductChange = (idx, productCode) => {
+  const p = productMap.value[productCode];
+  const row = detailRows.value[idx];
+  if (!row) return;
+  row.proCode = productCode || "";
+  row.product = p?.ProductName || "";
+  row.packSize = p?.PackSize || "";
 };
 
 const addRow = () => {
@@ -222,7 +272,7 @@ const submit = () => {
   const list = existing();
   const entry = {
     id: Date.now(),
-    quarantineNo: form.value.generatedNo || `P${String(Date.now()).slice(-10)}`,
+    quarantineNo: `P${String(Date.now()).slice(-10)}`,
     movementType: form.value.movementType,
     business: form.value.business,
     receiveDate: form.value.receiveDate ? dayjs(form.value.receiveDate).format("YYYY-MM-DD") : "",

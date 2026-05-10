@@ -10,33 +10,29 @@
       </button>
     </div>
 
-    <a-form ref="formRef" :model="form" layout="vertical" :scroll-to-first-error="true">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- Left: Basic Information -->
-        <div class="border rounded-lg p-5">
-          <h2 class="font-bold text-gray-800 mb-4">Basic Information</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <!-- Left -->
+      <div class="border rounded-lg p-5 space-y-4">
+        <h2 class="font-bold text-gray-800">Basic Information</h2>
 
-          <a-form-item
-            label="Product Code"
-            name="ProductCode"
-            :rules="[
-              { required: true, message: 'Product Code is required' },
-              { max: 15, message: 'Max 15 characters' },
-            ]"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Product Code <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
             <a-input
-              v-model:value="form.ProductCode"
               placeholder="e.g. PRD001"
+              v-model:value="form.ProductCode"
               :maxlength="15"
-              show-count
             />
-          </a-form-item>
+          </div>
+        </div>
 
-          <a-form-item
-            label="Plant"
-            name="PlantCode"
-            :rules="[{ required: true, message: 'Please select a Plant' }]"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Plant <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
             <a-select
               class="w-full"
               placeholder="Select Plant"
@@ -54,40 +50,38 @@
                 {{ p.PlantCode }} — {{ p.PlantName }}
               </a-select-option>
             </a-select>
-          </a-form-item>
+          </div>
+        </div>
 
-          <a-form-item
-            label="Product Name"
-            name="ProductName"
-            :rules="[
-              { required: true, message: 'Product Name is required' },
-              { max: 200, message: 'Max 200 characters' },
-            ]"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Product Name <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
             <a-input
-              v-model:value="form.ProductName"
               placeholder="Product name (English)"
+              v-model:value="form.ProductName"
               :maxlength="200"
-              show-count
             />
-          </a-form-item>
+          </div>
+        </div>
 
-          <a-form-item
-            label="Product Name (Bangla)"
-            name="ProductNameBangla"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">Name (Bangla)</label>
+          <div class="col-span-3">
             <a-input
-              v-model:value="form.ProductNameBangla"
               placeholder="পণ্যের নাম"
+              v-model:value="form.ProductNameBangla"
               :maxlength="3000"
             />
-          </a-form-item>
+          </div>
+        </div>
 
-          <a-form-item
-            label="Business"
-            name="Business"
-            :rules="[{ required: true, message: 'Business is required' }]"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Business <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
             <a-select
               class="w-full"
               placeholder="Select Business"
@@ -106,192 +100,124 @@
                 {{ b.Business }} — {{ b.BusinessName }}
               </a-select-option>
             </a-select>
-          </a-form-item>
-
-          <a-form-item
-            label="Sub Business Code"
-            name="SubBusinessCode"
-            :rules="[
-              { required: true, message: 'Sub Business Code is required' },
-              { max: 10, message: 'Max 10 characters' },
-            ]"
-          >
-            <a-input
-              v-model:value="form.SubBusinessCode"
-              placeholder="e.g. SB01"
-              :maxlength="10"
-              show-count
-            />
-          </a-form-item>
-
-          <a-form-item
-            label="Create By"
-            name="CreateBy"
-            :rules="[
-              { required: true, message: 'Create By is required' },
-              { max: 20, message: 'Max 20 characters' },
-            ]"
-          >
-            <a-input
-              v-model:value="form.CreateBy"
-              placeholder="Username"
-              :maxlength="20"
-            />
-          </a-form-item>
-
-          <div class="grid grid-cols-2 gap-4">
-            <a-form-item
-              label="Active"
-              name="Active"
-              :rules="[{ required: true, message: 'Required' }]"
-            >
-              <a-select class="w-full" v-model:value="form.Active">
-                <a-select-option value="Y">Yes</a-select-option>
-                <a-select-option value="N">No</a-select-option>
-              </a-select>
-            </a-form-item>
-
-            <a-form-item
-              label="Mushok Print"
-              name="MushokPrint"
-              :rules="[{ required: true, message: 'Required' }]"
-            >
-              <a-select class="w-full" v-model:value="form.MushokPrint">
-                <a-select-option value="Y">Yes</a-select-option>
-                <a-select-option value="N">No</a-select-option>
-              </a-select>
-            </a-form-item>
           </div>
         </div>
 
-        <!-- Right: Pricing & Packaging -->
-        <div class="border rounded-lg p-5">
-          <h2 class="font-bold text-gray-800 mb-4">Pricing & Packaging</h2>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Mushok Print <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-select class="w-full" v-model:value="form.MushokPrint">
+              <a-select-option value="Y">Yes</a-select-option>
+              <a-select-option value="N">No</a-select-option>
+            </a-select>
+          </div>
+        </div>
 
-          <a-form-item
-            label="Pack Size"
-            name="PackSize"
-            :rules="[
-              { required: true, message: 'Pack Size is required' },
-              { max: 50, message: 'Max 50 characters' },
-            ]"
-          >
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Active <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-select class="w-full" v-model:value="form.Active">
+              <a-select-option value="Y">Yes</a-select-option>
+              <a-select-option value="N">No</a-select-option>
+            </a-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div class="border rounded-lg p-5 space-y-4">
+        <h2 class="font-bold text-gray-800">Pricing & Packaging</h2>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Pack Size <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
             <a-input
-              v-model:value="form.PackSize"
               placeholder="e.g. 1x10"
+              v-model:value="form.PackSize"
               :maxlength="50"
-              show-count
             />
-          </a-form-item>
-
-          <div class="grid grid-cols-2 gap-4">
-            <a-form-item
-              label="Pack Size WT"
-              name="PackSizeWT"
-              :rules="[{ required: true, type: 'number', message: 'Required' }]"
-            >
-              <a-input-number
-                class="w-full"
-                placeholder="0.0000"
-                v-model:value="form.PackSizeWT"
-                :precision="4"
-                :min="0"
-              />
-            </a-form-item>
-
-            <a-form-item
-              label="Batch Size"
-              name="BatchSize"
-              :rules="[{ required: true, type: 'number', message: 'Required' }]"
-            >
-              <a-input-number
-                class="w-full"
-                placeholder="0.00"
-                v-model:value="form.BatchSize"
-                :precision="2"
-                :min="0"
-              />
-            </a-form-item>
           </div>
+        </div>
 
-          <a-form-item
-            label="Carton"
-            name="Carton"
-            :rules="[{ required: true, type: 'number', message: 'Required' }]"
-          >
-            <a-input-number
-              class="w-full"
-              placeholder="0.00"
-              v-model:value="form.Carton"
-              :precision="2"
-              :min="0"
-            />
-          </a-form-item>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Pack Size WT <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.PackSizeWT" :precision="4" :min="0" />
+          </div>
+        </div>
 
-          <a-form-item
-            label="Trade Price"
-            name="TradePrice"
-            :rules="[{ required: true, type: 'number', message: 'Required' }]"
-          >
-            <a-input-number
-              class="w-full"
-              placeholder="0.0000"
-              v-model:value="form.TradePrice"
-              :precision="4"
-              :min="0"
-            />
-          </a-form-item>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Batch Size <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.00" v-model:value="form.BatchSize" :precision="2" :min="0" />
+          </div>
+        </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <a-form-item
-              label="VAT (%)"
-              name="VAT"
-              :rules="[{ required: true, type: 'number', message: 'Required' }]"
-            >
-              <a-input-number
-                class="w-full"
-                placeholder="0.0000"
-                v-model:value="form.VAT"
-                :precision="4"
-                :min="0"
-              />
-            </a-form-item>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Carton <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.00" v-model:value="form.Carton" :precision="2" :min="0" />
+          </div>
+        </div>
 
-            <a-form-item
-              label="MRP"
-              name="MRP"
-              :rules="[{ required: true, type: 'number', message: 'Required' }]"
-            >
-              <a-input-number
-                class="w-full"
-                placeholder="0.0000"
-                v-model:value="form.MRP"
-                :precision="4"
-                :min="0"
-              />
-            </a-form-item>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Trade Price <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.TradePrice" :precision="4" :min="0" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            VAT (%) <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.VAT" :precision="4" :min="0" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            MRP <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.MRP" :precision="4" :min="0" />
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="flex gap-3 mt-5">
-        <button
-          class="bg-primary text-white px-5 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-60"
-          :disabled="isSaving"
-          @click="save"
-          type="button"
-        >
-          {{ isSaving ? "Saving..." : "Save" }}
-        </button>
-        <button
-          class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition-colors"
-          @click="$router.push('/inventory/product')"
-          type="button"
-        >
-          Cancel
-        </button>
-      </div>
-    </a-form>
+    <div class="flex gap-3 mt-5">
+      <button
+        class="bg-primary text-white px-5 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-60"
+        :disabled="isSaving"
+        @click="save"
+        type="button"
+      >
+        {{ isSaving ? "Saving..." : "Save" }}
+      </button>
+      <button
+        class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition-colors"
+        @click="$router.push('/inventory/product')"
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
   </MainLayout>
 </template>
 
@@ -306,25 +232,23 @@ import { fetchAllPlants } from "./plants-api";
 import { fetchAllBusinesses } from "./business-api";
 
 const router = useRouter();
-const formRef = ref(null);
 
 const plants = ref([]);
 const businesses = ref([]);
 const businessLoading = ref(false);
 
 onMounted(async () => {
-  const [allPlants] = await Promise.all([
-    fetchAllPlants(),
-    (async () => {
-      businessLoading.value = true;
-      try {
-        businesses.value = await fetchAllBusinesses();
-      } finally {
-        businessLoading.value = false;
-      }
-    })(),
-  ]);
-  plants.value = allPlants;
+  businessLoading.value = true;
+  try {
+    const [allPlants, allBusinesses] = await Promise.all([
+      fetchAllPlants(),
+      fetchAllBusinesses(),
+    ]);
+    plants.value = allPlants;
+    businesses.value = allBusinesses;
+  } finally {
+    businessLoading.value = false;
+  }
 });
 
 const filterOption = (input, option) => {
@@ -338,25 +262,49 @@ const form = ref({
   ProductName: "",
   ProductNameBangla: "",
   PackSize: "",
-  PackSizeWT: 0,
-  BatchSize: 0,
-  Carton: 0,
-  TradePrice: 0,
-  VAT: 0,
-  MRP: 0,
-  Business: "",
-  SubBusinessCode: "",
+  PackSizeWT: null,
+  BatchSize: null,
+  Carton: null,
+  TradePrice: null,
+  VAT: null,
+  MRP: null,
+  Business: undefined,
+  SubBusinessCode: "1",
   Active: "Y",
   MushokPrint: "N",
-  CreateBy: "admin",
+  CreateBy:
+    JSON.parse(localStorage.getItem("user_info") || "null")?.UserId || "",
 });
 
 const isSaving = ref(false);
 
+const validate = () => {
+  const f = form.value;
+  if (!f.ProductCode?.trim()) return "Please enter Product Code";
+  if (f.ProductCode.length > 15) return "Product Code must be 15 characters max";
+  if (!f.PlantCode) return "Please select a Plant";
+  if (!f.ProductName?.trim()) return "Please enter Product Name";
+  if (f.ProductName.length > 200) return "Product Name must be 200 characters max";
+  if (f.ProductNameBangla && f.ProductNameBangla.length > 3000)
+    return "Product Name (Bangla) must be 3000 characters max";
+  if (!f.Business) return "Please select a Business";
+  if (!f.MushokPrint) return "Please select Mushok Print";
+  if (!f.Active) return "Please select Active";
+  if (!f.PackSize?.trim()) return "Please enter Pack Size";
+  if (f.PackSize.length > 50) return "Pack Size must be 50 characters max";
+  if (f.PackSizeWT == null || f.PackSizeWT === "") return "Please enter Pack Size WT";
+  if (f.BatchSize == null || f.BatchSize === "") return "Please enter Batch Size";
+  if (f.Carton == null || f.Carton === "") return "Please enter Carton";
+  if (f.TradePrice == null || f.TradePrice === "") return "Please enter Trade Price";
+  if (f.VAT == null || f.VAT === "") return "Please enter VAT";
+  if (f.MRP == null || f.MRP === "") return "Please enter MRP";
+  return null;
+};
+
 const save = async () => {
-  try {
-    await formRef.value.validate();
-  } catch {
+  const err = validate();
+  if (err) {
+    showNotification("error", err);
     return;
   }
   isSaving.value = true;

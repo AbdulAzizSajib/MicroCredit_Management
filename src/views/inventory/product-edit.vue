@@ -84,14 +84,13 @@
 
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">
-            Sub Business <span class="text-red-500">*</span>
+            Mushok Print <span class="text-red-500">*</span>
           </label>
           <div class="col-span-3">
-            <a-input
-              placeholder="Max 10 chars"
-              v-model:value="form.SubBusinessCode"
-              :maxlength="10"
-            />
+            <a-select class="w-full" v-model:value="form.MushokPrint">
+              <a-select-option value="Y">Yes</a-select-option>
+              <a-select-option value="N">No</a-select-option>
+            </a-select>
           </div>
         </div>
 
@@ -176,18 +175,6 @@
           </label>
           <div class="col-span-3">
             <a-input-number class="w-full" placeholder="0.0000" v-model:value="form.MRP" :precision="4" :min="0" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Mushok Print <span class="text-red-500">*</span>
-          </label>
-          <div class="col-span-3">
-            <a-select class="w-full" v-model:value="form.MushokPrint">
-              <a-select-option value="Y">Yes</a-select-option>
-              <a-select-option value="N">No</a-select-option>
-            </a-select>
           </div>
         </div>
       </div>
@@ -285,7 +272,7 @@ const fetchDetail = async () => {
       VAT: detail.VAT ?? null,
       MRP: detail.MRP ?? null,
       Business: detail.Business || undefined,
-      SubBusinessCode: detail.SubBusinessCode || "",
+      SubBusinessCode: detail.SubBusinessCode || "1",
       Active: detail.Active || "Y",
       MushokPrint: detail.MushokPrint || "N",
     };
