@@ -148,6 +148,7 @@ import RequisitionCreate from "@/views/inventory/requisition-create.vue";
 import RequisitionEdit from "@/views/inventory/requisition-edit.vue";
 import ReceiveList from "@/views/inventory/receive-list.vue";
 import ReceiveCreate from "@/views/inventory/receive-create.vue";
+import ReceiveEdit from "@/views/inventory/receive-edit.vue";
 import ReleaseList from "@/views/inventory/release-list.vue";
 import ReleaseCreate from "@/views/inventory/release-create.vue";
 import ProductList from "@/views/inventory/product-list.vue";
@@ -803,6 +804,7 @@ const routes = [
   { path: "/inventory/requisition/edit", name: "requisition-edit", component: RequisitionEdit },
   { path: "/inventory/receive", name: "receive-list", component: ReceiveList },
   { path: "/inventory/receive/create", name: "receive-create", component: ReceiveCreate },
+  { path: "/inventory/receive/edit", name: "receive-edit", component: ReceiveEdit },
   { path: "/inventory/release", name: "release-list", component: ReleaseList },
   { path: "/inventory/release/create", name: "release-create", component: ReleaseCreate },
   { path: "/inventory/product", name: "product-list", component: ProductList },

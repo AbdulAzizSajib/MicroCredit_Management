@@ -1,29 +1,21 @@
 <template>
   <MainLayout>
     <div class="flex items-center justify-between gap-3 flex-wrap">
-      <h1 class="text-2xl font-bold text-primary flex items-center gap-3" data-aos="fade-right">
-        Goods Receive Create
-        <Icon v-if="isLoadingNo" class="size-7" icon="line-md:loading-loop" />
+      <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
+        Edit Goods Receive — {{ QuarantineReceiveNo }}
+        <Icon v-if="isLoading" class="size-7" icon="line-md:loading-loop" />
       </h1>
-      <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium text-gray-700">Last Quarantine No:</span>
-          <span class="px-3 py-1 rounded bg-primary/10 text-primary font-semibold text-sm">
-            {{ lastQuarantineNo || "—" }}
-          </span>
-        </div>
-        <button
-          class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
-          @click="$router.push('/inventory/receive')"
-        >
-          Back to List
-        </button>
-      </div>
+      <button
+        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
+        @click="$router.push('/inventory/receive')"
+      >
+        Back to List
+      </button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
       <!-- Left: Items -->
-      <div class="lg:col-span-2 border rounded-lg p-5 space-y-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="lg:col-span-2 border rounded-lg p-5 space-y-4">
         <h2 class="font-bold text-gray-800">Receive Details</h2>
 
         <div>
@@ -59,8 +51,8 @@
               <tr class="bg-primary text-white text-xs">
                 <th class="border border-white px-2 py-2 text-left w-10">S/L</th>
                 <th class="border border-white px-2 py-2 text-left">Product</th>
-                <th class="border border-white px-2 py-2 text-center w-28">Batch No</th>
-                <th class="border border-white px-2 py-2 text-center w-32">Qty</th>
+                <th class="border border-white px-2 py-2 text-left w-28">Batch No</th>
+                <th class="border border-white px-2 py-2 text-right w-24">Qty</th>
                 <th class="border border-white px-2 py-2 text-left w-24">Carton Pack</th>
                 <th class="border border-white px-2 py-2 text-left w-32">MFG Date</th>
                 <th class="border border-white px-2 py-2 text-left w-32">Expire Date</th>
@@ -75,12 +67,7 @@
                   <div class="text-xs text-gray-500">{{ productName(it.ProductCode) }}</div>
                 </td>
                 <td class="border px-1 py-1">
-                  <a-input
-                    :bordered="false"
-                    placeholder="Batch No"
-                    v-model:value="it.BatchNo"
-                    class ="w-full text-right"
-                  />
+                  <a-input :bordered="false" placeholder="Batch No" v-model:value="it.BatchNo" />
                 </td>
                 <td class="border px-1 py-1">
                   <a-input-number
@@ -122,7 +109,7 @@
               </tr>
               <tr v-if="!items.length">
                 <td colspan="8" class="px-3 py-4 border text-center text-gray-400 text-xs">
-                  No items added. Search a product above to add a row.
+                  No items added.
                 </td>
               </tr>
             </tbody>
@@ -136,7 +123,7 @@
             @click="save"
             type="button"
           >
-            {{ isSaving ? "Saving..." : "Submit Goods Receive" }}
+            {{ isSaving ? "Updating..." : "Update" }}
           </button>
           <button
             class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition-colors"
@@ -148,125 +135,63 @@
         </div>
       </div>
 
-      <!-- Right: Master form -->
-      <div class="border rounded-lg p-5 space-y-3" data-aos="fade-up" data-aos-delay="150">
+      <!-- Right: Master form (read-only key fields, editable Comment) -->
+      <div class="border rounded-lg p-5 space-y-3">
         <h2 class="font-bold text-gray-800">Receive Information</h2>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Plant <span class="text-red-500">*</span>
-          </label>
+          <label class="text-sm font-medium text-gray-700">Plant</label>
           <div class="col-span-3">
-            <a-select
-              class="w-full"
-              placeholder="Select Plant"
-              v-model:value="form.PlantCode"
-              show-search
-              :filter-option="filterOption"
-              option-filter-prop="label"
-              @change="onPlantChange"
-            >
-              <a-select-option
-                v-for="p in plants"
-                :key="p.PlantCode"
-                :value="p.PlantCode"
-                :label="`${p.PlantCode} ${p.PlantName}`"
-              >
-                {{ p.PlantCode }} — {{ p.PlantName }}
-              </a-select-option>
-            </a-select>
+            <a-input :value="form.PlantCode" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Movement Type <span class="text-red-500">*</span>
-          </label>
+          <label class="text-sm font-medium text-gray-700">Movement Type</label>
           <div class="col-span-3">
-            <a-select
-              class="w-full"
-              placeholder="Select Movement Type"
-              v-model:value="form.MovementId"
-              show-search
-              :filter-option="filterOption"
-              option-filter-prop="label"
-              :loading="movementLoading"
-            >
-              <a-select-option
-                v-for="m in movementTypes"
-                :key="m.MovementId"
-                :value="m.MovementId"
-                :label="`${m.MovementId} ${m.MovementType}`"
-              >
-                {{ m.MovementId }} — {{ m.MovementType }}
-              </a-select-option>
-            </a-select>
+            <a-input :value="form.MovementId" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Business <span class="text-red-500">*</span>
-          </label>
+          <label class="text-sm font-medium text-gray-700">Business</label>
           <div class="col-span-3">
-            <a-select
-              class="w-full"
-              placeholder="Select Business"
-              v-model:value="form.Business"
-              show-search
-              :filter-option="filterOption"
-              option-filter-prop="label"
-              :loading="businessLoading"
-            >
-              <a-select-option
-                v-for="b in businesses"
-                :key="b.Business"
-                :value="b.Business"
-                :label="`${b.Business} ${b.BusinessName}`"
-              >
-                {{ b.Business }} — {{ b.BusinessName }}
-              </a-select-option>
-            </a-select>
+            <a-input :value="form.Business" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
-          <label class="text-sm font-medium text-gray-700">
-            Receive Date <span class="text-red-500">*</span>
-          </label>
+          <label class="text-sm font-medium text-gray-700">Store</label>
           <div class="col-span-3">
-            <a-date-picker
-              class="w-full"
-              v-model:value="form.QuarantineReceiveDate"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-            />
+            <a-input :value="form.StoreCode" readonly />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">Receive Date</label>
+          <div class="col-span-3">
+            <a-input :value="form.QuarantineReceiveDate" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">FGTN No</label>
           <div class="col-span-3">
-            <a-input placeholder="FGTN No" v-model:value="form.FgtnNo" :maxlength="50" />
+            <a-input :value="form.FgtnNo" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">Reference No</label>
           <div class="col-span-3">
-            <a-input placeholder="Reference No" v-model:value="form.ReferenceNo" :maxlength="50" />
+            <a-input :value="form.ReferenceNo" readonly />
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">Reference Date</label>
           <div class="col-span-3">
-            <a-date-picker
-              class="w-full"
-              v-model:value="form.ReferenceDate"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-            />
+            <a-input :value="form.ReferenceDate" readonly />
           </div>
         </div>
 
@@ -287,55 +212,41 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
-import { useRouter } from "vue-router";
-import dayjs from "dayjs";
+import { ref, computed, onMounted, nextTick } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import dayjs from "dayjs";
 import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
 import { apiBase } from "@/config";
 import { getToken, showNotification } from "@/utilities/common";
-import { fetchAllPlants } from "./plants-api";
-import { fetchAllBusinesses } from "./business-api";
-import { fetchAllMovementTypes } from "./movement-type-api";
 
+const route = useRoute();
 const router = useRouter();
 
-const DEFAULT_STORE_CODE = "A1";
-
-const plants = ref([]);
-const businesses = ref([]);
-const movementTypes = ref([]);
-const businessLoading = ref(false);
-const movementLoading = ref(false);
-const isLoadingNo = ref(false);
-const lastQuarantineNo = ref("");
-
-const filterOption = (input, option) => {
-  const text = (option?.label ?? "").toString().toLowerCase();
-  return text.includes(input.toLowerCase());
-};
+const QuarantineReceiveNo = computed(() => route.query.QuarantineReceiveNo || "");
 
 const currentUser =
   JSON.parse(localStorage.getItem("user_info") || "null")?.UserId || "admin";
 
 const form = ref({
-  PlantCode: undefined,
-  MovementId: undefined,
-  Business: undefined,
-  StoreCode: DEFAULT_STORE_CODE,
-  QuarantineReceiveDate: dayjs().format("YYYY-MM-DD"),
+  PlantCode: "",
+  MovementId: "",
+  Business: "",
+  StoreCode: "",
+  QuarantineReceiveDate: "",
   FgtnNo: "",
   ReferenceNo: "",
-  ReferenceDate: dayjs().format("YYYY-MM-DD"),
+  ReferenceDate: "",
   Comment: "",
-  CreateBy: currentUser,
+  EditBy: currentUser,
 });
 
 const items = ref([]);
 const productPicker = ref(undefined);
 const pickerKey = ref(0);
 const pickerRef = ref(null);
+const isLoading = ref(false);
 const isSaving = ref(false);
 
 const productOptions = ref([]);
@@ -399,37 +310,60 @@ const removeItem = (idx) => {
   items.value.splice(idx, 1);
 };
 
-const fetchLastQuarantineNo = async () => {
-  if (!form.value.PlantCode) {
-    lastQuarantineNo.value = "";
+const fetchDetail = async () => {
+  if (!QuarantineReceiveNo.value) {
+    showNotification("error", "Missing QuarantineReceiveNo in URL");
+    router.push("/inventory/receive");
     return;
   }
-  isLoadingNo.value = true;
+  isLoading.value = true;
   try {
     const res = await axios.get(
-      `${apiBase}/inventory/receive/no?PlantCode=${encodeURIComponent(form.value.PlantCode)}`,
+      `${apiBase}/inventory/receive/show?QuarantineReceiveNo=${encodeURIComponent(QuarantineReceiveNo.value)}`,
       getToken(),
     );
-    const payload = res?.data?.data ?? res?.data;
-    lastQuarantineNo.value = payload?.lastQuarantineNo ?? "";
+    const detail = res?.data?.data ?? res?.data;
+    if (!detail) {
+      showNotification("error", "Receive entry not found");
+      router.push("/inventory/receive");
+      return;
+    }
+    form.value = {
+      PlantCode: detail.PlantCode || "",
+      MovementId: detail.MovementId || "",
+      Business: detail.Business || "",
+      StoreCode: detail.StoreCode || "",
+      QuarantineReceiveDate: detail.QuarantineReceiveDate
+        ? dayjs(detail.QuarantineReceiveDate).format("YYYY-MM-DD")
+        : "",
+      FgtnNo: detail.FgtnNo || "",
+      ReferenceNo: detail.ReferenceNo || "",
+      ReferenceDate: detail.ReferenceDate
+        ? dayjs(detail.ReferenceDate).format("YYYY-MM-DD")
+        : "",
+      Comment: detail.Comment || "",
+      EditBy: currentUser,
+    };
+    const rawItems = detail.details ?? detail.Items ?? detail.items ?? [];
+    items.value = rawItems.map((i) => ({
+      ProductCode: i.ProductCode,
+      BatchNo: i.BatchNo || "",
+      Quantity: i.Quantity ?? null,
+      CartonPack: i.CartonPack || "",
+      MFGDate: i.MFGDate ? dayjs(i.MFGDate).format("YYYY-MM-DD") : "",
+      ExpireDate: i.ExpireDate ? dayjs(i.ExpireDate).format("YYYY-MM-DD") : "",
+    }));
+    rawItems.forEach((i) => {
+      if (i.ProductName) productMap.value[i.ProductCode] = { ProductName: i.ProductName, Carton: i.CartonPack };
+    });
   } catch (e) {
-    lastQuarantineNo.value = "";
     showNotification("error", e?.response?.data?.message || e?.message);
   } finally {
-    isLoadingNo.value = false;
+    isLoading.value = false;
   }
-};
-
-const onPlantChange = () => {
-  fetchLastQuarantineNo();
 };
 
 const validate = () => {
-  const f = form.value;
-  if (!f.PlantCode) return "Please select a Plant";
-  if (!f.MovementId) return "Please select Movement Type";
-  if (!f.Business) return "Please select Business";
-  if (!f.QuarantineReceiveDate) return "Please select Receive Date";
   if (!items.value.length) return "Please add at least one product";
   for (let i = 0; i < items.value.length; i++) {
     const it = items.value[i];
@@ -452,16 +386,8 @@ const save = async () => {
   isSaving.value = true;
   try {
     const payload = {
-      PlantCode: form.value.PlantCode,
-      MovementId: form.value.MovementId,
-      StoreCode: form.value.StoreCode,
-      Business: form.value.Business,
-      QuarantineReceiveDate: form.value.QuarantineReceiveDate,
-      FgtnNo: form.value.FgtnNo || "",
-      ReferenceNo: form.value.ReferenceNo || "",
-      ReferenceDate: form.value.ReferenceDate || "",
       Comment: form.value.Comment || "",
-      CreateBy: form.value.CreateBy,
+      EditBy: form.value.EditBy,
       details: items.value.map((it) => ({
         ProductCode: it.ProductCode,
         BatchNo: it.BatchNo,
@@ -471,12 +397,16 @@ const save = async () => {
         ExpireDate: it.ExpireDate || "",
       })),
     };
-    const res = await axios.post(`${apiBase}/inventory/receive`, payload, getToken());
+    const res = await axios.put(
+      `${apiBase}/inventory/receive?QuarantineReceiveNo=${encodeURIComponent(QuarantineReceiveNo.value)}`,
+      payload,
+      getToken(),
+    );
     if (res?.data?.success !== false) {
-      showNotification("success", res?.data?.message || "Goods Receive created");
+      showNotification("success", res?.data?.message || "Goods Receive updated");
       router.push("/inventory/receive");
     } else {
-      showNotification("error", res?.data?.message || "Failed to create");
+      showNotification("error", res?.data?.message || "Failed to update");
     }
   } catch (e) {
     showNotification("error", e?.response?.data?.message || e?.message);
@@ -485,21 +415,5 @@ const save = async () => {
   }
 };
 
-onMounted(async () => {
-  businessLoading.value = true;
-  movementLoading.value = true;
-  try {
-    const [allPlants, allBusinesses, allMovements] = await Promise.all([
-      fetchAllPlants(),
-      fetchAllBusinesses(),
-      fetchAllMovementTypes(),
-    ]);
-    plants.value = allPlants;
-    businesses.value = allBusinesses;
-    movementTypes.value = allMovements;
-  } finally {
-    businessLoading.value = false;
-    movementLoading.value = false;
-  }
-});
+onMounted(fetchDetail);
 </script>

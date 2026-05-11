@@ -79,7 +79,7 @@
               <tr class="bg-primary text-white">
                 <th class="border border-white px-3 py-2 text-left w-16">S/L</th>
                 <th class="border border-white px-3 py-2 text-left">Product</th>
-                <th class="border border-white px-3 py-2 text-right w-24">Qty</th>
+                <th class="border border-white px-3 py-2 text-center w-24">Qty</th>
                 <th class="border border-white px-3 py-2 text-left">Remark</th>
                 <th class="border border-white px-3 py-2 w-16 text-center">Action</th>
               </tr>

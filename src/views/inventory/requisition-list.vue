@@ -69,7 +69,6 @@
             <th class="border border-white px-4 py-2">Customer</th>
             <th class="border border-white px-4 py-2">Date</th>
             <th class="border border-white px-4 py-2">Delivery Date</th>
-            <th class="border border-white px-4 py-2 text-right">Items</th>
             <th class="border border-white px-4 py-2 text-center">Action</th>
           </tr>
         </thead>
@@ -81,7 +80,6 @@
             <td class="px-4 border">{{ row.CustomerCode || "-" }}</td>
             <td class="px-4 border">{{ row.Date || row.RequisitionDate || "-" }}</td>
             <td class="px-4 border">{{ row.DeliveryDate || "-" }}</td>
-            <td class="px-4 border text-right">{{ (row.Items ?? row.items)?.length ?? row.ItemCount ?? "-" }}</td>
             <td class="px-4 border text-center">
               <div class="flex justify-center gap-x-2">
                 <a-tooltip title="View">
@@ -119,7 +117,7 @@
             </td>
           </tr>
           <tr v-if="!list.length && !loading">
-            <td colspan="8" class="px-4 py-6 border text-center text-gray-500">
+            <td colspan="7" class="px-4 py-6 border text-center text-gray-500">
               No requisitions found.
             </td>
           </tr>

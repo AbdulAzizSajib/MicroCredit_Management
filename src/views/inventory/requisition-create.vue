@@ -17,59 +17,34 @@
       <div class="lg:col-span-2 border rounded-lg p-5 space-y-4">
         <h2 class="font-bold text-gray-800">Product Information</h2>
 
-        <div class="grid grid-cols-12 gap-3 items-end">
-          <div class="col-span-5">
-            <label class="text-sm font-medium text-gray-700 block mb-1">
-              Product <span class="text-red-500">*</span>
-            </label>
-            <a-select
-              show-search
-              class="w-full"
-              placeholder="Search product code or name..."
-              v-model:value="itemForm.ProductCode"
-              :filter-option="false"
-              :loading="productSearching"
-              :not-found-content="productSearching ? 'Searching...' : 'No product found'"
-              @search="onProductSearch"
-              @dropdown-visible-change="onProductDropdownOpen"
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-1">
+            Product Search
+          </label>
+          <a-select
+            :key="pickerKey"
+            ref="pickerRef"
+            show-search
+            class="w-full"
+            placeholder="Search product code or name, press Enter to add..."
+            :value="productPicker"
+            :filter-option="false"
+            :default-active-first-option="true"
+            :loading="productSearching"
+            :not-found-content="productSearching ? 'Searching...' : 'No product found'"
+            @search="onProductSearch"
+            @select="onProductSelect"
+            @dropdown-visible-change="onProductDropdownOpen"
+          >
+            <a-select-option
+              v-for="p in productOptions"
+              :key="p.ProductCode"
+              :value="p.ProductCode"
+              :label="`${p.ProductCode} ${p.ProductName}`"
             >
-              <a-select-option
-                v-for="p in productOptions"
-                :key="p.ProductCode"
-                :value="p.ProductCode"
-                :label="`${p.ProductCode} ${p.ProductName}`"
-              >
-                {{ p.ProductCode }} — {{ p.ProductName }}
-              </a-select-option>
-            </a-select>
-          </div>
-          <div class="col-span-3">
-            <label class="text-sm font-medium text-gray-700 block mb-1">
-              Qty <span class="text-red-500">*</span>
-            </label>
-            <a-input-number
-              class="w-full"
-              placeholder="Qty"
-              v-model:value="itemForm.Quantity"
-              :min="1"
-              :precision="0"
-            />
-          </div>
-          <div class="col-span-3">
-            <label class="text-sm font-medium text-gray-700 block mb-1">
-              Remark
-            </label>
-            <a-input placeholder="Remark" v-model:value="itemForm.Remark" />
-          </div>
-          <div class="col-span-1">
-            <button
-              class="w-full bg-primary text-white px-4 py-2 rounded font-bold hover:opacity-90 transition-opacity"
-              @click="addItem"
-              type="button"
-            >
-              +
-            </button>
-          </div>
+              {{ p.ProductCode }} — {{ p.ProductName }}
+            </a-select-option>
+          </a-select>
         </div>
 
         <div class="overflow-x-auto">
@@ -78,7 +53,7 @@
               <tr class="bg-primary text-white">
                 <th class="border border-white px-3 py-2 text-left w-16">S/L</th>
                 <th class="border border-white px-3 py-2 text-left">Product</th>
-                <th class="border border-white px-3 py-2 text-right w-24">Qty</th>
+                <th class="border border-white px-3 py-2 text-center w-28">Qty</th>
                 <th class="border border-white px-3 py-2 text-left">Remark</th>
                 <th class="border border-white px-3 py-2 w-16 text-center">Action</th>
               </tr>
@@ -89,8 +64,22 @@
                 <td class="border px-3 py-2">
                   {{ it.ProductCode }} — {{ productName(it.ProductCode) }}
                 </td>
-                <td class="border px-3 py-2 text-right">{{ it.Quantity }}</td>
-                <td class="border px-3 py-2">{{ it.Remark || "-" }}</td>
+                <td class="border px-2 py-1">
+                  <a-input-number
+                    class="w-full text-right"
+                    :bordered="false"
+                    v-model:value="it.Quantity"
+                    :min="1"
+                    :precision="0"
+                  />
+                </td>
+                <td class="border px-2 py-1">
+                  <a-input
+                    :bordered="false"
+                    placeholder="Remark"
+                    v-model:value="it.Remark"
+                  />
+                </td>
                 <td class="border px-3 py-2 text-center">
                   <button
                     type="button"
@@ -103,7 +92,7 @@
               </tr>
               <tr v-if="!items.length">
                 <td colspan="5" class="px-3 py-4 border text-center text-gray-400 text-xs">
-                  No items added.
+                  No items added. Search a product above and press Enter to add.
                 </td>
               </tr>
             </tbody>
@@ -301,7 +290,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -422,21 +411,24 @@ watch(
   },
 );
 
-const itemForm = ref({ ProductCode: undefined, Quantity: null, Remark: "" });
 const items = ref([]);
 const isSaving = ref(false);
+const productPicker = ref(undefined);
+const pickerKey = ref(0);
+const pickerRef = ref(null);
 
-const addItem = () => {
-  if (!itemForm.value.ProductCode || !itemForm.value.Quantity) {
-    showNotification("error", "Please select product and enter quantity");
-    return;
+const onProductSelect = async (code) => {
+  if (!code) return;
+  const existing = items.value.find((it) => it.ProductCode === code);
+  if (existing) {
+    existing.Quantity = (Number(existing.Quantity) || 0) + 1;
+  } else {
+    items.value.push({ ProductCode: code, Quantity: 1, Remark: "" });
   }
-  items.value.push({
-    ProductCode: itemForm.value.ProductCode,
-    Quantity: itemForm.value.Quantity,
-    Remark: itemForm.value.Remark || "",
-  });
-  itemForm.value = { ProductCode: undefined, Quantity: null, Remark: "" };
+  productPicker.value = undefined;
+  pickerKey.value++;
+  await nextTick();
+  pickerRef.value?.focus?.();
 };
 
 const removeItem = (idx) => {

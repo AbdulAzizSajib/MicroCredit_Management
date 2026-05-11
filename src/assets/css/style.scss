@@ -251,3 +251,15 @@ table tbody tr {
 
 // table customisation
 
+// Ant Select dropdown: highlight active (keyboard-nav / hover) option with a light primary tint
+.ant-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+    background-color: rgba(13, 71, 161, 0.22) !important;
+    color: theme("colors.primary") !important;
+}
+
+.ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background-color: rgba(13, 71, 161, 0.32) !important;
+    color: theme("colors.primary") !important;
+    font-weight: 500;
+}
+
