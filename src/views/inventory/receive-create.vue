@@ -492,6 +492,7 @@ const onMovementChange = (val) => {
 
 const onRequisitionChange = async (val) => {
   if (!val || !form.value.PlantCode) return;
+  form.value.ReferenceNo = val;
   requisitionDetailLoading.value = true;
   try {
     const params = new URLSearchParams({

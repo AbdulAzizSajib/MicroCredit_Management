@@ -1,164 +1,376 @@
 <template>
   <MainLayout>
-    <div class="flex items-center justify-between gap-3">
-      <h1 class="text-2xl font-bold text-primary" data-aos="fade-right">
-        QC Release
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <h1 class="text-2xl font-bold text-primary flex items-center gap-3" data-aos="fade-right">
+        QC Release Create
+        <Icon v-if="isLoadingNo" class="size-7" icon="line-md:loading-loop" />
       </h1>
-      <button
-        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
-        @click="$router.push('/inventory/release')"
-      >
-        Back to List
-      </button>
-    </div>
-
-    <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between sm:items-center gap-3 mt-5" data-aos="fade-up" data-aos-delay="100">
-      <div class="flex items-center gap-2">
-        <a-input
-          placeholder="Enter Receive No"
-          v-model:value="receiveNoInput"
-          class="w-52"
-          @pressEnter="loadReceiveNo"
-        />
-        <button class="bg-primary text-white px-4 py-2 rounded hover:opacity-90 transition-opacity" @click="loadReceiveNo">
-          Add
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-700">Last Quarantine No:</span>
+          <span class="px-3 py-1 rounded bg-primary/10 text-primary font-semibold text-sm">
+            {{ lastQuarantineNo || "—" }}
+          </span>
+        </div>
+        <button
+          class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
+          @click="$router.push('/inventory/release')"
+        >
+          Back to List
         </button>
       </div>
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium text-gray-700">Last Receive No</label>
-        <a-input :value="lastReceiveNo" readonly class="w-40" />
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
+      <!-- Left: Items Table -->
+      <div class="lg:col-span-2 border rounded-lg p-5 space-y-4" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="font-bold text-gray-800">Release Details</h2>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-1">
+            Quarantine Receive No <span class="text-red-500">*</span>
+          </label>
+          <a-select
+            :key="quarantinePickerKey"
+            ref="quarantineSelectRef"
+            show-search
+            class="w-full"
+            placeholder="Search Quarantine Receive No..."
+            v-model:value="selectedQuarantineNo"
+            :filter-option="false"
+            :loading="quarantineSearching || itemsLoading"
+            :not-found-content="quarantineSearching ? 'Searching...' : 'No records found'"
+            @search="onQuarantineSearch"
+            @select="onQuarantineSelect"
+            @dropdown-visible-change="onQuarantineDropdownOpen"
+          >
+            <a-select-option
+              v-for="q in quarantineOptions"
+              :key="q.QuarantineReceiveNo"
+              :value="q.QuarantineReceiveNo"
+              :label="q.QuarantineReceiveNo"
+            >
+              <span class="font-medium">{{ q.QuarantineReceiveNo }}</span>
+              <span class="text-gray-400 text-xs ml-2">{{ q.MovementId }} — {{ q.PlantCode }} ({{ q.ItemCount }} items)</span>
+            </a-select-option>
+          </a-select>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[950px] border border-collapse text-sm">
+            <thead>
+              <tr class="bg-primary text-white text-xs">
+                <th class="border border-white px-2 py-2 text-left w-10">S/L</th>
+                <th class="border border-white px-2 py-2 text-left">Product</th>
+                <th class="border border-white px-2 py-2 text-left w-28">Batch No</th>
+                <th class="border border-white px-2 py-2 text-right w-24">QR Qty</th>
+                <th class="border border-white px-2 py-2 text-right w-28">Available Qty</th>
+                <th class="border border-white px-2 py-2 text-left w-32">Storage Loc.</th>
+                <th class="border border-white px-2 py-2 text-right w-32">Release Qty</th>
+                <th class="border border-white px-2 py-2 text-left w-36">New Exp. Date</th>
+                <th class="border border-white px-2 py-2 w-12 text-center">Del</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(it, idx) in items" :key="idx">
+                <td class="border px-2 py-1">{{ idx + 1 }}</td>
+                <td class="border px-2 py-1">
+                  <div class="text-xs font-medium">{{ it.ProductCode }}</div>
+                  <div class="text-xs text-gray-500">{{ it.ProductName }}</div>
+                </td>
+                <td class="border px-2 py-1 text-xs">{{ it.BatchNo || "—" }}</td>
+                <td class="border px-2 py-1 text-right text-xs">{{ it.Quantity }}</td>
+                <td class="border px-2 py-1 text-right text-xs">{{ it.AvailableQuantity }}</td>
+                <td class="border px-1 py-1">
+                  <a-input
+                    :bordered="false"
+                    placeholder="e.g. CW"
+                    v-model:value="it.StorageLocationCode"
+                    class="w-full"
+                  />
+                </td>
+                <td class="border px-1 py-1">
+                  <a-input-number
+                    class="w-full text-right"
+                    :bordered="false"
+                    v-model:value="it.ReleaseQty"
+                    :min="0"
+                    :precision="2"
+                  />
+                </td>
+                <td class="border px-1 py-1">
+                  <a-date-picker
+                    class="w-full"
+                    :bordered="false"
+                    v-model:value="it.NewExpireDate"
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD"
+                  />
+                </td>
+                <td class="border px-1 py-1 text-center">
+                  <button
+                    type="button"
+                    class="px-2 py-1 bg-danger text-white rounded-md hover:bg-dangerDark"
+                    @click="removeItem(idx)"
+                  >
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="!items.length">
+                <td colspan="9" class="px-3 py-4 border text-center text-gray-400 text-xs">
+                  Search and select a Quarantine Receive No above to load products.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button
+            class="bg-primary text-white px-5 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-60"
+            :disabled="isSaving"
+            @click="save"
+            type="button"
+          >
+            {{ isSaving ? "Saving..." : "Submit QC Release" }}
+          </button>
+          <button
+            class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition-colors"
+            @click="$router.push('/inventory/release')"
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div class="overflow-x-auto mt-5" data-aos="fade-up" data-aos-delay="150">
-      <table class="w-full min-w-[900px] border border-collapse text-left">
-        <thead>
-          <tr class="bg-primary text-white">
-            <th class="border border-white px-3 py-2 text-left w-28">Product Code</th>
-            <th class="border border-white px-3 py-2 text-left">Product Name</th>
-            <th class="border border-white px-3 py-2 text-right w-28">Quantity</th>
-            <th class="border border-white px-3 py-2 text-left w-28">Batch No</th>
-            <th class="border border-white px-3 py-2 text-right w-32">Release Quantity</th>
-            <th class="border border-white px-3 py-2 text-left w-36">Exp. Date</th>
-            <th class="border border-white px-3 py-2 w-16 text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, idx) in products" :key="idx">
-            <td class="border px-2 py-1">
-              <a-input :value="row.productCode" :bordered="false" readonly />
-            </td>
-            <td class="border px-2 py-1">
-              <a-input v-model:value="row.productName" :bordered="false" />
-            </td>
-            <td class="border px-2 py-1">
-              <a-input-number :value="row.quantity" :bordered="false" class="w-full" readonly />
-            </td>
-            <td class="border px-2 py-1">
-              <a-input :value="row.batchNo" :bordered="false" readonly />
-            </td>
-            <td class="border px-2 py-1">
-              <a-input-number :bordered="false" class="w-full" v-model:value="row.releaseQty" :min="0" />
-            </td>
-            <td class="border px-2 py-1">
-              <a-date-picker class="w-full" :bordered="false" v-model:value="row.expDate" format="DD-MM-YYYY" />
-            </td>
-            <td class="border px-2 py-1 text-center">
-              <button type="button" class="action-btn action-btn-danger" @click="removeProduct(idx)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr v-if="!products.length">
-            <td colspan="7" class="px-4 py-6 border text-center text-gray-400">Enter a Receive No and click Add to load products.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- Right: Master Form -->
+      <div class="border rounded-lg p-5 space-y-3" data-aos="fade-up" data-aos-delay="150">
+        <h2 class="font-bold text-gray-800">Release Information</h2>
 
-    <div class="flex justify-end mt-3">
-      <button class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-xs hover:bg-gray-300 font-medium" @click="addManualRow">
-        + Add Row
-      </button>
-    </div>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700 col-span-1">
+            Receive Date <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-date-picker
+              class="w-full"
+              v-model:value="form.ReceiveDate"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+            />
+          </div>
+        </div>
 
-    <div class="flex gap-3 mt-5">
-      <button class="bg-primary text-white px-6 py-2 rounded hover:opacity-90 transition-opacity" @click="submit">
-        Submit QC Release
-      </button>
-      <button class="bg-gray-200 text-gray-700 px-6 py-2 rounded hover:bg-gray-300 transition-colors" @click="$router.push('/inventory/release')">
-        Cancel
-      </button>
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700 col-span-1">FGTN No</label>
+          <div class="col-span-3">
+            <a-input placeholder="FGTN No" v-model:value="form.FgtnNo" :maxlength="50" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700 col-span-1">
+            Mushok <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-select class="w-full" v-model:value="form.Mushok" placeholder="Select">
+              <a-select-option value="Y">Y — Yes</a-select-option>
+              <a-select-option value="N">N — No</a-select-option>
+            </a-select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-start">
+          <label class="text-sm font-medium text-gray-700 col-span-1 mt-2">Comment</label>
+          <div class="col-span-3">
+            <a-textarea
+              placeholder="Comment"
+              v-model:value="form.Comment"
+              :rows="3"
+              :maxlength="500"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </MainLayout>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
+import axios from "axios";
+import { Icon } from "@iconify/vue";
 import MainLayout from "@/components/layouts/mainLayout.vue";
+import { apiBase } from "@/config";
+import { getToken, showNotification } from "@/utilities/common";
 
 const router = useRouter();
-const STORE_KEY = "inventory_releases";
-const RECEIVE_KEY = "inventory_receives";
 
-const receiveNoInput = ref("");
-const products = ref([]);
+const isLoadingNo = ref(false);
+const lastQuarantineNo = ref("");
+const quarantineSelectRef = ref(null);
+const quarantinePickerKey = ref(0);
+const selectedQuarantineNo = ref(undefined);
+const quarantineOptions = ref([]);
+const quarantineSearching = ref(false);
+let quarantineSearchTimer = null;
 
-const initLastReceiveNo = () => {
-  const list = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
-  return list.length ? list[list.length - 1].receiveNo : "P0012601260";
-};
-const lastReceiveNo = ref(initLastReceiveNo());
+const itemsLoading = ref(false);
+const isSaving = ref(false);
+const items = ref([]);
 
-const staticProducts = [
-  { productCode: "BDAX", productName: "Sav. Twinkle Pant BD M5", quantity: 0, batchNo: "22PM037" },
-  { productCode: "BDAZ", productName: "Sav. Twinkle Pant BD M40", quantity: 0, batchNo: "22PM037" },
-  { productCode: "CB2E", productName: "Shampling Pack-S CB2E", quantity: 50, batchNo: "23PM001" },
-];
+const currentUser =
+  JSON.parse(localStorage.getItem("user_info") || "null")?.UserId || "admin";
 
-const loadReceiveNo = () => {
-  if (!receiveNoInput.value.trim()) return;
-  const receives = JSON.parse(localStorage.getItem(RECEIVE_KEY) || "[]");
-  const matched = receives.find((r) => r.quarantineNo === receiveNoInput.value.trim());
-  if (matched?.items?.length) {
-    products.value = matched.items.map((item) => ({
-      productCode: item.proCode || item.productCode || "",
-      productName: item.product || item.productName || "",
-      quantity: item.quantity || 0,
-      batchNo: item.batchNo || "",
-      releaseQty: 0,
-      expDate: null,
-    }));
-  } else {
-    products.value = staticProducts.map((p) => ({ ...p, releaseQty: 0, expDate: null }));
+const form = ref({
+  QuarantineReceiveNo: "",
+  ReceiveDate: dayjs().format("YYYY-MM-DD"),
+  FgtnNo: "",
+  Mushok: "N",
+  Comment: "",
+  CreateBy: currentUser,
+});
+
+const searchQuarantines = async (val = "") => {
+  quarantineSearching.value = true;
+  try {
+    const params = new URLSearchParams({ search: val }).toString();
+    const res = await axios.get(
+      `${apiBase}/inventory/receive/all?${params}`,
+      getToken(),
+    );
+    const payload = res?.data?.data ?? res?.data;
+    quarantineOptions.value = Array.isArray(payload) ? payload : (payload?.data ?? []);
+  } catch {
+    quarantineOptions.value = [];
+  } finally {
+    quarantineSearching.value = false;
   }
 };
 
-const addManualRow = () => {
-  products.value.push({ productCode: "", productName: "", quantity: 0, batchNo: "", releaseQty: 0, expDate: null });
+const onQuarantineSearch = (val) => {
+  clearTimeout(quarantineSearchTimer);
+  quarantineSearchTimer = setTimeout(() => searchQuarantines(val), 350);
 };
 
-const removeProduct = (idx) => {
-  products.value.splice(idx, 1);
+const onQuarantineDropdownOpen = (open) => {
+  if (open && quarantineOptions.value.length === 0) searchQuarantines("");
 };
 
-const submit = () => {
-  if (!products.value.length) return;
-  const list = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
-  const entry = {
-    id: Date.now(),
-    releaseNo: `QCR-${String(list.length + 1).padStart(4, "0")}`,
-    receiveNo: receiveNoInput.value || "—",
-    date: dayjs().format("YYYY-MM-DD"),
-    products: products.value.map((p) => ({
-      ...p,
-      expDate: p.expDate ? dayjs(p.expDate).format("YYYY-MM-DD") : "",
-    })),
-  };
-  list.push(entry);
-  localStorage.setItem(STORE_KEY, JSON.stringify(list));
-  router.push("/inventory/release");
+const onQuarantineSelect = async (val) => {
+  if (!val) return;
+  form.value.QuarantineReceiveNo = val;
+  selectedQuarantineNo.value = undefined;
+  quarantinePickerKey.value++;
+  await loadByQuarantine(val);
+  await nextTick();
+  quarantineSelectRef.value?.focus?.();
 };
+
+const fetchLastQuarantineNo = async () => {
+  isLoadingNo.value = true;
+  try {
+    const res = await axios.get(`${apiBase}/inventory/release/last`, getToken());
+    const payload = res?.data?.data ?? res?.data;
+    lastQuarantineNo.value = payload?.master?.QuarantineReceiveNo ?? "";
+  } catch {
+    lastQuarantineNo.value = "";
+  } finally {
+    isLoadingNo.value = false;
+  }
+};
+
+const loadByQuarantine = async (qNo) => {
+  itemsLoading.value = true;
+  try {
+    const res = await axios.get(
+      `${apiBase}/inventory/release/by-quarantine?QuarantineReceiveNo=${encodeURIComponent(qNo)}`,
+      getToken(),
+    );
+    const payload = res?.data?.data ?? res?.data;
+    const rawItems =
+      payload?.details ?? payload?.Items ?? payload?.items ?? [];
+    if (!rawItems.length) {
+      showNotification("warning", "No items found for this Quarantine Receive No.");
+      return;
+    }
+    const newRows = rawItems.map((i) => ({
+      ProductCode: i.ProductCode ?? "",
+      ProductName: i.ProductName ?? "",
+      BatchNo: i.BatchNo ?? "",
+      Quantity: Number(i.Quantity) || 0,
+      AvailableQuantity: Number(i.AvailableQuantity) || 0,
+      StorageLocationCode: "",
+      ReleaseQty: Number(i.AvailableQuantity) || null,
+      NewExpireDate: i.ExpireDate ?? i.NewExpireDate ?? "",
+    }));
+    items.value.push(...newRows);
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    itemsLoading.value = false;
+  }
+};
+
+const removeItem = (idx) => {
+  items.value.splice(idx, 1);
+};
+
+const validate = () => {
+  if (!form.value.QuarantineReceiveNo) return "Please select a Quarantine Receive No";
+  if (!form.value.ReceiveDate) return "Please select a Receive Date";
+  if (!form.value.Mushok) return "Please select Mushok";
+  if (!items.value.length) return "No items loaded. Please select a Quarantine Receive No first.";
+  for (let i = 0; i < items.value.length; i++) {
+    const it = items.value[i];
+    if (!it.StorageLocationCode?.trim())
+      return `Row ${i + 1}: Storage Location is required`;
+    if (!it.ReleaseQty || Number(it.ReleaseQty) <= 0)
+      return `Row ${i + 1}: Release Quantity must be greater than 0`;
+  }
+  return null;
+};
+
+const save = async () => {
+  const err = validate();
+  if (err) {
+    showNotification("error", err);
+    return;
+  }
+  isSaving.value = true;
+  try {
+    const payload = {
+      QuarantineReceiveNo: form.value.QuarantineReceiveNo,
+      ReceiveDate: form.value.ReceiveDate,
+      FgtnNo: form.value.FgtnNo || "",
+      Mushok: form.value.Mushok,
+      Comment: form.value.Comment || "",
+      CreateBy: form.value.CreateBy,
+      details: items.value.map((it) => ({
+        ProductCode: it.ProductCode,
+        BatchNo: it.BatchNo,
+        Quantity: Number(it.ReleaseQty),
+        StorageLocationCode: it.StorageLocationCode,
+        NewExpireDate: it.NewExpireDate || "",
+      })),
+    };
+    const res = await axios.post(`${apiBase}/inventory/release`, payload, getToken());
+    if (res?.data?.success !== false) {
+      showNotification("success", res?.data?.message || "QC Release created");
+      router.push("/inventory/release");
+    } else {
+      showNotification("error", res?.data?.message || "Failed to create");
+    }
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    isSaving.value = false;
+  }
+};
+
+onMounted(() => fetchLastQuarantineNo());
 </script>
