@@ -78,7 +78,7 @@
                     :precision="2"
                   />
                 </td>
-                <td class="border px-2 py-1 text-gray-600">{{ it.CartonPack || "—" }}</td>
+                <td class="border px-2 py-1 text-gray-600">{{ it.CartonPack || 0 }}</td>
                 <td class="border px-1 py-1">
                   <a-date-picker
                     class="w-full"
@@ -349,7 +349,7 @@ const fetchDetail = async () => {
       ProductCode: i.ProductCode,
       BatchNo: i.BatchNo || "",
       Quantity: i.Quantity ?? null,
-      CartonPack: i.CartonPack || "",
+      CartonPack: i.CartonPack || 0,
       MFGDate: i.MFGDate ? dayjs(i.MFGDate).format("YYYY-MM-DD") : "",
       ExpireDate: i.ExpireDate ? dayjs(i.ExpireDate).format("YYYY-MM-DD") : "",
     }));
@@ -392,7 +392,7 @@ const save = async () => {
         ProductCode: it.ProductCode,
         BatchNo: it.BatchNo,
         Quantity: Number(it.Quantity),
-        CartonPack: it.CartonPack || "",
+        CartonPack: String(it.CartonPack || 0),
         MFGDate: it.MFGDate || "",
         ExpireDate: it.ExpireDate || "",
       })),

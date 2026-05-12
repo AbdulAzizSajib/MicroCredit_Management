@@ -91,7 +91,7 @@
                     :precision="2"
                   />
                 </td>
-                <td class="border px-2 py-1 text-gray-600">{{ it.CartonPack || "—" }}</td>
+                <td class="border px-2 py-1 text-gray-600">{{ it.CartonPack || 0 }}</td>
                 <td class="border px-1 py-1">
                   <a-date-picker
                     class="w-full"
@@ -191,6 +191,7 @@
               :filter-option="filterOption"
               option-filter-prop="label"
               :loading="movementLoading"
+              @change="onMovementChange"
             >
               <a-select-option
                 v-for="m in movementTypes"
@@ -199,6 +200,34 @@
                 :label="`${m.MovementId} ${m.MovementType}`"
               >
                 {{ m.MovementId }} — {{ m.MovementType }}
+              </a-select-option>
+            </a-select>
+          </div>
+        </div>
+
+        <div v-if="form.MovementId === 'RQ'" class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">
+            Requisition No <span class="text-red-500">*</span>
+          </label>
+          <div class="col-span-3">
+            <a-select
+              class="w-full"
+              placeholder="Select Requisition"
+              v-model:value="form.RequisitionNo"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="requisitionLoading || requisitionDetailLoading"
+              :disabled="!form.PlantCode"
+              @change="onRequisitionChange"
+            >
+              <a-select-option
+                v-for="r in requisitions"
+                :key="r.RequisitionNo"
+                :value="r.RequisitionNo"
+                :label="`${r.RequisitionNo} ${r.CustomerCode || ''}`"
+              >
+                {{ r.RequisitionNo }}<span v-if="r.CustomerCode"> — {{ r.CustomerCode }}</span>
               </a-select-option>
             </a-select>
           </div>
@@ -306,8 +335,11 @@ const DEFAULT_STORE_CODE = "A1";
 const plants = ref([]);
 const businesses = ref([]);
 const movementTypes = ref([]);
+const requisitions = ref([]);
 const businessLoading = ref(false);
 const movementLoading = ref(false);
+const requisitionLoading = ref(false);
+const requisitionDetailLoading = ref(false);
 const isLoadingNo = ref(false);
 const lastQuarantineNo = ref("");
 
@@ -322,6 +354,7 @@ const currentUser =
 const form = ref({
   PlantCode: undefined,
   MovementId: undefined,
+  RequisitionNo: undefined,
   Business: undefined,
   StoreCode: DEFAULT_STORE_CODE,
   QuarantineReceiveDate: dayjs().format("YYYY-MM-DD"),
@@ -420,14 +453,85 @@ const fetchLastQuarantineNo = async () => {
   }
 };
 
+const loadRequisitions = async () => {
+  if (!form.value.PlantCode) {
+    requisitions.value = [];
+    return;
+  }
+  requisitionLoading.value = true;
+  try {
+    const params = new URLSearchParams({
+      PlantCode: form.value.PlantCode,
+      per_page: 200,
+      page: 1,
+    }).toString();
+    const res = await axios.get(`${apiBase}/inventory/requisition?${params}`, getToken());
+    const payload = res?.data?.data ?? res?.data;
+    requisitions.value = payload?.data ?? payload ?? [];
+  } catch (e) {
+    requisitions.value = [];
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    requisitionLoading.value = false;
+  }
+};
+
 const onPlantChange = () => {
   fetchLastQuarantineNo();
+  form.value.RequisitionNo = undefined;
+  if (form.value.MovementId === "RQ") loadRequisitions();
+};
+
+const onMovementChange = (val) => {
+  if (val === "RQ") {
+    loadRequisitions();
+  } else {
+    form.value.RequisitionNo = undefined;
+  }
+};
+
+const onRequisitionChange = async (val) => {
+  if (!val || !form.value.PlantCode) return;
+  requisitionDetailLoading.value = true;
+  try {
+    const params = new URLSearchParams({
+      RequisitionNo: val,
+      PlantCode: form.value.PlantCode,
+    }).toString();
+    const res = await axios.get(
+      `${apiBase}/inventory/requisition/show?${params}`,
+      getToken(),
+    );
+    const detail = res?.data?.data ?? res?.data;
+    const rawItems = detail?.Items ?? detail?.items ?? detail?.details ?? [];
+    rawItems.forEach((i) => {
+      if (i.ProductCode && !productMap.value[i.ProductCode]) {
+        productMap.value[i.ProductCode] = {
+          ProductName: i.ProductName || "",
+          Carton: i.Carton ?? i.CartonPack ?? "",
+        };
+      }
+    });
+    items.value = rawItems.map((i) => ({
+      ProductCode: i.ProductCode,
+      BatchNo: "",
+      Quantity: Number(i.Quantity) || null,
+      CartonPack: productMap.value[i.ProductCode]?.Carton ?? "",
+      MFGDate: "",
+      ExpireDate: "",
+    }));
+  } catch (e) {
+    showNotification("error", e?.response?.data?.message || e?.message);
+  } finally {
+    requisitionDetailLoading.value = false;
+  }
 };
 
 const validate = () => {
   const f = form.value;
   if (!f.PlantCode) return "Please select a Plant";
   if (!f.MovementId) return "Please select Movement Type";
+  if (f.MovementId === "RQ" && !f.RequisitionNo) return "Please select Requisition No";
   if (!f.Business) return "Please select Business";
   if (!f.QuarantineReceiveDate) return "Please select Receive Date";
   if (!items.value.length) return "Please add at least one product";
@@ -462,11 +566,14 @@ const save = async () => {
       ReferenceDate: form.value.ReferenceDate || "",
       Comment: form.value.Comment || "",
       CreateBy: form.value.CreateBy,
+      ...(form.value.MovementId === "RQ" && form.value.RequisitionNo
+        ? { RequisitionNo: form.value.RequisitionNo }
+        : {}),
       details: items.value.map((it) => ({
         ProductCode: it.ProductCode,
         BatchNo: it.BatchNo,
         Quantity: Number(it.Quantity),
-        CartonPack: it.CartonPack || "",
+        CartonPack: String(it.CartonPack || 0),
         MFGDate: it.MFGDate || "",
         ExpireDate: it.ExpireDate || "",
       })),

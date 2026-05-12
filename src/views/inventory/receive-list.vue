@@ -223,7 +223,7 @@
               </td>
               <td class="px-3 py-1.5 border text-xs">{{ item.BatchNo || "—" }}</td>
               <td class="px-3 py-1.5 border text-xs text-right">{{ item.Quantity }}</td>
-              <td class="px-3 py-1.5 border text-xs">{{ item.CartonPack || "—" }}</td>
+              <td class="px-3 py-1.5 border text-xs">{{ item.CartonPack || 0 }}</td>
               <td class="px-3 py-1.5 border text-xs">{{ formatDate(item.MFGDate) || "—" }}</td>
               <td class="px-3 py-1.5 border text-xs">{{ formatDate(item.ExpireDate) || "—" }}</td>
             </tr>
