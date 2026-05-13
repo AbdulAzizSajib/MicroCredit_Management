@@ -275,8 +275,7 @@ const fetchLastQuarantineNo = async () => {
   isLoadingNo.value = true;
   try {
     const res = await axios.get(`${apiBase}/inventory/release/last`, getToken());
-    const payload = res?.data?.data ?? res?.data;
-    lastQuarantineNo.value = payload?.master?.QuarantineReceiveNo ?? "";
+    lastQuarantineNo.value = res?.data?.lastReceiveNo ?? "";
   } catch {
     lastQuarantineNo.value = "";
   } finally {
@@ -305,7 +304,7 @@ const loadByQuarantine = async (qNo) => {
       Quantity: Number(i.Quantity) || 0,
       AvailableQuantity: Number(i.AvailableQuantity) || 0,
       StorageLocationCode: "",
-      ReleaseQty: Number(i.AvailableQuantity) || null,
+      ReleaseQty: Number(i.AvailableQuantity) || Number(i.Quantity) || null,
       NewExpireDate: i.ExpireDate ?? i.NewExpireDate ?? "",
     }));
     items.value.push(...newRows);
@@ -327,8 +326,6 @@ const validate = () => {
   if (!items.value.length) return "No items loaded. Please select a Quarantine Receive No first.";
   for (let i = 0; i < items.value.length; i++) {
     const it = items.value[i];
-    if (!it.StorageLocationCode?.trim())
-      return `Row ${i + 1}: Storage Location is required`;
     if (!it.ReleaseQty || Number(it.ReleaseQty) <= 0)
       return `Row ${i + 1}: Release Quantity must be greater than 0`;
   }
