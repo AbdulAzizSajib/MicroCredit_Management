@@ -300,6 +300,16 @@ const allMenuItems = computed(() => [
         label: t("menu.release"),
         onClick: navigateTo("/inventory/release"),
       },
+      {
+        key: "/inventory/stock-statement",
+        label: "Stock Statement",
+        onClick: navigateTo("/inventory/stock-statement"),
+      },
+      {
+        key: "/inventory/current-stock-report",
+        label: "Current Stock Report",
+        onClick: navigateTo("/inventory/current-stock-report"),
+      },
     ],
   },
   {

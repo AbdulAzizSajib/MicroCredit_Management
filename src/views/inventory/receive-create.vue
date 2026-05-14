@@ -234,6 +234,31 @@
         </div>
 
         <div class="grid grid-cols-4 gap-3 items-center">
+          <label class="text-sm font-medium text-gray-700">Supplier</label>
+          <div class="col-span-3">
+            <a-select
+              class="w-full"
+              placeholder="Select Supplier"
+              v-model:value="form.SupplierCode"
+              show-search
+              :filter-option="filterOption"
+              option-filter-prop="label"
+              :loading="supplierLoading"
+              allow-clear
+            >
+              <a-select-option
+                v-for="s in suppliers"
+                :key="s.SupplierCode"
+                :value="s.SupplierCode"
+                :label="`${s.SupplierCode} ${s.SupplierName}`"
+              >
+                {{ s.SupplierCode }} — {{ s.SupplierName }}
+              </a-select-option>
+            </a-select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 items-center">
           <label class="text-sm font-medium text-gray-700">
             Business <span class="text-red-500">*</span>
           </label>
@@ -327,6 +352,7 @@ import { getToken, showNotification } from "@/utilities/common";
 import { fetchAllPlants } from "./plants-api";
 import { fetchAllBusinesses } from "./business-api";
 import { fetchAllMovementTypes } from "./movement-type-api";
+import { fetchAllSuppliers } from "./supplier-api";
 
 const router = useRouter();
 
@@ -335,9 +361,11 @@ const DEFAULT_STORE_CODE = "A1";
 const plants = ref([]);
 const businesses = ref([]);
 const movementTypes = ref([]);
+const suppliers = ref([]);
 const requisitions = ref([]);
 const businessLoading = ref(false);
 const movementLoading = ref(false);
+const supplierLoading = ref(false);
 const requisitionLoading = ref(false);
 const requisitionDetailLoading = ref(false);
 const isLoadingNo = ref(false);
@@ -355,6 +383,7 @@ const form = ref({
   PlantCode: undefined,
   MovementId: undefined,
   RequisitionNo: undefined,
+  SupplierCode: undefined,
   Business: undefined,
   StoreCode: DEFAULT_STORE_CODE,
   QuarantineReceiveDate: dayjs().format("YYYY-MM-DD"),
@@ -562,6 +591,7 @@ const save = async () => {
       StoreCode: form.value.StoreCode,
       Business: form.value.Business,
       QuarantineReceiveDate: form.value.QuarantineReceiveDate,
+      SupplierCode: form.value.SupplierCode || null,
       FgtnNo: form.value.FgtnNo || "",
       ReferenceNo: form.value.ReferenceNo || "",
       ReferenceDate: form.value.ReferenceDate || "",
@@ -596,18 +626,22 @@ const save = async () => {
 onMounted(async () => {
   businessLoading.value = true;
   movementLoading.value = true;
+  supplierLoading.value = true;
   try {
-    const [allPlants, allBusinesses, allMovements] = await Promise.all([
+    const [allPlants, allBusinesses, allMovements, allSuppliers] = await Promise.all([
       fetchAllPlants(),
       fetchAllBusinesses(),
       fetchAllMovementTypes(),
+      fetchAllSuppliers(),
     ]);
     plants.value = allPlants;
     businesses.value = allBusinesses;
     movementTypes.value = allMovements;
+    suppliers.value = allSuppliers;
   } finally {
     businessLoading.value = false;
     movementLoading.value = false;
+    supplierLoading.value = false;
   }
 });
 </script>
