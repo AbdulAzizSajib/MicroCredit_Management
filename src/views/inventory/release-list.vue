@@ -45,7 +45,17 @@
             <td class="px-4 border">{{ row.QuarantineReceiveNo }}</td>
             <td class="px-4 border">{{ formatDate(row.ReceiveDate) }}</td>
             <td class="px-4 border">{{ row.FgtnNo || "—" }}</td>
-            <td class="px-4 border">{{ row.Mushok || "—" }}</td>
+            <td class="px-4 border">
+              <span
+                v-if="row.Mushok === 'Y'"
+                class="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700"
+              >Yes</span>
+              <span
+                v-else-if="row.Mushok === 'N'"
+                class="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-600"
+              >No</span>
+              <span v-else class="text-gray-400">—</span>
+            </td>
             <td class="px-4 border text-center">
               <div class="flex justify-center items-center gap-1">
                 <a-tooltip title="View">
@@ -55,6 +65,15 @@
                     @click="viewRow(row)"
                   >
                     <i class="bi bi-eye"></i>
+                  </button>
+                </a-tooltip>
+                <a-tooltip title="Edit">
+                  <button
+                    type="button"
+                    class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                    @click="$router.push({ path: '/inventory/release/edit', query: { ReceiveNo: row.ReceiveNo } })"
+                  >
+                    <i class="bi bi-pencil"></i>
                   </button>
                 </a-tooltip>
                 <a-popconfirm
