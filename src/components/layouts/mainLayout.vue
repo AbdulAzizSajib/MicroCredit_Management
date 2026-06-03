@@ -301,6 +301,11 @@ const allMenuItems = computed(() => [
         onClick: navigateTo("/inventory/release"),
       },
       {
+        key: "/inventory/sales",
+        label: t("menu.sales"),
+        onClick: navigateTo("/inventory/sales"),
+      },
+      {
         key: "/inventory/stock-statement",
         label: "Stock Statement",
         onClick: navigateTo("/inventory/stock-statement"),

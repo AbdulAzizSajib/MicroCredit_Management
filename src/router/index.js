@@ -152,6 +152,9 @@ import ReceiveEdit from "@/views/inventory/receive-edit.vue";
 import ReleaseList from "@/views/inventory/release-list.vue";
 import ReleaseCreate from "@/views/inventory/release-create.vue";
 import ReleaseEdit from "@/views/inventory/release-edit.vue";
+import SalesList from "@/views/inventory/sales-list.vue";
+import SalesCreate from "@/views/inventory/sales-create.vue";
+import SalesEdit from "@/views/inventory/sales-edit.vue";
 import StockStatement from "@/views/inventory/stock-statement.vue";
 import CurrentStockReport from "@/views/inventory/current-stock-report.vue";
 import ProductList from "@/views/inventory/product-list.vue";
@@ -811,6 +814,9 @@ const routes = [
   { path: "/inventory/release", name: "release-list", component: ReleaseList },
   { path: "/inventory/release/create", name: "release-create", component: ReleaseCreate },
   { path: "/inventory/release/edit", name: "release-edit", component: ReleaseEdit },
+  { path: "/inventory/sales", name: "sales-list", component: SalesList },
+  { path: "/inventory/sales/create", name: "sales-create", component: SalesCreate },
+  { path: "/inventory/sales/edit", name: "sales-edit", component: SalesEdit },
   { path: "/inventory/stock-statement", name: "stock-statement", component: StockStatement },
   { path: "/inventory/current-stock-report", name: "current-stock-report", component: CurrentStockReport },
   { path: "/inventory/product", name: "product-list", component: ProductList },
