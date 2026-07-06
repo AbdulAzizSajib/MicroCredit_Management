@@ -310,7 +310,12 @@
     "bangla": "বাংলা"
   },
   "overview": {
-    "appTitle": "মাইক্রো ক্রেডিট ম্যানেজমেন্ট"
+    "appTitle": "ইআরপি সিস্টেম",
+    "welcomeMessage": "শুরু করতে একটি মডিউল বেছে নিন",
+    "selectModule": "মডিউলসমূহ",
+    "goodMorning": "শুভ সকাল",
+    "goodAfternoon": "শুভ অপরাহ্ন",
+    "goodEvening": "শুভ সন্ধ্যা"
   },
   "userMgmt": {
     "userList": "ব্যবহারকারী তালিকা",

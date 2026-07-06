@@ -310,7 +310,12 @@
     "bangla": "Bangla"
   },
   "overview": {
-    "appTitle": "Micro Credit Management"
+    "appTitle": "ERP System",
+    "welcomeMessage": "Select a module to get started",
+    "selectModule": "Modules",
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening"
   },
   "userMgmt": {
     "userList": "User List",

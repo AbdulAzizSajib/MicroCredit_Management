@@ -16,58 +16,33 @@
     </div>
 
     <!-- Header Section -->
-    <div class="px-8 lg:px-32 mb-8 mt-12">
+    <div class="px-6 lg:px-16 xl:px-24 mb-10 pt-6">
       <div
-        class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-6 px-8 rounded-xl shadow-2xl border border-slate-700/50"
+        class="relative bg-white/90 backdrop-blur border border-gray-200/70 py-4 px-6 rounded-xl shadow-sm"
       >
-        <!-- Animated background glow -->
-        <div
-          class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/10 to-blue-500/5 animate-pulse"
-        ></div>
-
-        <!-- Subtle grid pattern -->
-        <div
-          class="absolute inset-0 opacity-10"
-          style="
-            background-image: radial-gradient(
-              circle,
-              #fff 1px,
-              transparent 1px
-            );
-            background-size: 20px 20px;
-          "
-        ></div>
-
-        <div class="relative flex justify-between items-center">
-          <div class="flex items-center space-x-4">
-            <!-- Vibrant gradient icon -->
+        <div class="flex justify-between items-center gap-4 flex-wrap">
+          <div class="flex items-center gap-3">
             <div
-              class="w-12 h-12 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50 animate-pulse"
+              class="w-11 h-11 bg-primary rounded-lg flex items-center justify-center shadow-md shadow-primary/20"
             >
-              <div class="w-6 h-6 bg-white rounded-lg"></div>
+              <Icon class="w-6 h-6 text-white" icon="mdi:office-building-cog" />
             </div>
-            <!-- Gradient text -->
-            <h2
-              class="text-4xl font-bold tracking-wider uppercase bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent"
-            >
-              {{ $t('overview.appTitle') }}
-            </h2>
+            <div class="flex flex-col leading-tight">
+              <h2 class="text-xl md:text-2xl font-bold text-primary tracking-tight">
+                {{ $t('overview.appTitle') }}
+              </h2>
+              <span class="text-xs text-gray-500">Enterprise Dashboard</span>
+            </div>
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <LanguageSwitcher />
             <button
               @click="handleLogout($router)"
-              class="group flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 hover:from-red-500/30 hover:to-orange-500/30 rounded-xl transition-all duration-300 border border-red-500/30 hover:border-red-400/50 hover:shadow-lg hover:shadow-red-500/30"
+              class="flex items-center gap-2 px-4 py-2 text-danger hover:text-white hover:bg-danger border border-danger/30 hover:border-danger rounded-lg transition-colors duration-200 text-sm font-medium"
             >
-              <Icon
-                class="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors duration-300"
-                icon="mdi:logout"
-              />
-              <span
-                class="text-red-400 group-hover:text-red-300 text-sm font-semibold uppercase tracking-wide transition-colors duration-300"
-                >{{ $t('common.logout') }}</span
-              >
+              <Icon class="w-4 h-4" icon="mdi:logout" />
+              <span>{{ $t('common.logout') }}</span>
             </button>
           </div>
         </div>
@@ -75,22 +50,12 @@
     </div>
 
     <!-- Welcome Section -->
-    <div class="relative z-10 text-center mb-16">
-      <div class="inline-block">
-        <!-- <h3
-          class="text-2xl lg:text-3xl text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 bg-clip-text font-light">
-          Hi, <span class="font-bold">{{ name }}</span>!
-        </h3> -->
-        <p class="text-lg lg:text-xl text-gray-600 mt-2">
-          {{ $t('login.welcome') }}
-          <span class="font-bold uppercase text-indigo-600"
-            >{{ $t('overview.appTitle') }}</span
-          >
-        </p>
-        <div
-          class="w-24 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto mt-4 rounded-full"
-        ></div>
-      </div>
+    <div class="relative z-10 text-center mb-12">
+      <p class="text-base lg:text-lg text-gray-600">
+        {{ $t('login.welcome') }}
+        <span class="font-semibold text-primary">{{ $t('overview.appTitle') }}</span>
+      </p>
+      <div class="w-16 h-0.5 bg-primary/70 mx-auto mt-3 rounded-full"></div>
     </div>
 
     <!-- Enhanced Cards Grid -->
