@@ -28,7 +28,7 @@
     </svg>
     <span v-if="showText" class="font-bold tracking-wide" :class="dark ? 'text-white' : 'text-primary'"
       :style="{ fontSize: size * 0.14 + 'px' }">
-      MCM
+      ERP
     </span>
   </div>
 </template>
